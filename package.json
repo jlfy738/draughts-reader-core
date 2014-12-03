@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "browserify": "^6.3.3"
+  },
+  "scripts" : {
+    "build" : "browserify ./src/main.js -o draughts-player.js"
+  }
+}
