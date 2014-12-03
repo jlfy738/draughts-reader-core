@@ -1038,6 +1038,166 @@ Diagonale.prototype.toString = function() {
 
 
 
+// ----------------------------------------------------------------------------------------------------
+// Class PathFinder
+// ----------------------------------------------------------------------------------------------------
+function PathFinder() {
+}
+
+PathFinder.prototype.init = function() {
+    return this;
+};
+
+
+PathFinder.prototype.getMouvementsSimples = function(damier, numCaseDepart) {
+    var mouvements = []; // [Mouvement]
+
+    // Récupération des 2 diagonales
+    var diagoGD = damier.getDiagonaleGD(numCaseDepart);
+    var diagoTT = damier.getDiagonaleTT(numCaseDepart);
+
+    // Déplacements simples (observés sur chacune des 2 diagonales)
+    var liste = diagoGD.getDeplacementsSimples(numCaseDepart);
+    liste = liste.concat(diagoTT.getDeplacementsSimples(numCaseDepart));
+
+    for (var k = 0; k < liste.length; k++) {
+        var numCaseArrivee = liste[k];
+        var mouvement = new Mouvement().init(numCaseDepart, numCaseArrivee);
+        mouvements.push(mouvement);
+    }
+
+    return mouvements;
+};
+
+PathFinder.prototype.getMouvementsRafles = function(damier, numCaseDepart) {
+    var tree = this.getArbreRafles(damier, numCaseDepart); // NTree<RafleItem>
+    return this.treeToMouvements(damier, tree);
+};
+
+PathFinder.prototype.treeToMouvements = function(damier, tree) {
+    var listes = tree.traverse(); // [[RafleItem]]
+
+    var mouvements = []; // [Mouvement]
+
+    for (var k = 0; k < listes.length; k++) {
+        var liste = listes[k]);
+
+        // le 1er element n'est pas une prise mais le point de départ.
+        // Toujours présents même s'il n'existe aucune prise.
+        if (liste.length() > 1) {
+            var riDeb = liste[0];
+            var riFin = liste[liste.length - 1];
+
+            var nDepart = riDeb.getNumeroCaseFinale();
+            var nArrivee = riFin.getNumeroCaseFinale();
+            var mouvement = new Mouvement().init(nDepart, nArrivee);
+
+            for (var j = 0; j < liste.length; j++) {
+                var ri = liste[j];
+                mouvement.addNumCasePose(ri.getNumeroCaseFinale());
+                if (ri.getNumeroCasePrise() != null) {
+                    mouvement.addNumCasePrise(ri.getNumeroCasePrise(), damier.getPiece(ri.getNumeroCasePrise()));
+                }
+            }
+            mouvements.push(mouvement);
+        }
+    }
+    return mouvements;
+};
+
+PathFinder.prototype.getArbreRafles = function(damier, numCaseDepart) {
+    var ri = new RafleItem().init2(numCaseDepart);
+
+    var ntreeRoot = new NTree().init1();
+    ntreeRoot.setElement(ri);
+
+    this.construireRafles(damier.cloneDamier(), ntreeRoot, []);
+
+    return ntreeRoot;
+};
+
+PathFinder.prototype.construireRafles = function(damier, node, numCasesDejaPrises) {
+    // damier.debugDamier();
+
+    var ri = node.getElement();
+    var numCaseNouveauDepart = ri.getNumero();
+    // console.log("");
+    // console.log("construireRafles(" + numCaseNouveauDepart + ", [" + numCasesDejaPrises + "])");
+
+    // Récupération des 2 diagonales
+    var diagoGD = damier.getDiagonaleGD(numCaseNouveauDepart);
+    var diagoTT = damier.getDiagonaleTT(numCaseNouveauDepart);
+
+    // debug
+    // console.log(diagoGD);
+    // console.log(diagoTT);
+    // ---
+
+    // Liste des prises unitaires (observées sur chacune des 2 diagonales)
+    var liste = diagoGD.getRaflesItem(numCaseNouveauDepart, numCasesDejaPrises);
+    liste = liste.concat(diagoTT.getRaflesItem(numCaseNouveauDepart, numCasesDejaPrises));
+
+    // debug
+    // String sri = "";
+    // for (var k = 0; k < liste.length; k++) {
+    //     var riTmp = liste[k];
+    //     sri += riTmp.toString() + "-";
+    // }
+    // console.log("Arrivées possibles : " + sri);
+    // ---
+
+    // Ajout de ces rafles simples dans l'arbre.
+    node.setFils(liste);
+
+    // Recommencer recursivement sur les rafles filles.
+    var noeudsFils = node.getNoeudsFils();
+    for (var k = 0; k < noeudsFils.length; k++) {
+        var nf = noeudsFils[k];
+        var r = nf.getElement();
+
+        // On met à jour la liste des cases déjà prises.
+        var lcdp = [];
+        lcdp = lcdp.concat(numCasesDejaPrises);
+        lcdp.push(r.getNumeroCasePrise());
+        // ---
+
+        // On deplace le pion avant de poursuivre
+        // (sans retirer la pièce prise).
+        var diag = damier.cloneDamier();
+        var numDeb = ri.getNumero();
+        var numFin = r.getNumeroCaseFinale();
+        var caseDeb = diag.getCase(numDeb);
+        var piece = caseDeb.getPiece();
+        diag.getCase(numDeb).setPiece(Piece.VIDE);
+        diag.getCase(numFin).setPiece(piece);
+
+        // ---
+        this.construireRafles(diag, nf, lcdp);
+    }
+};
+
+PathFinder.prototype.displayTreePaths = function(tree) {
+    var listes = tree.traverse(); // [[RafleItem]]
+
+    console.log("Nombre de mouvements : " + listes.length);
+    for (var k = 0; k < listes.length; k++) {
+        var liste = listes[k];
+        var s = "";
+        for (var j = 0; j < liste.length; j++) {
+            var ri = liste[j];
+            s += " > " + ri.getNumeroCaseFinale() + "[" + ri.getNumeroCasePrise() + "]";
+        }
+        console.log(s);
+    }
+};
+
+
+
+
+
+
+
+
 
 // ----------------------------------------------------------------------------------------------------
 // Tests
