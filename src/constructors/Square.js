@@ -1,7 +1,8 @@
 var
-  Piece = require('./../utils/symbols').Piece,
-  Color = require('./../utils/symbols').Color,
-  Diago = require('./../utils/symbols').Diago
+  symbols = require('./../utils/symbols'),
+  Piece = symbols.Piece,
+  Color = symbols.Color,
+  Diago = symbols.Diago
 ;
 
 function Square(ref, piece){
@@ -42,7 +43,7 @@ Square.prototype.getColor = function() {
 
   if (this.isWhite()) {
       c = Color.WHITE;
-  } else if (this.isNoir()) {
+  } else if (this.isBlack()) {
       c = Color.BLACK;
   }
 
@@ -50,7 +51,7 @@ Square.prototype.getColor = function() {
 
 };
 Square.prototype.debug = function() {
-  console.log("Square #" + this.ref + " (" + this.piece + ")");
+  console.log('Square #' + this.ref + ' (' + this.piece + ')');
 };
 
 module.exports = Square;
