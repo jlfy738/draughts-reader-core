@@ -17,6 +17,6 @@ The following command will build the distribution package :
 
 `$ npm run build`
 
-(NB : using browserify)gi
+(NB : using browserify)
 
 
