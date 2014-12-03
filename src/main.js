@@ -1,3 +1,3 @@
-var Case = require('./constructors/Case');
+var Square = require('./constructors/Square');
 
-(new Case(0)).debug();
+(new Square(0)).debug();

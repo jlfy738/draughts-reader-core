@@ -4,39 +4,39 @@ var
   Diago = require('./../utils/symbols').Diago
 ;
 
-function Case(ref, piece){
+function Square(ref, piece){
   this.ref = ref;
   this.piece = piece ? piece : Piece.EMPTY;
 }
 
-Case.prototype.getRef = function() {
+Square.prototype.getRef = function() {
   return this.ref;
 };
-Case.prototype.setRef = function(ref) {
+Square.prototype.setRef = function(ref) {
   this.ref = ref;
 };
-Case.prototype.getPiece = function() {
+Square.prototype.getPiece = function() {
   return this.piece;
 };
-Case.prototype.setPiece = function(piece) {
+Square.prototype.setPiece = function(piece) {
   this.piece = piece;
 };
-Case.prototype.isPawn = function() {
+Square.prototype.isPawn = function() {
   return (this.piece === Piece.PAWN_WHITE || this.piece === Piece.PAWN_BLACK);
 };
-Case.prototype.isDame = function() {
+Square.prototype.isDame = function() {
   return (this.piece === Piece.DAME_WHITE || this.piece === Piece.DAME_BLACK);
 };
-Case.prototype.isWhite = function() {
+Square.prototype.isWhite = function() {
   return (this.piece === Piece.PAWN_WHITE || this.piece === Piece.DAME_WHITE);
 };
-Case.prototype.isBlack = function() {
+Square.prototype.isBlack = function() {
   return (this.piece === Piece.PAWN_BLACK || this.piece === Piece.DAME_BLACK);
 };
-Case.prototype.isEmpty = function() {
+Square.prototype.isEmpty = function() {
   return (this.piece === Piece.EMPTY);
 };
-Case.prototype.getColor = function() {
+Square.prototype.getColor = function() {
 
   var c = Color.NONE;
 
@@ -49,8 +49,8 @@ Case.prototype.getColor = function() {
   return c;
 
 };
-Case.prototype.debug = function() {
-  console.log("Case #" + this.ref + " (" + this.piece + ")");
+Square.prototype.debug = function() {
+  console.log("Square #" + this.ref + " (" + this.piece + ")");
 };
 
-module.exports = Case;
+module.exports = Square;
