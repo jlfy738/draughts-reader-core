@@ -6,7 +6,7 @@
     "rewire": "^2.1.3"
   },
   "scripts": {
-    "build": "browserify ./src/main.js -o draughts-player.js",
+    "build": "rm -rf ./dist/ && mkdir -p ./dist/ && browserify ./src/main.js -o ./dist/draughts-player.js",
     "test": "mocha test/**/*.test.js"
   }
 }
