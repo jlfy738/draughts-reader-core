@@ -115,7 +115,7 @@ function Mouvement(numDepart, numArrivee) {
     this.casesPrise = []; // [Case]
 
     this.statut = true;
-    this.message = "";this.piece = piece ? piece : Piece.EMPTY;
+    this.message = "";
 }
 
 
