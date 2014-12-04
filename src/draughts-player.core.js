@@ -1193,6 +1193,216 @@ PathFinder.prototype.displayTreePaths = function(tree) {
 
 
 
+// ----------------------------------------------------------------------------------------------------
+// Class Arbitre
+// ----------------------------------------------------------------------------------------------------
+
+// http://javascript.info/tutorial/static-variables-and-methods
+// http://stackoverflow.com/questions/1535631/static-variables-in-javascript
+// http://stackoverflow.com/questions/7307243/how-to-declare-a-static-variable-in-javascript
+
+function Arbitre() {
+    this.pf = new PathFinder().init(); // how to make this static ?
+}
+
+/** Crée le mouvement demandé. */
+Arbitre.prototype.getMouvement = function(damier, depart, arrivee, numCasesInter) {
+
+    // Toutes les combinaisons de rafles
+    var listeMouvementsRafle = pf.getMouvementsRafles(damier, depart);
+    var existeRafle = listeMouvementsRafle.length > 0;
+
+    // debug
+    // for (Mouvement m : listeMouvementsRafle) {
+    // System.out.println(m.toString());
+    // }
+    // ---
+
+    var listeMouvements = [];
+
+    // Ne conserver que la/les rafles majoritaires
+    if (existeRafle) {
+        // System.out.println("CAS : RAFLE");
+        listeMouvements = this.filtreMajoritaire(listeMouvementsRafle);
+    }
+    // Aucune prise possible => on regarde les déplacements simples
+    else {
+        // System.out.println("CAS : DEPLACEMENT SIMPLE");
+        listeMouvements = pf.getMouvementsSimples(damier, depart);
+    }
+
+    // Ne conserver que le/les mouvements qui arrivent sur la case indiquée.
+    var listeOK = this.filtreArrivee(listeMouvements, arrivee);
+
+    // Ne conserver que le/les mouvements qui passent par les cases
+    // indiquées.
+    if (numCasesInter != null && numCasesInter.length > 0) {
+        listeOK = this.filtreInter(listeOK, numCasesInter);
+    }
+
+    // Si plusieurs mouvements sont valides, on prendra le premier.
+    var mouvement = null;
+    if (listeOK.length > 0) {
+        mouvement = listeOK[0];
+
+        // Enregistrer les mouvements intermédiaires précisées
+        if (numCasesInter != null) {
+            mouvement.setNumCasesInter(numCasesInter);
+        }
+
+        if (listeOK.length > 1) {
+            console.log("Il existe des variantes pour le coup " + depart + "/" + arrivee);
+        }
+    }
+
+    // Le mouvement demandé est irrégulier.
+    if (mouvement == null) {
+        mouvement = new Mouvement().init(depart, arrivee);
+        mouvement.setStatut(false);
+        mouvement.setMessage("Mouvement irrégulier..."); // A préciser
+    }
+
+    // Préciser s'il s'agit d'une rafle (pour la notation)
+    mouvement.setPrise(existeRafle);
+
+    // Préciser si la piece a été promu en dame.
+    var piece = damier.getPiece(depart);
+    var isPromu = (piece == Piece.PBLANC && arrivee >= 1 && arrivee <= 5);
+    isPromu = isPromu || (piece == Piece.PNOIR && arrivee >= 45 && arrivee <= 50);
+    mouvement.setPromuDame(isPromu);
+
+    return mouvement;
+};
+
+/**
+ * Ne conserver que le/les mouvements les plus longs. <br />
+ * Note : une prise est toujours plus longue qu'un déplacement simple.
+ */
+Arbitre.prototype.filtreMajoritaire = function(mouvements) {
+    var liste = [];
+
+    var lMax = this.mouvementMax(mouvements);
+    for (var k = 0; k < mouvements.length; k++) {
+        var m = mouvements[k];
+        if (m.size() == lMax) {
+            liste.push(m);
+        }
+    }
+
+    // Eviter les faux positifs de variantes
+    liste = this.filtreDoublons(liste);
+
+    return liste;
+};
+
+/**
+ * Retire les mouvements identiques (mêmes cases prises et même arrivée) <br/>
+ * => Eviter les faux positifs de variantes...<br />
+ * Exemple d'une dame avec plusieurs pts de repos possibles entre 2 prises.
+ */
+Arbitre.prototype.filtreDoublons = function(mouvements) {
+    var liste = []; // [Mouvement]
+
+    if (mouvements.length > 1) {
+        for (var k = 0; k < mouvements.length; k++) {
+            var m = mouvements[k];
+            var isDoublon = false;
+            for (var j = 0; j < liste.length; j++) {
+                var cf = liste[j];
+                if (m == cf) {
+                    isDoublon = true;
+                }
+            }
+            if (!isDoublon) {
+                liste.push(m);
+            }
+        }
+    } else {
+        liste = mouvements;
+    }
+
+    return liste;
+};
+
+/** Longueur du plus long mouvement. */
+Arbitre.prototype.mouvementMax = function(mouvements) {
+    var lMax = -1;
+
+    for (var k = 0; k < mouvements.length; k++) {
+        var m = mouvements[k];
+        if (m.size() > lMax) {
+            lMax = m.size();
+        }
+    }
+    return lMax;
+};
+
+/** Ne conserve que les mouvements qui arrivent sur la case indiquée. */
+Arbitre.prototype.filtreArrivee = function(mouvements, numArrivee) {
+    var liste = []; // [Mouvement]
+
+    for (var k = 0; k < mouvements.length; k++) {
+        var m = mouvements[k];
+        if (m.getNumCaseArrivee() == numArrivee) {
+            liste.push(m);
+        }
+    }
+    return liste;
+};
+
+/**
+ * Ne conserve que les mouvements qui passent par les cases intermédiaires
+ * indiquées.
+ * 
+ * @param inters
+ *            : REQUIS, non null
+ */
+Arbitre.prototype.filtreInter = function(mouvements, numCasesInter) {
+    var liste = []; // [Mouvement]
+
+    if (mouvements != null) {
+        // Pour chaque mouvement
+        for (var k = 0; k < mouvements.length; k++) {
+            var m = mouvements[k];
+
+            var casesPose = m.getCasesPose();
+            var tousTrouve = true;
+            var nbPose = casesPose.length;
+
+            var lastIdxPose = -1;
+
+            // Pour chaque inter spécifié
+            for (var j = 0; j < numCasesInter.length; j++) {
+                var inter = numCasesInter[j];
+
+                // On regarde s'il fait partie des cases sur laquelle la pièce s'est posée
+                var trouve = false;
+                for (var idxPose = 0; idxPose < nbPose; idxPose++) {
+                    // La case posée existe
+                    if (inter == casesPose[idxPose]) {
+                        // ET on ne l'a pas déjà prise en compte
+                        if (idxPose > lastIdxPose) {
+                            trouve = true;
+                            lastIdxPose = idxPose;
+                        }
+                    }
+                }
+
+                if (!trouve) {
+                    tousTrouve = false;
+                    break; // mouvement suivant
+                }
+            }
+
+            if (tousTrouve) {
+                liste.push(m);
+            }
+
+        }
+    }
+    return liste;
+};
+
 
 
 
