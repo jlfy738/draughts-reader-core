@@ -25,20 +25,10 @@ var Diago = {
 // ----------------------------------------------------------------------------------------------------
 // Classe Case
 // ----------------------------------------------------------------------------------------------------
-function Case() {
-    this.numero = 0;
-    this.piece = Piece.VIDE;
+function Case(numero, piece) {
+    this.numero = numero;
+    this.piece = piece ? piece : Piece.VIDE;
 }
-
-Case.prototype.init1 = function(numero) {
-    this.numero = numero;
-    return this;
-};
-Case.prototype.init2 = function(numero, piece) {
-    this.numero = numero;
-    this.piece = piece;
-    return this;
-};
 
 Case.prototype.getNumero = function() {
     return this.numero;
@@ -88,21 +78,10 @@ Case.prototype.debug = function() {
 // ----------------------------------------------------------------------------------------------------
 // Classe RafleItem
 // ----------------------------------------------------------------------------------------------------
-function RafleItem() {
-    this.numCasePrise = null;
-    this.numCaseFinale = null;
-}
-
-RafleItem.prototype.init1 = function(numCasePrise, numCaseFinale) {
-    this.numCasePrise = numCasePrise;
+function RafleItem(numCaseFinale, numCasePrise) {
+    this.numCasePrise = numCasePrise ? numCasePrise : null;
     this.numCaseFinale = numCaseFinale;
-    return this;
-};
-RafleItem.prototype.init2 = function(numCase) {
-    this.numCasePrise = null;
-    this.numCaseFinale = numCase;
-    return this;
-};
+}
 
 RafleItem.prototype.getNumero = function() {
     return this.getNumeroCaseFinale();
@@ -124,9 +103,9 @@ RafleItem.prototype.toString = function() {
 // ----------------------------------------------------------------------------------------------------
 // Classe Mouvement
 // ----------------------------------------------------------------------------------------------------
-function Mouvement() {
-    this.numCaseDepart = null;
-    this.numCaseArrivee = null;
+function Mouvement(numDepart, numArrivee) {
+    this.numCaseDepart = numDepart;
+    this.numCaseArrivee = numArrivee;
     this.numCasesInter = []; // [int]
 
     this.isPrise = false;
@@ -136,21 +115,8 @@ function Mouvement() {
     this.casesPrise = []; // [Case]
 
     this.statut = true;
-    this.message = "";
+    this.message = "";this.piece = piece ? piece : Piece.EMPTY;
 }
-
-Mouvement.prototype.init = function(numDepart, numArrivee) {
-    this.numCaseDepart = numDepart;
-    this.numCaseArrivee = numArrivee;
-    this.numCasesInter = []; // [int]
-
-    this.casesPose = [];  // [int]
-    this.casesPrise = []; // [Case]
-
-    this.statut = true;
-    this.message = "";
-    return this;
-};
 
 
 Mouvement.prototype.getNumCaseDepart = function() {
@@ -193,7 +159,7 @@ Mouvement.prototype.addNumCasePose = function(numCase) {
     this.casesPose.push(numCase);
 };
 Mouvement.prototype.addNumCasePrise = function(numCase, piece) {
-    this.casesPrise.push(new Case().init2(numCase, piece));
+    this.casesPrise.push(new Case(numCase, piece));
 };
 Mouvement.prototype.isStatut = function() {
     return this.statut;
@@ -339,19 +305,15 @@ function Damier() {
         [ 47, 41, 36 ], 
         [ 46 ] 
     ];
-}
 
-Damier.prototype.init = function() {
-    this.cases = [];
-    
     /** Initialisation des 50 cases noires. */
     for (var k = 1; k <= 50; k++) {
-        var c = new Case().init1(k);
+        var c = new Case(k);
         this.cases.push(c);
     }
+}
 
-    return this;
-};
+
 
 
 /** Position initiale : 20 x 20 */
@@ -407,7 +369,7 @@ Damier.prototype.getDiagonaleGD = function(numero) {
         }
     }
 
-    var diago = new Diagonale().init(Diago.GD);
+    var diago = new Diagonale(Diago.GD);
     for (var i = 0; i < diag.length; i++) {
         var c = this.getCase(diag[i]);
         diago.addCase(c);
@@ -430,7 +392,7 @@ Damier.prototype.getDiagonaleTT = function(numero) {
         }
     }
 
-    var diago = new Diagonale().init(Diago.TT);
+    var diago = new Diagonale(Diago.TT);
     for (var i = 0; i < diag.length; i++) {
         var c = this.getCase(diag[i]);
         diago.addCase(c);
@@ -440,7 +402,7 @@ Damier.prototype.getDiagonaleTT = function(numero) {
 };
 
 Damier.prototype.cloneDamier = function() {
-    var d = new Damier().init();
+    var d = new Damier();
 
     for (var k = 0; k < this.cases.length; k++) {
         var c = this.cases[k];
@@ -555,26 +517,11 @@ Damier.prototype.debugDamier = function() {
 // ----------------------------------------------------------------------------------------------------
 // Class NTree
 // ----------------------------------------------------------------------------------------------------
-function NTree() {
-    this.element = null; // E
+function NTree(element) {
+    this.element = element ? element : null; // E
     this.left = null;  // NTree<E>
     this.right = null; // NTree<E>
 }
-
-
-NTree.prototype.init1 = function() {
-    this.element = null;
-    this.left = null;
-    this.right = null;
-    return this;
-};
-
-NTree.prototype.init2 = function(element) {
-    this.element = element;
-    this.left = null;
-    this.right = null;
-    return this;
-};
 
 NTree.prototype.getElement = function() {
     return this.element;
@@ -604,13 +551,13 @@ NTree.prototype.setFils = function(liste) {
         var val = liste[0];
 
         // 1er element en fils droit
-        var btCourant = new NTree().init2(val);
+        var btCourant = new NTree(val);
         this.right = btCourant;
 
         // les autres : en frère à gauche
         if (nb > 1) {
             for (var k = 1; k < nb; k++) {
-                var btg = new NTree().init1();
+                var btg = new NTree();
                 btg.setElement(liste[k]);
                 btCourant.left = btg;
                 btCourant = btg;
@@ -685,18 +632,10 @@ NTree.prototype.traverse = function(node, path, result) {
 // ----------------------------------------------------------------------------------------------------
 // Class Diagonale
 // ----------------------------------------------------------------------------------------------------
-function Diagonale() {
+function Diagonale(typeDiago) {
     this.cases = []; // [case]
-    this.type = null; // Diago
+    this.type = typeDiago ? typeDiago : null; // Diago
 }
-
-
-Diagonale.prototype.init1 = function(typeDiago) {
-    this.cases = [];
-    this.type = typeDiago;
-    return this;
-};
-
 
 Diagonale.prototype.addCase = function(c) {
     this.cases.push(c);
@@ -842,7 +781,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                     var casePrise = this.getCaseByIndex(idxCase + 1);
                     var caseArrivee = this.getCaseByIndex(idxCase + 2);
                     if (!numCasesDejaPrises.contains(casePrise.getNumero())) {
-                        var ri = new RafleItem().init1(casePrise.getNumero(), caseArrivee.getNumero());
+                        var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                         raflesItem.push(ri);
                     }
                 }
@@ -861,7 +800,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                     // System.out.println("debug[" + this.type + "] : " +
                     // (idxCase - 1) + "=" + casePrise);
                     if (!numCasesDejaPrises.contains(casePrise.getNumero())) {
-                        var ri = new RafleItem().init1(casePrise.getNumero(), caseArrivee.getNumero());
+                        var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                         raflesItem.push(ri);
                     }
                 }
@@ -929,7 +868,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
                     var caseArrivee = this.getCaseByIndex(idxPieceAPrendre + k);
-                    var ri = new RafleItem().init1(casePrise.getNumero(), caseArrivee.getNumero());
+                    var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                     raflesItem.push(ri);
                 }
             }
@@ -995,7 +934,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
                     var caseArrivee = this.getCaseByIndex(idxPieceAPrendre - k);
-                    var ri = new RafleItem().init1(casePrise.getNumero(), caseArrivee.getNumero());
+                    var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                     raflesItem.push(ri);
                 }
             }
@@ -1044,11 +983,6 @@ Diagonale.prototype.toString = function() {
 function PathFinder() {
 }
 
-PathFinder.prototype.init = function() {
-    return this;
-};
-
-
 PathFinder.prototype.getMouvementsSimples = function(damier, numCaseDepart) {
     var mouvements = []; // [Mouvement]
 
@@ -1062,7 +996,7 @@ PathFinder.prototype.getMouvementsSimples = function(damier, numCaseDepart) {
 
     for (var k = 0; k < liste.length; k++) {
         var numCaseArrivee = liste[k];
-        var mouvement = new Mouvement().init(numCaseDepart, numCaseArrivee);
+        var mouvement = new Mouvement(numCaseDepart, numCaseArrivee);
         mouvements.push(mouvement);
     }
 
@@ -1090,7 +1024,7 @@ PathFinder.prototype.treeToMouvements = function(damier, tree) {
 
             var nDepart = riDeb.getNumeroCaseFinale();
             var nArrivee = riFin.getNumeroCaseFinale();
-            var mouvement = new Mouvement().init(nDepart, nArrivee);
+            var mouvement = new Mouvement(nDepart, nArrivee);
 
             for (var j = 0; j < liste.length; j++) {
                 var ri = liste[j];
@@ -1106,9 +1040,9 @@ PathFinder.prototype.treeToMouvements = function(damier, tree) {
 };
 
 PathFinder.prototype.getArbreRafles = function(damier, numCaseDepart) {
-    var ri = new RafleItem().init2(numCaseDepart);
+    var ri = new RafleItem(numCaseDepart);
 
-    var ntreeRoot = new NTree().init1();
+    var ntreeRoot = new NTree();
     ntreeRoot.setElement(ri);
 
     this.construireRafles(damier.cloneDamier(), ntreeRoot, []);
@@ -1202,7 +1136,7 @@ PathFinder.prototype.displayTreePaths = function(tree) {
 // http://stackoverflow.com/questions/7307243/how-to-declare-a-static-variable-in-javascript
 
 function Arbitre() {
-    this.pf = new PathFinder().init(); // how to make this static ?
+    this.pf = new PathFinder(); // how to make this static ?
 }
 
 /** Crée le mouvement demandé. */
@@ -1212,22 +1146,16 @@ Arbitre.prototype.getMouvement = function(damier, depart, arrivee, numCasesInter
     var listeMouvementsRafle = pf.getMouvementsRafles(damier, depart);
     var existeRafle = listeMouvementsRafle.length > 0;
 
-    // debug
-    // for (Mouvement m : listeMouvementsRafle) {
-    // System.out.println(m.toString());
-    // }
-    // ---
-
     var listeMouvements = [];
 
     // Ne conserver que la/les rafles majoritaires
     if (existeRafle) {
-        // System.out.println("CAS : RAFLE");
+        // console.log("CAS : RAFLE");
         listeMouvements = this.filtreMajoritaire(listeMouvementsRafle);
     }
     // Aucune prise possible => on regarde les déplacements simples
     else {
-        // System.out.println("CAS : DEPLACEMENT SIMPLE");
+        // console.log("CAS : DEPLACEMENT SIMPLE");
         listeMouvements = pf.getMouvementsSimples(damier, depart);
     }
 
@@ -1257,7 +1185,7 @@ Arbitre.prototype.getMouvement = function(damier, depart, arrivee, numCasesInter
 
     // Le mouvement demandé est irrégulier.
     if (mouvement == null) {
-        mouvement = new Mouvement().init(depart, arrivee);
+        mouvement = new Mouvement(depart, arrivee);
         mouvement.setStatut(false);
         mouvement.setMessage("Mouvement irrégulier..."); // A préciser
     }
@@ -1416,8 +1344,8 @@ Arbitre.prototype.filtreInter = function(mouvements, numCasesInter) {
 console.log("--------------------------------------");
 console.log("Case");
 console.log("--------------------------------------");
-var c1 = new Case().init1(1);
-var c2 = new Case().init2(2, Piece.PNOIR);
+var c1 = new Case(1);
+var c2 = new Case(2, Piece.PNOIR);
 c1.debug();
 c2.debug();
 console.log(c1.isDame());
@@ -1431,16 +1359,16 @@ console.log(c1.isDame());
 console.log("--------------------------------------");
 console.log("RafleItem");
 console.log("--------------------------------------");
-var ri1 = new RafleItem().init1(7, 8);
-var ri2 = new RafleItem().init2(6);
+var ri1 = new RafleItem(8, 7);
+var ri2 = new RafleItem(6);
 console.log("" + ri1);
 console.log("" + ri2);
 
 console.log("--------------------------------------");
 console.log("Mouvement");
 console.log("--------------------------------------");
-var m1 = new Mouvement().init(12, 23);
-var m2 = new Mouvement().init(22, 28);
+var m1 = new Mouvement(12, 23);
+var m2 = new Mouvement(22, 28);
 m2.setPrise(true);
 console.log("" + m1);
 console.log("" + m2);
@@ -1448,7 +1376,7 @@ console.log("" + m2);
 console.log("--------------------------------------");
 console.log("Damier");
 console.log("--------------------------------------");
-var d = new Damier().init();
+var d = new Damier();
 d.setPosition(Piece.PBLANC, [33, 38, 39, 43, 44]);
 d.setPosition(Piece.PNOIR, [12, 13, 14, 22, 24]);
 d.debugDamier();
@@ -1457,12 +1385,12 @@ d.debugDamier();
 console.log("--------------------------------------");
 console.log("Arbre");
 console.log("--------------------------------------");
-var racine = new NTree().init2("Racine");
+var racine = new NTree("Racine");
 
-var t1 = new NTree().init2("A");
-var t2 = new NTree().init2("B");
-var t3 = new NTree().init2("C");
-var t4 = new NTree().init2("D");
+var t1 = new NTree("A");
+var t2 = new NTree("B");
+var t3 = new NTree("C");
+var t4 = new NTree("D");
 
 var fils = [t1, t2, t3, t4];
 
