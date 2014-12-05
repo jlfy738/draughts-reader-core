@@ -1072,7 +1072,7 @@ PathFinder.prototype.construireRafles = function(damier, node, numCasesDejaPrise
     liste = liste.concat(diagoTT.getRaflesItem(numCaseNouveauDepart, numCasesDejaPrises));
 
     // debug
-    // String sri = "";
+    // var sri = "";
     // for (var k = 0; k < liste.length; k++) {
     //     var riTmp = liste[k];
     //     sri += riTmp.toString() + "-";
@@ -1334,6 +1334,242 @@ Arbitre.prototype.filtreInter = function(mouvements, numCasesInter) {
 
 
 
+// ----------------------------------------------------------------------------------------------------
+// Class Partie
+// ----------------------------------------------------------------------------------------------------
+
+function Partie() {
+    this.damier = new Damier();
+    this.mouvements = []; // [Mouvement]
+    this.index = -1;
+}
+
+
+/** Définition de la position */
+Partie.prototype.setPosition = function(piece, numeros) {
+    this.damier.setPosition(piece, numeros);
+};
+
+Partie.prototype.setPosition20x20 = function() {
+    this.damier.setPosition20x20();
+};
+
+/**
+ * Définition des mouvements
+ * 
+ * @param depart
+ *            Numéro de la case de départ (REQUIS)
+ * @param arrivee
+ *            Numéro de la case d'arrivée (REQUIS)
+ * @param numCasesInter
+ *            Liste des cases intermédiaires (Facultatif)
+ */
+Partie.prototype.addMouvement = function(depart, arrivee, numCasesInter) {
+    numCasesInter = numCasesInter ? numCasesInter : null;
+
+    if (!this.hasError()) {
+
+        // Positionner le damier
+        this.end();
+
+        var m = Arbitre.getMouvement(this.damier, depart, arrivee, numCasesInter);
+        // console.log("addMouvement(" + depart + ">" + arrivee + ") => mouvement=" + m);
+
+        this.mouvements.push(m);
+    } else {
+        console.log("addMouvement: ERREUR");
+    }
+};
+
+
+
+/**
+ * Exemples : <br />
+ * Prise : 24x22 ou 24x33x22 ou 24x13x...x22 <br />
+ * Déplacement : 24-29
+ * */
+Partie.prototype.addMouvement = function(mouvement) {
+    if (mouvement != null) {
+
+        mouvement = mouvement.toLowerCase();
+        mouvement = mouvement.replace(" ", "");
+
+        var sep = "";
+        if (mouvement.indexOf("-") > -1) {
+            sep = "-";
+        } else if (mouvement.indexOf("x") > -1) {
+            sep = "x";
+        }
+
+        if (sep != "") {
+            var liste = mouvement.split(sep);
+            var nb = liste.length;
+            if (nb > 1) {
+                var error = false;
+                var iDeb = parseInt(liste[0], 10);
+                var iFin = parseInt(liste[nb - 1], 10);
+                var iInters = [];
+
+                if (iDeb === null || iFin === null) {
+                    error = true;
+                } else {
+                    if (nb > 2) {
+                        for (var i = 1; i <= nb - 2; i++) {
+                            var inter = parseInt(liste[i], 10);
+                            if (inter != null) {
+                                iInters.push(inter);
+                            } else {
+                                error = true;
+                            }
+                        }
+                    }
+                }
+                if (!error) {
+                    this.addMouvement(iDeb, iFin, iInters);
+                } else {
+                    console.log("addMouvement: ERREUR (4)");
+                }
+
+            } else {
+                console.log("addMouvement: ERREUR (3)");
+            }
+        } else {
+            console.log("addMouvement: ERREUR (2)");
+        }
+
+    } else {
+        console.log("addMouvement: ERREUR (1)");
+    }
+};
+
+Partie.prototype.getStatutNextIndex = function() {
+    var statut = true;
+    if (this.index < this.getLastIndex()) {
+        var m = this.mouvements[this.index + 1];
+        statut = m.isStatut();
+    }
+    return statut;
+};
+
+Partie.prototype.getStatutPrevIndex = function() {
+    var statut = true;
+    if (this.index > 0) {
+        var m = this.mouvements[this.index - 1];
+        statut = m.isStatut();
+    }
+    return statut;
+};
+
+Partie.prototype.hasNext = function() {
+    return this.getStatutNextIndex() && this.index < this.getLastIndex();
+};
+
+Partie.prototype.hasPrev = function() {
+    return this.getStatutPrevIndex() && this.index > -1;
+};
+
+Partie.prototype.next = function() {
+    if (this.hasNext()) {
+        this.index++;
+        var m = this.mouvements[this.index];
+        if (m.isStatut()) {
+            this.damier.jouer(m);
+        } else {
+            this.index--;
+        }
+    }
+};
+
+Partie.prototype.prev = function() {
+    if (this.hasPrev()) {
+        var m = this.mouvements[this.index];
+        if (m.isStatut()) {
+            this.damier.jouerInv(m);
+            this.index--;
+        }
+    }
+}
+
+Partie.prototype.start = function() {
+    this.setIndex(-1);
+};
+
+Partie.prototype.end = function() {
+    this.setIndex(this.getLastIndex());
+};
+
+/** Position initiale = 0 ; Premier coup = 1. */
+Partie.prototype.setCurseur = function(position) {
+    this.setIndex(position - 1);
+};
+
+/** Position initiale = -1 ; premier coup = 0 */
+Partie.prototype.setIndex = function(idx) {
+    idx = this.contraindreIndex(idx);
+
+    if (this.index < idx) {
+        while (this.index < idx) {
+            this.next();
+        }
+    } else if (this.index > idx) {
+        while (this.index > idx) {
+            this.prev();
+        }
+    }
+};
+
+Partie.prototype.getLastIndex = function() {
+    return this.mouvements.length - 1;
+};
+
+Partie.prototype.contraindreIndex = function(idx) {
+    if (idx < 0) {
+        idx = -1;
+    } else if (idx > this.getLastIndex()) {
+        idx = this.getLastIndex();
+    }
+
+    return idx;
+};
+
+Partie.prototype.hasError = function() {
+    var err = false;
+    for (var k = 1; k <= mouvements.length - 2; k++) {
+        var m = mouvements[k];
+        if (!m.isStatut()) {
+            err = true;
+            break;
+        }
+    }
+    return err;
+};
+
+Partie.prototype.debug = function() {
+    console.log("Etat courant de la partie :");
+
+    var s = "";
+    for (int k = 0; k < this.mouvements.length; k++) {
+        var m = this.mouvements[k];
+        if (k == this.index) {
+            s += "[" + m.getNotation() + "] ; ";
+        } else {
+            s += m.getNotation() + " ; ";
+        }
+    }
+    console.log(s);
+    this.damier.debugDamier();
+    console.log("");
+};
+
+Partie.prototype.debugFull = function() {
+    this.start();
+    this.debug();
+
+    while (this.hasNext()) {
+        this.next();
+        this.debug();
+    }
+};
 
 
 
