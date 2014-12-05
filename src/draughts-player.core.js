@@ -1014,7 +1014,7 @@ PathFinder.prototype.treeToMouvements = function(damier, tree) {
     var mouvements = []; // [Mouvement]
 
     for (var k = 0; k < listes.length; k++) {
-        var liste = listes[k]);
+        var liste = listes[k];
 
         // le 1er element n'est pas une prise mais le point de départ.
         // Toujours présents même s'il n'existe aucune prise.
@@ -1388,7 +1388,7 @@ Partie.prototype.addMouvement = function(depart, arrivee, numCasesInter) {
  * Prise : 24x22 ou 24x33x22 ou 24x13x...x22 <br />
  * Déplacement : 24-29
  * */
-Partie.prototype.addMouvement = function(mouvement) {
+Partie.prototype.addMouvementTxt = function(mouvement) {
     if (mouvement != null) {
 
         mouvement = mouvement.toLowerCase();
@@ -1534,8 +1534,8 @@ Partie.prototype.contraindreIndex = function(idx) {
 
 Partie.prototype.hasError = function() {
     var err = false;
-    for (var k = 1; k <= mouvements.length - 2; k++) {
-        var m = mouvements[k];
+    for (var k = 1; k <= this.mouvements.length - 2; k++) {
+        var m = this.mouvements[k];
         if (!m.isStatut()) {
             err = true;
             break;
@@ -1548,7 +1548,7 @@ Partie.prototype.debug = function() {
     console.log("Etat courant de la partie :");
 
     var s = "";
-    for (int k = 0; k < this.mouvements.length; k++) {
+    for (var k = 0; k < this.mouvements.length; k++) {
         var m = this.mouvements[k];
         if (k == this.index) {
             s += "[" + m.getNotation() + "] ; ";
@@ -1644,7 +1644,5 @@ for (var i = 0; i < liste.length; i++) {
     var val = liste[i].getElement();
     console.log("fils n°" + i + " = " + val);
 }
-
-
 
 
