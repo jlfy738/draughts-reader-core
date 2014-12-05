@@ -1130,20 +1130,16 @@ PathFinder.prototype.displayTreePaths = function(tree) {
 // ----------------------------------------------------------------------------------------------------
 // Class Arbitre
 // ----------------------------------------------------------------------------------------------------
-
-// http://javascript.info/tutorial/static-variables-and-methods
-// http://stackoverflow.com/questions/1535631/static-variables-in-javascript
-// http://stackoverflow.com/questions/7307243/how-to-declare-a-static-variable-in-javascript
-
 function Arbitre() {
-    this.pf = new PathFinder(); // how to make this static ?
 }
 
+Arbitre.pf = new PathFinder();
+
 /** Crée le mouvement demandé. */
-Arbitre.prototype.getMouvement = function(damier, depart, arrivee, numCasesInter) {
+Arbitre.getMouvement = function(damier, depart, arrivee, numCasesInter) {
 
     // Toutes les combinaisons de rafles
-    var listeMouvementsRafle = pf.getMouvementsRafles(damier, depart);
+    var listeMouvementsRafle = Arbitre.pf.getMouvementsRafles(damier, depart);
     var existeRafle = listeMouvementsRafle.length > 0;
 
     var listeMouvements = [];
@@ -1156,7 +1152,7 @@ Arbitre.prototype.getMouvement = function(damier, depart, arrivee, numCasesInter
     // Aucune prise possible => on regarde les déplacements simples
     else {
         // console.log("CAS : DEPLACEMENT SIMPLE");
-        listeMouvements = pf.getMouvementsSimples(damier, depart);
+        listeMouvements = Arbitre.pf.getMouvementsSimples(damier, depart);
     }
 
     // Ne conserver que le/les mouvements qui arrivent sur la case indiquée.
@@ -1206,7 +1202,7 @@ Arbitre.prototype.getMouvement = function(damier, depart, arrivee, numCasesInter
  * Ne conserver que le/les mouvements les plus longs. <br />
  * Note : une prise est toujours plus longue qu'un déplacement simple.
  */
-Arbitre.prototype.filtreMajoritaire = function(mouvements) {
+Arbitre.filtreMajoritaire = function(mouvements) {
     var liste = [];
 
     var lMax = this.mouvementMax(mouvements);
@@ -1228,7 +1224,7 @@ Arbitre.prototype.filtreMajoritaire = function(mouvements) {
  * => Eviter les faux positifs de variantes...<br />
  * Exemple d'une dame avec plusieurs pts de repos possibles entre 2 prises.
  */
-Arbitre.prototype.filtreDoublons = function(mouvements) {
+Arbitre.filtreDoublons = function(mouvements) {
     var liste = []; // [Mouvement]
 
     if (mouvements.length > 1) {
@@ -1253,7 +1249,7 @@ Arbitre.prototype.filtreDoublons = function(mouvements) {
 };
 
 /** Longueur du plus long mouvement. */
-Arbitre.prototype.mouvementMax = function(mouvements) {
+Arbitre.mouvementMax = function(mouvements) {
     var lMax = -1;
 
     for (var k = 0; k < mouvements.length; k++) {
@@ -1266,7 +1262,7 @@ Arbitre.prototype.mouvementMax = function(mouvements) {
 };
 
 /** Ne conserve que les mouvements qui arrivent sur la case indiquée. */
-Arbitre.prototype.filtreArrivee = function(mouvements, numArrivee) {
+Arbitre.filtreArrivee = function(mouvements, numArrivee) {
     var liste = []; // [Mouvement]
 
     for (var k = 0; k < mouvements.length; k++) {
@@ -1285,7 +1281,7 @@ Arbitre.prototype.filtreArrivee = function(mouvements, numArrivee) {
  * @param inters
  *            : REQUIS, non null
  */
-Arbitre.prototype.filtreInter = function(mouvements, numCasesInter) {
+Arbitre.filtreInter = function(mouvements, numCasesInter) {
     var liste = []; // [Mouvement]
 
     if (mouvements != null) {
