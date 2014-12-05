@@ -137,14 +137,8 @@ Mouvement.prototype.getNumCasesInter = function() {
 Mouvement.prototype.setNumCasesInter = function(numCasesInter) {
     this.numCasesInter = numCasesInter;
 };
-Mouvement.prototype.isPrise = function() {
-    return this.isPrise;
-};
 Mouvement.prototype.setPrise = function(isPrise) {
     this.isPrise = isPrise;
-};
-Mouvement.prototype.isPromuDame = function() {
-    return this.isPromuDame;
 };
 Mouvement.prototype.setPromuDame = function(isPromuDame) {
     this.isPromuDame = isPromuDame;
@@ -217,7 +211,7 @@ Mouvement.prototype.toString = function() {
 };
 
 Mouvement.prototype.getNotation = function() {
-    var sep = this.isPrise() ? "x" : "-";
+    var sep = this.isPrise ? "x" : "-";
 
     var s = "";
     s += this.numCaseDepart;
@@ -426,7 +420,7 @@ Damier.prototype.jouer = function(mouvement) {
     }
 
     // Poser la pièce sur la case d'arrivée
-    if (!mouvement.isPromuDame()) {
+    if (!mouvement.isPromuDame) {
         this.setPiece(mouvement.getNumCaseArrivee(), pieceJouee);
     }
     // Ce mouvement promeu en Dame
@@ -453,7 +447,7 @@ Damier.prototype.jouerInv = function(mouvement) {
     }
 
     // Remettre la pièce sur la case de départ
-    if (!mouvement.isPromuDame()) {
+    if (!mouvement.isPromuDame) {
         this.setPiece(mouvement.getNumCaseDepart(), pieceJouee);
     }
 
@@ -606,11 +600,11 @@ NTree.prototype.getNoeudsFils = function() {
 
 NTree.prototype.traverse = function() {
     var listes = [[]];
-    traverse(this, [], listes);
+    this._traverse(this, [], listes);
     return listes;
 };
 
-NTree.prototype.traverse = function(node, path, result) {
+NTree.prototype._traverse = function(node, path, result) {
     path.push(node);
     if (node.isFeuille()) {
         var res = [];
@@ -622,7 +616,7 @@ NTree.prototype.traverse = function(node, path, result) {
         var fils = node.getNoeudsFils();
 
         for (var i = 0; i < fils.length; i++) {
-            traverse(n, [path], result);
+            this._traverse(n, [path], result);
         }
     }
 };
@@ -780,7 +774,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                     // prise OK
                     var casePrise = this.getCaseByIndex(idxCase + 1);
                     var caseArrivee = this.getCaseByIndex(idxCase + 2);
-                    if (!numCasesDejaPrises.contains(casePrise.getNumero())) {
+                    if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
                         var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                         raflesItem.push(ri);
                     }
@@ -799,7 +793,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                     var caseArrivee = this.getCaseByIndex(idxCase - 2);
                     // System.out.println("debug[" + this.type + "] : " +
                     // (idxCase - 1) + "=" + casePrise);
-                    if (!numCasesDejaPrises.contains(casePrise.getNumero())) {
+                    if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
                         var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                         raflesItem.push(ri);
                     }
@@ -863,7 +857,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
             var casePrise = this.getCaseByIndex(idxPieceAPrendre);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
-            if (!numCasesDejaPrises.contains(casePrise.getNumero())) {
+            if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
@@ -929,7 +923,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
             var casePrise = this.getCaseByIndex(idxPieceAPrendre);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
-            if (!numCasesDejaPrises.contains(casePrise.getNumero())) {
+            if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
@@ -1018,7 +1012,7 @@ PathFinder.prototype.treeToMouvements = function(damier, tree) {
 
         // le 1er element n'est pas une prise mais le point de départ.
         // Toujours présents même s'il n'existe aucune prise.
-        if (liste.length() > 1) {
+        if (liste.length > 1) {
             var riDeb = liste[0];
             var riFin = liste[liste.length - 1];
 
@@ -1640,5 +1634,4 @@ for (var i = 0; i < liste.length; i++) {
     var val = liste[i].getElement();
     console.log("fils n°" + i + " = " + val);
 }
-
 
