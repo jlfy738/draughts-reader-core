@@ -1572,64 +1572,26 @@ Partie.prototype.debugFull = function() {
 // ----------------------------------------------------------------------------------------------------
 
 console.log("--------------------------------------");
-console.log("Case");
+console.log("Partie");
 console.log("--------------------------------------");
-var c1 = new Case(1);
-var c2 = new Case(2, Piece.PNOIR);
-c1.debug();
-c2.debug();
-console.log(c1.isDame());
-console.log(c2.isNoir());
-console.log(c2.isPion());
-console.log(c2.getCouleur());
-console.log(c2.getNumero());
-c1.setPiece(Piece.DBLANC);
-console.log(c1.isDame());
 
-console.log("--------------------------------------");
-console.log("RafleItem");
-console.log("--------------------------------------");
-var ri1 = new RafleItem(8, 7);
-var ri2 = new RafleItem(6);
-console.log("" + ri1);
-console.log("" + ri2);
+function testPartie() {
+    var partie = new Partie();
+    // ---
+    partie.setPosition(Piece.PBLANC, [33, 38, 39, 43, 44]);
+    partie.setPosition(Piece.PNOIR, [12, 13, 14, 22, 24]);
+    partie.setPosition(Piece.DBLANC, []);
+    partie.setPosition(Piece.DNOIR, []);
+    // ---
+    partie.addMouvement(33, 29);
+    partie.addMouvement(24, 42, [33]);
+    partie.addMouvement(43, 38);
+    partie.addMouvementTxt("42x33");
+    partie.addMouvementTxt("39x10");
+    // ---
 
-console.log("--------------------------------------");
-console.log("Mouvement");
-console.log("--------------------------------------");
-var m1 = new Mouvement(12, 23);
-var m2 = new Mouvement(22, 28);
-m2.setPrise(true);
-console.log("" + m1);
-console.log("" + m2);
-
-console.log("--------------------------------------");
-console.log("Damier");
-console.log("--------------------------------------");
-var d = new Damier();
-d.setPosition(Piece.PBLANC, [33, 38, 39, 43, 44]);
-d.setPosition(Piece.PNOIR, [12, 13, 14, 22, 24]);
-d.debugDamier();
-
-
-console.log("--------------------------------------");
-console.log("Arbre");
-console.log("--------------------------------------");
-var racine = new NTree("Racine");
-var fils = ["A", "B", "C", "D"];
-
-racine.setFils(fils);
-
-console.log("racine.isFeuille = " + racine.isFeuille());
-
-var liste = racine.getNoeudsFils();
-console.log(liste);
-for (var i = 0; i < liste.length; i++) {
-    var nf = liste[i];
-    var val = nf.getElement();
-    console.log("fils n°" + i + " = " + val);
+    partie.debugFull();
 }
 
 
-var v = racine.traverse();
-console.log(v);
+testPartie();
