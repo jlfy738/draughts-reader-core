@@ -599,24 +599,29 @@ NTree.prototype.getNoeudsFils = function() {
 };
 
 NTree.prototype.traverse = function() {
-    var listes = [[]];
+    var listes = []; // [[E]]
     this._traverse(this, [], listes);
     return listes;
 };
 
-NTree.prototype._traverse = function(node, path, result) {
+/**
+* lle : resultat (liste des chemins = liste de "liste d'éléments" [[E]])
+*/
+NTree.prototype._traverse = function(node, path, lle) {
     path.push(node);
     if (node.isFeuille()) {
         var res = [];
         for (var k = 0; k < path.length; k++) {
-            res.push(path[k].getElement());
+            var e = path[k].getElement();
+            res.push(e);
         }
-        result.push(res);
+        lle.push(res);
     } else {
         var fils = node.getNoeudsFils();
 
         for (var i = 0; i < fils.length; i++) {
-            this._traverse(n, [path], result);
+            var newPath = path.slice(0);
+            this._traverse(fils[i], newPath, lle);
         }
     }
 };
@@ -1612,26 +1617,20 @@ console.log("--------------------------------------");
 console.log("Arbre");
 console.log("--------------------------------------");
 var racine = new NTree("Racine");
-
-var t1 = new NTree("A");
-var t2 = new NTree("B");
-var t3 = new NTree("C");
-var t4 = new NTree("D");
-
-var fils = [t1, t2, t3, t4];
+var fils = ["A", "B", "C", "D"];
 
 racine.setFils(fils);
 
 console.log("racine.isFeuille = " + racine.isFeuille());
-console.log("t1.isFeuille = " + t1.isFeuille());
-console.log("t2.isFeuille = " + t2.isFeuille());
-console.log("t3.isFeuille = " + t3.isFeuille());
-console.log("t4.isFeuille = " + t4.isFeuille());
 
-var liste = racine.getFils();
+var liste = racine.getNoeudsFils();
 console.log(liste);
 for (var i = 0; i < liste.length; i++) {
-    var val = liste[i].getElement();
+    var nf = liste[i];
+    var val = nf.getElement();
     console.log("fils n°" + i + " = " + val);
 }
 
+
+var v = racine.traverse();
+console.log(v);
