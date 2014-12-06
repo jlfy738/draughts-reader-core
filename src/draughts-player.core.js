@@ -779,7 +779,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                     // prise OK
                     var casePrise = this.getCaseByIndex(idxCase + 1);
                     var caseArrivee = this.getCaseByIndex(idxCase + 2);
-                    if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
+                    if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
                         var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                         raflesItem.push(ri);
                     }
@@ -798,7 +798,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                     var caseArrivee = this.getCaseByIndex(idxCase - 2);
                     // System.out.println("debug[" + this.type + "] : " +
                     // (idxCase - 1) + "=" + casePrise);
-                    if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
+                    if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
                         var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
                         raflesItem.push(ri);
                     }
@@ -862,7 +862,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
             var casePrise = this.getCaseByIndex(idxPieceAPrendre);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
-            if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
+            if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
@@ -928,7 +928,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
             var casePrise = this.getCaseByIndex(idxPieceAPrendre);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
-            if (!numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1) {
+            if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
@@ -1089,8 +1089,7 @@ PathFinder.prototype.construireRafles = function(damier, node, numCasesDejaPrise
         var r = nf.getElement();
 
         // On met à jour la liste des cases déjà prises.
-        var lcdp = [];
-        lcdp = lcdp.concat(numCasesDejaPrises);
+        var lcdp = numCasesDejaPrises.slice(0);
         lcdp.push(r.getNumeroCasePrise());
         // ---
 
