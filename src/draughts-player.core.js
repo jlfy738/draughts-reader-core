@@ -3,17 +3,17 @@
 // ----------------------------------------------------------------------------------------------------
 
 var Piece = {
-    VIDE : 0,
-    PBLANC : 1,
-    PNOIR : 2,
-    DBLANC : 3,
-    DNOIR : 4
+    EMPTY : 0,
+    PAWN_WHITE : 1,
+    PAWN_BLACK : 2,
+    DAME_WHITE : 3,
+    DAME_BLACK : 4
 };
 
-var Couleur = {
-    AUCUNE : 0,
-    BLANC : 1,
-    NOIR : 2
+var Color = {
+    NONE : 0,
+    WHITE : 1,
+    BLACK : 2
 };
 
 var Diago = {
@@ -23,206 +23,140 @@ var Diago = {
 
 
 // ----------------------------------------------------------------------------------------------------
-// Classe Case
+// Square "class"
 // ----------------------------------------------------------------------------------------------------
-function Case(numero, piece) {
-    this.numero = numero;
-    this.piece = piece ? piece : Piece.VIDE;
+function Square(number, piece) {
+    this.number = number;
+    this.piece = piece ? piece : Piece.EMPTY;
 }
 
-Case.prototype.getNumero = function() {
-    return this.numero;
+Square.prototype.isPawn = function() {
+    return (this.piece === Piece.PAWN_WHITE || this.piece === Piece.PAWN_BLACK);
 };
-Case.prototype.setNumero = function(numero) {
-    this.numero = numero;
+Square.prototype.isDame = function() {
+    return (this.piece === Piece.DAME_WHITE || this.piece === Piece.DAME_BLACK);
 };
-Case.prototype.getPiece = function() {
-    return this.piece;
+Square.prototype.isWhite = function() {
+    return (this.piece === Piece.PAWN_WHITE || this.piece === Piece.DAME_WHITE);
 };
-Case.prototype.setPiece = function(piece) {
-    this.piece = piece;
+Square.prototype.isBlack = function() {
+    return (this.piece === Piece.PAWN_BLACK || this.piece === Piece.DAME_BLACK);
 };
-
-Case.prototype.isPion = function() {
-    return (this.piece === Piece.PBLANC || this.piece === Piece.PNOIR);
-};
-Case.prototype.isDame = function() {
-    return (this.piece === Piece.DBLANC || this.piece === Piece.DNOIR);
-};
-Case.prototype.isBlanc = function() {
-    return (this.piece === Piece.PBLANC || this.piece === Piece.DBLANC);
-};
-Case.prototype.isNoir = function() {
-    return (this.piece === Piece.PNOIR || this.piece === Piece.DNOIR);
-};
-Case.prototype.isVide = function() {
-    return (this.piece === Piece.VIDE);
+Square.prototype.isEmpty = function() {
+    return (this.piece === Piece.EMPTY);
 };
 
-Case.prototype.getCouleur = function() {
-    var c = Couleur.AUCUNE;
+Square.prototype.getColor = function() {
+    var c = Color.NONE;
 
-    if (this.isBlanc()) {
-        c = Couleur.BLANC;
-    } else if (this.isNoir()) {
-        c = Couleur.NOIR;
+    if (this.isWhite()) {
+        c = Color.WHITE;
+    } else if (this.isBlack()) {
+        c = Color.BLACK;
     }
     return c;
 };
 
-Case.prototype.debug = function() {
-    console.log("Case n°" + this.numero + " (" + this.piece + ")");
+Square.prototype.debug = function() {
+    console.log("Case n°" + this.number + " (" + this.piece + ")");
 };
 
 
 // ----------------------------------------------------------------------------------------------------
 // Classe RafleItem
 // ----------------------------------------------------------------------------------------------------
-function RafleItem(numCaseFinale, numCasePrise) {
-    this.numCasePrise = numCasePrise ? numCasePrise : null;
-    this.numCaseFinale = numCaseFinale;
+function RafleItem(endingSquareNum, capturedSquareNum) {
+    this.capturedSquareNum = capturedSquareNum ? capturedSquareNum : null;
+    this.endingSquareNum = endingSquareNum;
 }
 
-RafleItem.prototype.getNumero = function() {
-    return this.getNumeroCaseFinale();
-};
-RafleItem.prototype.getNumeroCaseFinale = function() {
-    return this.numCaseFinale;
-};
-RafleItem.prototype.getNumeroCasePrise = function() {
-    return this.numCasePrise;
+RafleItem.prototype.getNumber = function() {
+    return this.endingSquareNum;
 };
 
 RafleItem.prototype.toString = function() {
     //return JSON.stringify(this);
-    return "" + this.numCaseFinale;
+    return "" + this.endingSquareNum;
 };
 
 
 
 // ----------------------------------------------------------------------------------------------------
-// Classe Mouvement
+// Move "class"
 // ----------------------------------------------------------------------------------------------------
-function Mouvement(numDepart, numArrivee) {
-    this.numCaseDepart = numDepart;
-    this.numCaseArrivee = numArrivee;
-    this.numCasesInter = []; // [int]
+function Move(startNum, endNum) {
+    this.startingSquareNum = startNum;
+    this.endingSquareNum = endNum;
+    this.middleSquaresNum = []; // [int]
 
-    this.isPrise = false;
-    this.isPromuDame = false;
+    this.isCaptured = false;
+    this.isCrowned = false;
 
-    this.casesPose = [];  // [int]
-    this.casesPrise = []; // [Case]
+    this.landingSquaresNum = [];  // [int]
+    this.capturedSquares = []; // [Square]
 
-    this.statut = true;
+    this.status = true;
     this.message = "";
 }
 
-
-Mouvement.prototype.getNumCaseDepart = function() {
-    return this.numCaseDepart;
+Move.prototype.addLandingSquareNum = function(squareNum) {
+    this.landingSquaresNum.push(squareNum);
 };
-Mouvement.prototype.setNumCaseDepart = function(numCaseDepart) {
-    this.numCaseDepart = numCaseDepart;
-};
-Mouvement.prototype.getNumCaseArrivee = function() {
-    return this.numCaseArrivee;
-};
-Mouvement.prototype.setNumCaseArrivee = function(numCaseArrivee) {
-    this.numCaseArrivee = numCaseArrivee;
-};
-Mouvement.prototype.getNumCasesInter = function() {
-    return this.numCasesInter;
-};
-Mouvement.prototype.setNumCasesInter = function(numCasesInter) {
-    this.numCasesInter = numCasesInter;
-};
-Mouvement.prototype.setPrise = function(isPrise) {
-    this.isPrise = isPrise;
-};
-Mouvement.prototype.setPromuDame = function(isPromuDame) {
-    this.isPromuDame = isPromuDame;
-};
-Mouvement.prototype.getCasesPose = function() {
-    return this.casesPose;
-};
-Mouvement.prototype.getCasesPrise = function() {
-    return this.casesPrise;
-};
-Mouvement.prototype.addNumCasePose = function(numCase) {
-    this.casesPose.push(numCase);
-};
-Mouvement.prototype.addNumCasePrise = function(numCase, piece) {
-    this.casesPrise.push(new Case(numCase, piece));
-};
-Mouvement.prototype.isStatut = function() {
-    return this.statut;
-};
-Mouvement.prototype.setStatut = function(statut) {
-    this.statut = statut;
-};
-Mouvement.prototype.getMessage = function() {
-    return this.message;
-};
-Mouvement.prototype.setMessage = function(message) {
-    this.message = message;
+Move.prototype.addCapturedSquareNum = function(squareNum, piece) {
+    this.capturedSquares.push(new Square(squareNum, piece));
 };
 
-Mouvement.prototype.nbCasesPrises = function() {
-    return this.casesPrise.length;
+Move.prototype.size = function() {
+    return this.capturedSquares.length + this.landingSquaresNum.length;
 };
 
-Mouvement.prototype.size = function() {
-    return this.casesPrise.length + this.casesPose.length;
-};
-
-Mouvement.prototype.toString = function() {
+Move.prototype.toString = function() {
     var tmp = "";
-    var nb = this.casesPose.length;
+    var nb = this.landingSquaresNum.length;
     for (var i = 0; i < nb; i++) {
         if (tmp !== "") {
             tmp += ", ";
         }
-        tmp += this.casesPose[i];
+        tmp += this.landingSquaresNum[i];
     }
 
     var tmp2 = "";
-    for (var i = 0; i < this.casesPrise.length; i++) {
+    for (var i = 0; i < this.capturedSquares.length; i++) {
         if (tmp2 !== "") {
             tmp2 += ", ";
         }
-        tmp2 += this.casesPrise[i].getNumero();
+        tmp2 += this.capturedSquares[i].number;
     }
 
     var sep = "-";
-    if (this.isPrise) {
+    if (this.isCaptured) {
         sep = "x";
     }
 
-    var s = "" + this.numCaseDepart;
-    if (this.numCasesInter.length > 0) {
-        s += sep + "(" + this.numCasesInter + ")";
+    var s = "" + this.startingSquareNum;
+    if (this.middleSquaresNum.length > 0) {
+        s += sep + "(" + this.middleSquaresNum + ")";
     }
-    s += sep + this.numCaseArrivee;
+    s += sep + this.endingSquareNum;
     s += " : Pose(" + tmp + ")";
     s += " - Pris(" + tmp2 + ")";
-    s += " - Statut(" + this.statut + ")";
+    s += " - Statut(" + this.status + ")";
     return s;
 };
 
-Mouvement.prototype.getNotation = function() {
-    var sep = this.isPrise ? "x" : "-";
+Move.prototype.getNotation = function() {
+    var sep = this.isCaptured ? "x" : "-";
 
     var s = "";
-    s += this.numCaseDepart;
+    s += this.startingSquareNum;
 
-    if (this.numCasesInter.length > 0) {
+    if (this.middleSquaresNum.length > 0) {
         s += sep;
-        s += this.numCasesInter;
+        s += this.middleSquaresNum;
     }
 
     s += sep;
-    s += this.numCaseArrivee;
+    s += this.endingSquareNum;
     return s;
 };
 
@@ -234,26 +168,26 @@ Mouvement.prototype.getNotation = function() {
  * <li>Mêmes cases prises</li>
  * </ul>
  */
-Mouvement.prototype.equals = function(mouvement) {
+Move.prototype.equals = function(move) {
     var isEqual = true;
 
-    isEqual = isEqual && (this.getNumCaseDepart() == mouvement.getNumCaseDepart());
-    isEqual = isEqual && (this.getNumCaseArrivee() == mouvement.getNumCaseArrivee());
+    isEqual = isEqual && (this.startingSquareNum == move.startingSquareNum);
+    isEqual = isEqual && (this.endingSquareNum == move.endingSquareNum);
 
     if (isEqual) {
-        var lc = this.getCasesPrise();
-        var lc2 = mouvement.getCasesPrise();
+        var lc = this.capturedSquares;
+        var lc2 = move.capturedSquares;
 
         isEqual = isEqual && (lc.length == lc2.length);
         if (isEqual) {
             for (var i = 0; i < lc.length; i++) {
-                var trouve = false;
+                var found = false;
                 for (var j = 0; j < lc2.length; j++) {
-                    if (lc[i].getNumero() == lc2[j].getNumero() && lc[i].getPiece() == lc2[j].getPiece()) {
-                        trouve = true;
+                    if (lc[i].number == lc2[j].number && lc[i].piece == lc2[j].piece) {
+                        found = true;
                     }
                 }
-                if (!trouve) {
+                if (!found) {
                     isEqual = false;
                     break;
                 }
@@ -266,12 +200,12 @@ Mouvement.prototype.equals = function(mouvement) {
 
 
 // ----------------------------------------------------------------------------------------------------
-// Classe Damier
+// DraughtBoard "Class"
 // ----------------------------------------------------------------------------------------------------
-function Damier() {
+function DraughtBoard() {
 
     /** Les 50 cases noires du damier. */
-    this.cases = []; // [Case]
+    this.cases = []; // [Square]
 
     /** Liste des diagonales parallèles à la Grande Diagonale. */
     this.diagonalesGD = [
@@ -302,7 +236,7 @@ function Damier() {
 
     /** Initialisation des 50 cases noires. */
     for (var k = 1; k <= 50; k++) {
-        var c = new Case(k);
+        var c = new Square(k);
         this.cases.push(c);
     }
 }
@@ -311,59 +245,59 @@ function Damier() {
 
 
 /** Position initiale : 20 x 20 */
-Damier.prototype.setPosition20x20 = function() {
+DraughtBoard.prototype.setPosition20x20 = function() {
     for (var num = 1; num <= 20; num++) {
-        this.setPiece(num, Piece.PNOIR);
+        this.setPiece(num, Piece.PAWN_BLACK);
     }
 
     for (var num = 31; num <= 50; num++) {
-        this.setPiece(num, Piece.PBLANC);
+        this.setPiece(num, Piece.PAWN_WHITE);
     }
 };
 
 /** Pose des pièces sur le damier */
-Damier.prototype.setPosition = function(piece, numeros) {
-    for (var k = 0; k < numeros.length; k++) {
-        this.setPiece(numeros[k], piece);
+DraughtBoard.prototype.setPosition = function(piece, numbers) {
+    for (var k = 0; k < numbers.length; k++) {
+        this.setPiece(numbers[k], piece);
     }
 };
 
 /** Ajouter une pièce sur une case. */
-Damier.prototype.setPiece = function(numero, piece) {
-    var c = this.getCase(numero);
-    c.setPiece(piece);
+DraughtBoard.prototype.setPiece = function(number, piece) {
+    var c = this.getCase(number);
+    c.piece = piece;
 };
 
 /** Retourne une case. */
-Damier.prototype.getCase = function(numero) {
-    return this.cases[numero - 1];
+DraughtBoard.prototype.getCase = function(number) {
+    return this.cases[number - 1];
 };
 
 /** Connaitre la pièce se trouvant sur une case. */
-Damier.prototype.isPiece = function(numero, piece) {
-    return (this.getPiece(numero) === piece);
+DraughtBoard.prototype.isPiece = function(number, piece) {
+    return (this.getPiece(number) === piece);
 };
 
 /** Retourne la pièce. */
-Damier.prototype.getPiece = function(numero) {
-    return this.getCase(numero).getPiece();
+DraughtBoard.prototype.getPiece = function(number) {
+    return this.getCase(number).piece;
 };
 
 /** Retourne la diagonaleGD contenant une case donnée. */
-Damier.prototype.getDiagonaleGD = function(numero) {
+DraughtBoard.prototype.getDiagonaleGD = function(number) {
     var diag = [];
     boucle: 
     for (var i = 0; i < this.diagonalesGD.length; i++) {
         var diagonale = this.diagonalesGD[i];
         for (var j = 0; j < diagonale.length; j++) {
-            if (diagonale[j] === numero) {
+            if (diagonale[j] === number) {
                 diag = diagonale;
                 break boucle;
             }
         }
     }
 
-    var diago = new Diagonale(Diago.GD);
+    var diago = new Diagonal(Diago.GD);
     for (var i = 0; i < diag.length; i++) {
         var c = this.getCase(diag[i]);
         diago.addCase(c);
@@ -373,20 +307,20 @@ Damier.prototype.getDiagonaleGD = function(numero) {
 };
 
 /** Retourne la diagonaleTT contenant une case donnée. */
-Damier.prototype.getDiagonaleTT = function(numero) {
+DraughtBoard.prototype.getDiagonaleTT = function(number) {
     var diag = [];
     boucle: 
     for (var i = 0; i < this.diagonalesTT.length; i++) {
         var diagonale = this.diagonalesTT[i];
         for (var j = 0; j < diagonale.length; j++) {
-            if (diagonale[j] === numero) {
+            if (diagonale[j] === number) {
                 diag = diagonale;
                 break boucle;
             }
         }
     }
 
-    var diago = new Diagonale(Diago.TT);
+    var diago = new Diagonal(Diago.TT);
     for (var i = 0; i < diag.length; i++) {
         var c = this.getCase(diag[i]);
         diago.addCase(c);
@@ -395,73 +329,73 @@ Damier.prototype.getDiagonaleTT = function(numero) {
     return diago;
 };
 
-Damier.prototype.cloneDamier = function() {
-    var d = new Damier();
+DraughtBoard.prototype.cloneDraughtBoard = function() {
+    var d = new DraughtBoard();
 
     for (var k = 0; k < this.cases.length; k++) {
         var c = this.cases[k];
-        d.setPiece(c.getNumero(), c.getPiece());
+        d.setPiece(c.number, c.piece);
     }
 
     return d;
 };
 
 /** Applique le mouvement sur le damier. */
-Damier.prototype.jouer = function(mouvement) {
-    var pieceJouee = this.getPiece(mouvement.getNumCaseDepart());
+DraughtBoard.prototype.jouer = function(move) {
+    var pieceJouee = this.getPiece(move.startingSquareNum);
 
     // Retirer la pièce de la case de départ
-    this.setPiece(mouvement.getNumCaseDepart(), Piece.VIDE);
+    this.setPiece(move.startingSquareNum, Piece.EMPTY);
 
     // Retirer les pièces des cases prises
-    for (var i = 0; i < mouvement.getCasesPrise().length; i++) {
-        var c = mouvement.getCasesPrise()[i];
-        this.setPiece(c.getNumero(), Piece.VIDE);
+    for (var i = 0; i < move.capturedSquares.length; i++) {
+        var c = move.capturedSquares[i];
+        this.setPiece(c.number, Piece.EMPTY);
     }
 
     // Poser la pièce sur la case d'arrivée
-    if (!mouvement.isPromuDame) {
-        this.setPiece(mouvement.getNumCaseArrivee(), pieceJouee);
+    if (!move.isCrowned) {
+        this.setPiece(move.endingSquareNum, pieceJouee);
     }
     // Ce mouvement promeu en Dame
     else {
-        if (pieceJouee == Piece.PBLANC) {
-            this.setPiece(mouvement.getNumCaseArrivee(), Piece.DBLANC);
-        } else if (pieceJouee == Piece.PNOIR) {
-            this.setPiece(mouvement.getNumCaseArrivee(), Piece.DNOIR);
+        if (pieceJouee == Piece.PAWN_WHITE) {
+            this.setPiece(move.endingSquareNum, Piece.DAME_WHITE);
+        } else if (pieceJouee == Piece.PAWN_BLACK) {
+            this.setPiece(move.endingSquareNum, Piece.DAME_BLACK);
         }
     }
 };
 
 /** Annule le mouvement sur le damier. */
-Damier.prototype.jouerInv = function(mouvement) {
-    var pieceJouee = this.getPiece(mouvement.getNumCaseArrivee());
+DraughtBoard.prototype.jouerInv = function(move) {
+    var pieceJouee = this.getPiece(move.endingSquareNum);
 
     // Retirer la pièce de la case d'arrivée
-    this.setPiece(mouvement.getNumCaseArrivee(), Piece.VIDE);
+    this.setPiece(move.endingSquareNum, Piece.EMPTY);
 
     // Remettre les pièces qui avaient été prises.
-    for (var i = 0; i < mouvement.getCasesPrise().length; i++) {
-        var c = mouvement.getCasesPrise()[i];
-        this.setPiece(c.getNumero(), c.getPiece());
+    for (var i = 0; i < move.capturedSquares.length; i++) {
+        var c = move.capturedSquares[i];
+        this.setPiece(c.number, c.piece);
     }
 
     // Remettre la pièce sur la case de départ
-    if (!mouvement.isPromuDame) {
-        this.setPiece(mouvement.getNumCaseDepart(), pieceJouee);
+    if (!move.isCrowned) {
+        this.setPiece(move.startingSquareNum, pieceJouee);
     }
 
     // La dame redevient pion
     else {
-        if (pieceJouee == Piece.DBLANC) {
-            this.setPiece(mouvement.getNumCaseDepart(), Piece.PBLANC);
-        } else if (pieceJouee == Piece.DNOIR) {
-            this.setPiece(mouvement.getNumCaseDepart(), Piece.PNOIR);
+        if (pieceJouee == Piece.DAME_WHITE) {
+            this.setPiece(move.startingSquareNum, Piece.PAWN_WHITE);
+        } else if (pieceJouee == Piece.DAME_BLACK) {
+            this.setPiece(move.startingSquareNum, Piece.PAWN_BLACK);
         }
     }
 };
 
-Damier.prototype.debugDamier = function() {
+DraughtBoard.prototype.debugDraughtBoard = function() {
     var ligne = "";
 
     console.log("================================");
@@ -470,23 +404,23 @@ Damier.prototype.debugDamier = function() {
         for (var l = 1; l <= 5; l++) {
 
             var num = 5 * k + l;
-            var p = this.getCase(num).getPiece();
+            var p = this.getCase(num).piece;
 
             if (k == 0 || k == 2 || k == 4 || k == 6 || k == 8) {
                 ligne += "   ";
             }
 
             switch (p) {
-            case Piece.PBLANC:
+            case Piece.PAWN_WHITE:
                 ligne += " o ";
                 break;
-            case Piece.PNOIR:
+            case Piece.PAWN_BLACK:
                 ligne += " x ";
                 break;
-            case Piece.DBLANC:
+            case Piece.DAME_WHITE:
                 ligne += " O ";
                 break;
-            case Piece.DNOIR:
+            case Piece.DAME_BLACK:
                 ligne += " X ";
                 break;
             default:
@@ -509,37 +443,37 @@ Damier.prototype.debugDamier = function() {
 
 
 // ----------------------------------------------------------------------------------------------------
-// Class NTree
+// NTree "class"
 // ----------------------------------------------------------------------------------------------------
-function NTree(element) {
-    this.element = element ? element : null; // E
+function NTree(item) {
+    this.item = item ? item : null; // E
     this.left = null;  // NTree<E>
     this.right = null; // NTree<E>
 }
 
-NTree.prototype.getElement = function() {
-    return this.element;
+NTree.prototype.getItem = function() {
+    return this.item;
 };
 
-NTree.prototype.setElement = function(element) {
-    this.element = element;
+NTree.prototype.setItem = function(item) {
+    this.item = item;
 };
 
-NTree.prototype.hasGauche = function() {
+NTree.prototype.hasLeft = function() {
     return (this.left != null);
 };
 
-NTree.prototype.hasDroit = function() {
+NTree.prototype.hasRight = function() {
     return (this.right != null);
 };
 
-NTree.prototype.isFeuille = function() {
-    return !(this.hasDroit());
+NTree.prototype.isLeaf = function() {
+    return !(this.hasRight());
 };
 
 // Ajoute une liste de fils dans un noeud binaire
 // (fils à droite, frère à gauche)
-NTree.prototype.setFils = function(liste) {
+NTree.prototype.setChildren = function(liste) {
     var nb = liste.length;
     if (nb > 0) {
         var val = liste[0];
@@ -552,7 +486,7 @@ NTree.prototype.setFils = function(liste) {
         if (nb > 1) {
             for (var k = 1; k < nb; k++) {
                 var btg = new NTree();
-                btg.setElement(liste[k]);
+                btg.setItem(liste[k]);
                 btCourant.left = btg;
                 btCourant = btg;
             }
@@ -561,18 +495,18 @@ NTree.prototype.setFils = function(liste) {
 };
 
 // Retourne tous les fils
-NTree.prototype.getFils = function() {
+NTree.prototype.getChildren = function() {
     var liste = [];
 
-    if (this.hasDroit()) {
+    if (this.hasRight()) {
         // Ajout du fils droits
         var btd = this.right;
-        liste.push(btd.getElement());
+        liste.push(btd.getItem());
 
         // Et des fils gauche successifs
         var btCourant = btd;
-        while (btCourant.hasGauche()) {
-            liste.push(btCourant.left.getElement());
+        while (btCourant.hasLeft()) {
+            liste.push(btCourant.left.getItem());
             btCourant = btCourant.left;
         }
     }
@@ -580,17 +514,17 @@ NTree.prototype.getFils = function() {
 };
 
 // Retourne tous les noeuds fils
-NTree.prototype.getNoeudsFils = function() {
+NTree.prototype.getChildrenNodes = function() {
     var liste = [];
 
-    if (this.hasDroit()) {
+    if (this.hasRight()) {
         // Ajout du fils droits
         var btd = this.right;
         liste.push(btd);
 
         // Et des fils gauches successifs
         var btCourant = btd;
-        while (btCourant.hasGauche()) {
+        while (btCourant.hasLeft()) {
             liste.push(btCourant.left);
             btCourant = btCourant.left;
         }
@@ -609,15 +543,15 @@ NTree.prototype.traverse = function() {
 */
 NTree.prototype._traverse = function(node, path, lle) {
     path.push(node);
-    if (node.isFeuille()) {
+    if (node.isLeaf()) {
         var res = [];
         for (var k = 0; k < path.length; k++) {
-            var e = path[k].getElement();
+            var e = path[k].getItem();
             res.push(e);
         }
         lle.push(res);
     } else {
-        var fils = node.getNoeudsFils();
+        var fils = node.getChildrenNodes();
 
         for (var i = 0; i < fils.length; i++) {
             var newPath = path.slice(0);
@@ -629,26 +563,26 @@ NTree.prototype._traverse = function(node, path, lle) {
 
 
 // ----------------------------------------------------------------------------------------------------
-// Class Diagonale
+// Diagonal "class"
 // ----------------------------------------------------------------------------------------------------
-function Diagonale(typeDiago) {
+function Diagonal(typeDiago) {
     this.cases = []; // [case]
     this.type = typeDiago ? typeDiago : null; // Diago
 }
 
-Diagonale.prototype.addCase = function(c) {
+Diagonal.prototype.addCase = function(c) {
     this.cases.push(c);
 };
 
-Diagonale.prototype.size = function() {
+Diagonal.prototype.size = function() {
     return this.cases.length;
 };
 
-Diagonale.prototype.getCaseByNumero = function(numero) {
+Diagonal.prototype.getCaseByNumero = function(number) {
     var c = null;
     for (var k = 0; k < this.size(); k++) {
         var cTmp = this.cases[k];
-        if (cTmp.getNumero() == numero) {
+        if (cTmp.number == number) {
             c = cTmp;
             break;
         }
@@ -656,16 +590,16 @@ Diagonale.prototype.getCaseByNumero = function(numero) {
     return c;
 };
 
-Diagonale.prototype.getCaseByIndex = function(idx) {
+Diagonal.prototype.getCaseByIndex = function(idx) {
     return this.cases[idx];
 };
 
 /** index de la case dans la liste. */
-Diagonale.prototype.indexOf = function(numero) {
+Diagonal.prototype.indexOf = function(number) {
     var idx = -1;
     for (var k = 0; k < this.size(); k++) {
         var c = this.cases[k];
-        if (c.getNumero() == numero) {
+        if (c.number == number) {
             idx = k;
             break;
         }
@@ -673,21 +607,21 @@ Diagonale.prototype.indexOf = function(numero) {
     return idx;
 };
 
-Diagonale.prototype._isVide = function(idxCase) {
+Diagonal.prototype._isEmpty = function(idxCase) {
     var piece = this.cases[idxCase];
-    return piece.isVide();
+    return piece.isEmpty();
 };
 
-Diagonale.prototype._getCouleurByIndex = function(idxCase) {
+Diagonal.prototype._getColorByIndex = function(idxCase) {
     var piece = this.cases[idxCase];
-    return piece.getCouleur();
+    return piece.getColor();
 };
 
-Diagonale.prototype._isCouleurOppose = function(c1, c2) {
-    return ((c1 == Couleur.BLANC && c2 == Couleur.NOIR) || (c1 == Couleur.NOIR && c2 == Couleur.BLANC));
+Diagonal.prototype._isCouleurOppose = function(c1, c2) {
+    return ((c1 == Color.WHITE && c2 == Color.BLACK) || (c1 == Color.BLACK && c2 == Color.WHITE));
 };
 
-Diagonale.prototype.getDeplacementsSimples = function(numCase) {
+Diagonal.prototype.getDeplacementsSimples = function(numCase) {
     var liste = [];
 
     var c = this.getCaseByNumero(numCase);
@@ -695,21 +629,21 @@ Diagonale.prototype.getDeplacementsSimples = function(numCase) {
     var idxCase = this.indexOf(numCase);
 
     // Déplacement Pion Blanc dans le sens gauche-droite ?
-    if (c.getPiece() == Piece.PBLANC) {
+    if (c.piece == Piece.PAWN_WHITE) {
         // La case à droite doit être libre.
         if (idxCase + 1 < lg) {
-            if (this._isVide(idxCase + 1)) {
-                liste.push(this.getCaseByIndex(idxCase + 1).getNumero());
+            if (this._isEmpty(idxCase + 1)) {
+                liste.push(this.getCaseByIndex(idxCase + 1).number);
             }
         }
 
     }
     // Déplacement Pion Noir dans le sens droite-gauche ?
-    else if (c.getPiece() == Piece.PNOIR) {
+    else if (c.piece == Piece.PAWN_BLACK) {
         // La case à gauche doit être libre.
         if (idxCase - 1 >= 0) {
-            if (this._isVide(idxCase - 1)) {
-                liste.push(this.getCaseByIndex(idxCase - 1).getNumero());
+            if (this._isEmpty(idxCase - 1)) {
+                liste.push(this.getCaseByIndex(idxCase - 1).number);
             }
         }
     }
@@ -723,8 +657,8 @@ Diagonale.prototype.getDeplacementsSimples = function(numCase) {
         if (idxCase + 1 < lg) {
             // On avance case par case, en comptant les cases vides.
             for (var k = idxCase + 1; k < lg; k++) {
-                if (this._isVide(k)) {
-                    liste.push(this.getCaseByIndex(k).getNumero());
+                if (this._isEmpty(k)) {
+                    liste.push(this.getCaseByIndex(k).number);
                 } else {
                     // On a rencontré une pièce ou le bord du damier
                     // => fin d'analyse.
@@ -740,8 +674,8 @@ Diagonale.prototype.getDeplacementsSimples = function(numCase) {
         if (idxCase - 1 >= 0) {
             // On recule case par case, en comptant les cases vides.
             for (var k = idxCase - 1; k >= 0; k--) {
-                if (this._isVide(k)) {
-                    liste.push(this.getCaseByIndex(k).getNumero());
+                if (this._isEmpty(k)) {
+                    liste.push(this.getCaseByIndex(k).number);
                 } else {
                     // On a rencontré une pièce ou le bord du damier
                     // => fin d'analyse.
@@ -759,28 +693,28 @@ Diagonale.prototype.getDeplacementsSimples = function(numCase) {
  * @param numCasesDejaPrises
  *            Pour ne pas la reprendre (coup Turc).
  */
-Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
+Diagonal.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
     var c = this.getCaseByNumero(numCase);
-    var couleur = c.getCouleur();
+    var couleur = c.getColor();
 
     raflesItem = [];
 
     var lg = this.size();
     var idxCase = this.indexOf(numCase);
 
-    if (c.isPion()) {
+    if (c.isPawn()) {
 
         // Prise dans le sens gauche-droite ?
         // S'il y a au moins 2 cases devant.
         if (idxCase + 2 < lg) {
-            if (this._isVide(idxCase + 2)) {
-                var cCase1 = this._getCouleurByIndex(idxCase + 1);
+            if (this._isEmpty(idxCase + 2)) {
+                var cCase1 = this._getColorByIndex(idxCase + 1);
                 if (this._isCouleurOppose(couleur, cCase1)) {
                     // prise OK
                     var casePrise = this.getCaseByIndex(idxCase + 1);
                     var caseArrivee = this.getCaseByIndex(idxCase + 2);
-                    if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
-                        var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
+                    if (!(numCasesDejaPrises.indexOf(casePrise.number) > -1)) {
+                        var ri = new RafleItem(caseArrivee.number, casePrise.number);
                         raflesItem.push(ri);
                     }
                 }
@@ -790,16 +724,16 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
         // Prise dans le sens droite-gauche ?
         // S'il y a au moins 2 cases derrière.
         if (idxCase - 2 >= 0) {
-            if (this._isVide(idxCase - 2)) {
-                var cCase1 = this._getCouleurByIndex(idxCase - 1);
+            if (this._isEmpty(idxCase - 2)) {
+                var cCase1 = this._getColorByIndex(idxCase - 1);
                 if (this._isCouleurOppose(couleur, cCase1)) {
                     // prise OK
                     var casePrise = this.getCaseByIndex(idxCase - 1);
                     var caseArrivee = this.getCaseByIndex(idxCase - 2);
                     // System.out.println("debug[" + this.type + "] : " +
                     // (idxCase - 1) + "=" + casePrise);
-                    if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
-                        var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
+                    if (!(numCasesDejaPrises.indexOf(casePrise.number) > -1)) {
+                        var ri = new RafleItem(caseArrivee.number, casePrise.number);
                         raflesItem.push(ri);
                     }
                 }
@@ -822,7 +756,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
         if (idxCase + 2 < lg) {
             // On avance case par case, en comptant les cases vides.
             for (var k = idxCase + 1; k < lg; k++) {
-                if (this._isVide(k)) {
+                if (this._isEmpty(k)) {
                     nbVideAvant++;
                 } else {
                     // On a rencontré une pièce ou le bord du damier
@@ -837,14 +771,14 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                 // Case casePrise = getCaseByIndex(idxPieceAPrendre);
 
                 // S'assurer que la case prise est de couleur opposée.
-                var cCasePrise = this._getCouleurByIndex(idxPieceAPrendre);
+                var cCasePrise = this._getColorByIndex(idxPieceAPrendre);
                 if (this._isCouleurOppose(couleur, cCasePrise)) {
                     // Verifier qu'il existe au moins une case
                     // d'atterrisage.
 
                     // On avance case par case, en comptant les cases vides.
                     for (var k = idxPieceAPrendre + 1; k < lg; k++) {
-                        if (this._isVide(k)) {
+                        if (this._isEmpty(k)) {
                             nbVideApres++;
                         } else {
                             // On a rencontré une pièce ou le bord
@@ -862,12 +796,12 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
             var casePrise = this.getCaseByIndex(idxPieceAPrendre);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
-            if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
+            if (!(numCasesDejaPrises.indexOf(casePrise.number) > -1)) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
                     var caseArrivee = this.getCaseByIndex(idxPieceAPrendre + k);
-                    var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
+                    var ri = new RafleItem(caseArrivee.number, casePrise.number);
                     raflesItem.push(ri);
                 }
             }
@@ -888,7 +822,7 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
         if (idxCase - 2 >= 0) {
             // On recule case par case, en comptant les cases vides.
             for (var k = idxCase - 1; k >= 0; k--) {
-                if (this._isVide(k)) {
+                if (this._isEmpty(k)) {
                     nbVideAvant++;
                 } else {
                     // On a rencontré une pièce ou le bord du damier
@@ -903,14 +837,14 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
                 // Case casePrise = getCaseByIndex(idxPieceAPrendre);
 
                 // S'assurer que la case prise est de couleur opposée.
-                var cCasePrise = this._getCouleurByIndex(idxPieceAPrendre);
+                var cCasePrise = this._getColorByIndex(idxPieceAPrendre);
                 if (this._isCouleurOppose(couleur, cCasePrise)) {
                     // Verifier qu'il existe au moins une case
                     // d'atterrisage.
 
                     // On avance case par case, en comptant les cases vides.
                     for (var k = idxPieceAPrendre - 1; k >= 0; k--) {
-                        if (this._isVide(k)) {
+                        if (this._isEmpty(k)) {
                             nbVideApres++;
                         } else {
                             // On a rencontré une pièce ou le bord
@@ -928,12 +862,12 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
             var casePrise = this.getCaseByIndex(idxPieceAPrendre);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
-            if (!(numCasesDejaPrises.indexOf(casePrise.getNumero()) > -1)) {
+            if (!(numCasesDejaPrises.indexOf(casePrise.number) > -1)) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbVideApres; k++) {
                     var caseArrivee = this.getCaseByIndex(idxPieceAPrendre - k);
-                    var ri = new RafleItem(caseArrivee.getNumero(), casePrise.getNumero());
+                    var ri = new RafleItem(caseArrivee.number, casePrise.number);
                     raflesItem.push(ri);
                 }
             }
@@ -943,25 +877,25 @@ Diagonale.prototype.getRaflesItem = function(numCase, numCasesDejaPrises) {
     return raflesItem;
 };
 
-Diagonale.prototype.toString = function() {
-    var s = "Diagonale [" + this.type + "] = ";
+Diagonal.prototype.toString = function() {
+    var s = "Diagonal [" + this.type + "] = ";
 
     for (var k = 0; k < this.size(); k++) {
-        s += this.cases[k].getNumero();
-        var p = this.cases[k].getPiece();
+        s += this.cases[k].number;
+        var p = this.cases[k].piece;
 
         s += "[";
         switch (p) {
-            case Piece.PBLANC:
+            case Piece.PAWN_WHITE:
                 s += "b";
                 break;
-            case Piece.PNOIR:
+            case Piece.PAWN_BLACK:
                 s += "n";
                 break;
-            case Piece.DBLANC:
+            case Piece.DAME_WHITE:
                 s += "B";
                 break;
-            case Piece.DNOIR:
+            case Piece.DAME_BLACK:
                 s += "N";
                 break;
             default:
@@ -982,35 +916,35 @@ Diagonale.prototype.toString = function() {
 function PathFinder() {
 }
 
-PathFinder.prototype.getMouvementsSimples = function(damier, numCaseDepart) {
-    var mouvements = []; // [Mouvement]
+PathFinder.prototype.getMouvementsSimples = function(board, startingSquareNum) {
+    var moves = []; // [Move]
 
     // Récupération des 2 diagonales
-    var diagoGD = damier.getDiagonaleGD(numCaseDepart);
-    var diagoTT = damier.getDiagonaleTT(numCaseDepart);
+    var diagoGD = board.getDiagonaleGD(startingSquareNum);
+    var diagoTT = board.getDiagonaleTT(startingSquareNum);
 
     // Déplacements simples (observés sur chacune des 2 diagonales)
-    var liste = diagoGD.getDeplacementsSimples(numCaseDepart);
-    liste = liste.concat(diagoTT.getDeplacementsSimples(numCaseDepart));
+    var liste = diagoGD.getDeplacementsSimples(startingSquareNum);
+    liste = liste.concat(diagoTT.getDeplacementsSimples(startingSquareNum));
 
     for (var k = 0; k < liste.length; k++) {
-        var numCaseArrivee = liste[k];
-        var mouvement = new Mouvement(numCaseDepart, numCaseArrivee);
-        mouvements.push(mouvement);
+        var endingSquareNum = liste[k];
+        var move = new Move(startingSquareNum, endingSquareNum);
+        moves.push(move);
     }
 
-    return mouvements;
+    return moves;
 };
 
-PathFinder.prototype.getMouvementsRafles = function(damier, numCaseDepart) {
-    var tree = this.getArbreRafles(damier, numCaseDepart); // NTree<RafleItem>
-    return this._treeToMouvements(damier, tree);
+PathFinder.prototype.getMouvementsRafles = function(board, startingSquareNum) {
+    var tree = this.getArbreRafles(board, startingSquareNum); // NTree<RafleItem>
+    return this._treeToMoves(board, tree);
 };
 
-PathFinder.prototype._treeToMouvements = function(damier, tree) {
+PathFinder.prototype._treeToMoves = function(board, tree) {
     var listes = tree.traverse(); // [[RafleItem]]
 
-    var mouvements = []; // [Mouvement]
+    var moves = []; // [Move]
 
     for (var k = 0; k < listes.length; k++) {
         var liste = listes[k];
@@ -1021,45 +955,45 @@ PathFinder.prototype._treeToMouvements = function(damier, tree) {
             var riDeb = liste[0];
             var riFin = liste[liste.length - 1];
 
-            var nDepart = riDeb.getNumeroCaseFinale();
-            var nArrivee = riFin.getNumeroCaseFinale();
-            var mouvement = new Mouvement(nDepart, nArrivee);
+            var nDepart = riDeb.endingSquareNum;
+            var nArrivee = riFin.endingSquareNum;
+            var move = new Move(nDepart, nArrivee);
 
             for (var j = 0; j < liste.length; j++) {
                 var ri = liste[j];
-                mouvement.addNumCasePose(ri.getNumeroCaseFinale());
-                if (ri.getNumeroCasePrise() != null) {
-                    mouvement.addNumCasePrise(ri.getNumeroCasePrise(), damier.getPiece(ri.getNumeroCasePrise()));
+                move.addLandingSquareNum(ri.endingSquareNum);
+                if (ri.capturedSquareNum != null) {
+                    move.addCapturedSquareNum(ri.capturedSquareNum, board.getPiece(ri.capturedSquareNum));
                 }
             }
-            mouvements.push(mouvement);
+            moves.push(move);
         }
     }
-    return mouvements;
+    return moves;
 };
 
-PathFinder.prototype.getArbreRafles = function(damier, numCaseDepart) {
-    var ri = new RafleItem(numCaseDepart);
+PathFinder.prototype.getArbreRafles = function(board, startingSquareNum) {
+    var ri = new RafleItem(startingSquareNum);
 
     var ntreeRoot = new NTree();
-    ntreeRoot.setElement(ri);
+    ntreeRoot.setItem(ri);
 
-    this.construireRafles(damier.cloneDamier(), ntreeRoot, []);
+    this.construireRafles(board.cloneDraughtBoard(), ntreeRoot, []);
 
     return ntreeRoot;
 };
 
-PathFinder.prototype.construireRafles = function(damier, node, numCasesDejaPrises) {
-    // damier.debugDamier();
+PathFinder.prototype.construireRafles = function(board, node, numCasesDejaPrises) {
+    // board.debugDraughtBoard();
 
-    var ri = node.getElement();
-    var numCaseNouveauDepart = ri.getNumero();
+    var ri = node.getItem();
+    var numCaseNouveauDepart = ri.getNumber();
     // console.log("");
     // console.log("construireRafles(" + numCaseNouveauDepart + ", [" + numCasesDejaPrises + "])");
 
     // Récupération des 2 diagonales
-    var diagoGD = damier.getDiagonaleGD(numCaseNouveauDepart);
-    var diagoTT = damier.getDiagonaleTT(numCaseNouveauDepart);
+    var diagoGD = board.getDiagonaleGD(numCaseNouveauDepart);
+    var diagoTT = board.getDiagonaleTT(numCaseNouveauDepart);
 
     // debug
     // console.log(diagoGD);
@@ -1080,28 +1014,28 @@ PathFinder.prototype.construireRafles = function(damier, node, numCasesDejaPrise
     // ---
 
     // Ajout de ces rafles simples dans l'arbre.
-    node.setFils(liste);
+    node.setChildren(liste);
 
     // Recommencer recursivement sur les rafles filles.
-    var noeudsFils = node.getNoeudsFils();
+    var noeudsFils = node.getChildrenNodes();
     for (var k = 0; k < noeudsFils.length; k++) {
         var nf = noeudsFils[k];
-        var r = nf.getElement();
+        var r = nf.getItem();
 
         // On met à jour la liste des cases déjà prises.
         var lcdp = numCasesDejaPrises.slice(0);
-        lcdp.push(r.getNumeroCasePrise());
+        lcdp.push(r.capturedSquareNum);
         // ---
 
         // On deplace le pion avant de poursuivre
         // (sans retirer la pièce prise).
-        var diag = damier.cloneDamier();
-        var numDeb = ri.getNumero();
-        var numFin = r.getNumeroCaseFinale();
+        var diag = board.cloneDraughtBoard();
+        var numDeb = ri.getNumber();
+        var numFin = r.endingSquareNum;
         var caseDeb = diag.getCase(numDeb);
-        var piece = caseDeb.getPiece();
-        diag.getCase(numDeb).setPiece(Piece.VIDE);
-        diag.getCase(numFin).setPiece(piece);
+        var piece = caseDeb.piece;
+        diag.getCase(numDeb).piece = Piece.EMPTY;
+        diag.getCase(numFin).piece = piece;
 
         // ---
         this.construireRafles(diag, nf, lcdp);
@@ -1117,7 +1051,7 @@ PathFinder.prototype.displayTreePaths = function(tree) {
         var s = "";
         for (var j = 0; j < liste.length; j++) {
             var ri = liste[j];
-            s += " > " + ri.getNumeroCaseFinale() + "[" + ri.getNumeroCasePrise() + "]";
+            s += " > " + ri.endingSquareNum + "[" + ri.capturedSquareNum + "]";
         }
         console.log(s);
     }
@@ -1126,18 +1060,18 @@ PathFinder.prototype.displayTreePaths = function(tree) {
 
 
 // ----------------------------------------------------------------------------------------------------
-// Class Arbitre
+// Arbiter "class"
 // ----------------------------------------------------------------------------------------------------
-function Arbitre() {
+function Arbiter() {
 }
 
-Arbitre.pf = new PathFinder();
+Arbiter.pf = new PathFinder();
 
 /** Crée le mouvement demandé. */
-Arbitre.getMouvement = function(damier, depart, arrivee, numCasesInter) {
+Arbiter.getMove = function(board, depart, arrivee, middleSquaresNum) {
 
     // Toutes les combinaisons de rafles
-    var listeMouvementsRafle = Arbitre.pf.getMouvementsRafles(damier, depart);
+    var listeMouvementsRafle = Arbiter.pf.getMouvementsRafles(board, depart);
     var existeRafle = listeMouvementsRafle.length > 0;
 
     var listeMouvements = [];
@@ -1150,7 +1084,7 @@ Arbitre.getMouvement = function(damier, depart, arrivee, numCasesInter) {
     // Aucune prise possible => on regarde les déplacements simples
     else {
         // console.log("CAS : DEPLACEMENT SIMPLE");
-        listeMouvements = Arbitre.pf.getMouvementsSimples(damier, depart);
+        listeMouvements = Arbiter.pf.getMouvementsSimples(board, depart);
     }
 
     // Ne conserver que le/les mouvements qui arrivent sur la case indiquée.
@@ -1158,18 +1092,18 @@ Arbitre.getMouvement = function(damier, depart, arrivee, numCasesInter) {
 
     // Ne conserver que le/les mouvements qui passent par les cases
     // indiquées.
-    if (numCasesInter != null && numCasesInter.length > 0) {
-        listeOK = this._filtreInter(listeOK, numCasesInter);
+    if (middleSquaresNum != null && middleSquaresNum.length > 0) {
+        listeOK = this._filtreInter(listeOK, middleSquaresNum);
     }
 
     // Si plusieurs mouvements sont valides, on prendra le premier.
-    var mouvement = null;
+    var move = null;
     if (listeOK.length > 0) {
-        mouvement = listeOK[0];
+        move = listeOK[0];
 
         // Enregistrer les mouvements intermédiaires précisées
-        if (numCasesInter != null) {
-            mouvement.setNumCasesInter(numCasesInter);
+        if (middleSquaresNum != null) {
+            move.middleSquaresNum = middleSquaresNum;
         }
 
         if (listeOK.length > 1) {
@@ -1178,34 +1112,34 @@ Arbitre.getMouvement = function(damier, depart, arrivee, numCasesInter) {
     }
 
     // Le mouvement demandé est irrégulier.
-    if (mouvement == null) {
-        mouvement = new Mouvement(depart, arrivee);
-        mouvement.setStatut(false);
-        mouvement.setMessage("Mouvement irrégulier..."); // A préciser
+    if (move == null) {
+        move = new Move(depart, arrivee);
+        move.status = false;
+        move.message = "Mouvement irrégulier..."; // A préciser
     }
 
     // Préciser s'il s'agit d'une rafle (pour la notation)
-    mouvement.setPrise(existeRafle);
+    move.isCaptured = existeRafle;
 
     // Préciser si la piece a été promu en dame.
-    var piece = damier.getPiece(depart);
-    var isPromu = (piece == Piece.PBLANC && arrivee >= 1 && arrivee <= 5);
-    isPromu = isPromu || (piece == Piece.PNOIR && arrivee >= 45 && arrivee <= 50);
-    mouvement.setPromuDame(isPromu);
+    var piece = board.getPiece(depart);
+    var isCrowned = (piece == Piece.PAWN_WHITE && arrivee >= 1 && arrivee <= 5);
+    isCrowned = isCrowned || (piece == Piece.PAWN_BLACK && arrivee >= 45 && arrivee <= 50);
+    move.isCrowned = isCrowned;
 
-    return mouvement;
+    return move;
 };
 
 /**
  * Ne conserver que le/les mouvements les plus longs. <br />
  * Note : une prise est toujours plus longue qu'un déplacement simple.
  */
-Arbitre._filtreMajoritaire = function(mouvements) {
+Arbiter._filtreMajoritaire = function(moves) {
     var liste = [];
 
-    var lMax = this._mouvementMax(mouvements);
-    for (var k = 0; k < mouvements.length; k++) {
-        var m = mouvements[k];
+    var lMax = this._moveMax(moves);
+    for (var k = 0; k < moves.length; k++) {
+        var m = moves[k];
         if (m.size() == lMax) {
             liste.push(m);
         }
@@ -1222,12 +1156,12 @@ Arbitre._filtreMajoritaire = function(mouvements) {
  * => Eviter les faux positifs de variantes...<br />
  * Exemple d'une dame avec plusieurs pts de repos possibles entre 2 prises.
  */
-Arbitre._filtreDoublons = function(mouvements) {
-    var liste = []; // [Mouvement]
+Arbiter._filtreDoublons = function(moves) {
+    var liste = []; // [Move]
 
-    if (mouvements.length > 1) {
-        for (var k = 0; k < mouvements.length; k++) {
-            var m = mouvements[k];
+    if (moves.length > 1) {
+        for (var k = 0; k < moves.length; k++) {
+            var m = moves[k];
             var isDoublon = false;
             for (var j = 0; j < liste.length; j++) {
                 var cf = liste[j];
@@ -1240,18 +1174,18 @@ Arbitre._filtreDoublons = function(mouvements) {
             }
         }
     } else {
-        liste = mouvements;
+        liste = moves;
     }
 
     return liste;
 };
 
 /** Longueur du plus long mouvement. */
-Arbitre._mouvementMax = function(mouvements) {
+Arbiter._moveMax = function(moves) {
     var lMax = -1;
 
-    for (var k = 0; k < mouvements.length; k++) {
-        var m = mouvements[k];
+    for (var k = 0; k < moves.length; k++) {
+        var m = moves[k];
         if (m.size() > lMax) {
             lMax = m.size();
         }
@@ -1260,12 +1194,12 @@ Arbitre._mouvementMax = function(mouvements) {
 };
 
 /** Ne conserve que les mouvements qui arrivent sur la case indiquée. */
-Arbitre._filtreArrivee = function(mouvements, numArrivee) {
-    var liste = []; // [Mouvement]
+Arbiter._filtreArrivee = function(moves, endNum) {
+    var liste = []; // [Move]
 
-    for (var k = 0; k < mouvements.length; k++) {
-        var m = mouvements[k];
-        if (m.getNumCaseArrivee() == numArrivee) {
+    for (var k = 0; k < moves.length; k++) {
+        var m = moves[k];
+        if (m.endingSquareNum == endNum) {
             liste.push(m);
         }
     }
@@ -1279,29 +1213,29 @@ Arbitre._filtreArrivee = function(mouvements, numArrivee) {
  * @param inters
  *            : REQUIS, non null
  */
-Arbitre._filtreInter = function(mouvements, numCasesInter) {
-    var liste = []; // [Mouvement]
+Arbiter._filtreInter = function(moves, middleSquaresNum) {
+    var liste = []; // [Move]
 
-    if (mouvements != null) {
+    if (moves != null) {
         // Pour chaque mouvement
-        for (var k = 0; k < mouvements.length; k++) {
-            var m = mouvements[k];
+        for (var k = 0; k < moves.length; k++) {
+            var m = moves[k];
 
-            var casesPose = m.getCasesPose();
+            var landingSquaresNum = m.landingSquaresNum;
             var tousTrouve = true;
-            var nbPose = casesPose.length;
+            var nbPose = landingSquaresNum.length;
 
             var lastIdxPose = -1;
 
             // Pour chaque inter spécifié
-            for (var j = 0; j < numCasesInter.length; j++) {
-                var inter = numCasesInter[j];
+            for (var j = 0; j < middleSquaresNum.length; j++) {
+                var inter = middleSquaresNum[j];
 
                 // On regarde s'il fait partie des cases sur laquelle la pièce s'est posée
                 var trouve = false;
                 for (var idxPose = 0; idxPose < nbPose; idxPose++) {
                     // La case posée existe
-                    if (inter == casesPose[idxPose]) {
+                    if (inter == landingSquaresNum[idxPose]) {
                         // ET on ne l'a pas déjà prise en compte
                         if (idxPose > lastIdxPose) {
                             trouve = true;
@@ -1333,45 +1267,45 @@ Arbitre._filtreInter = function(mouvements, numCasesInter) {
 // ----------------------------------------------------------------------------------------------------
 
 function Partie() {
-    this.damier = new Damier();
-    this.mouvements = []; // [Mouvement]
+    this.board = new DraughtBoard();
+    this.moves = []; // [Move]
     this.index = -1;
 }
 
 
 /** Définition de la position */
-Partie.prototype.setPosition = function(piece, numeros) {
-    this.damier.setPosition(piece, numeros);
+Partie.prototype.setPosition = function(piece, numbers) {
+    this.board.setPosition(piece, numbers);
 };
 
 Partie.prototype.setPosition20x20 = function() {
-    this.damier.setPosition20x20();
+    this.board.setPosition20x20();
 };
 
 /**
  * Définition des mouvements
  * 
- * @param depart
+ * @param startNum
  *            Numéro de la case de départ (REQUIS)
- * @param arrivee
+ * @param endNum
  *            Numéro de la case d'arrivée (REQUIS)
- * @param numCasesInter
+ * @param middleSquaresNum
  *            Liste des cases intermédiaires (Facultatif)
  */
-Partie.prototype.addMouvement = function(depart, arrivee, numCasesInter) {
-    numCasesInter = numCasesInter ? numCasesInter : null;
+Partie.prototype.addMove = function(startNum, endNum, middleSquaresNum) {
+    middleSquaresNum = middleSquaresNum ? middleSquaresNum : null;
 
     if (!this._hasError()) {
 
         // Positionner le damier
         this.end();
 
-        var m = Arbitre.getMouvement(this.damier, depart, arrivee, numCasesInter);
-        // console.log("addMouvement(" + depart + ">" + arrivee + ") => mouvement=" + m);
+        var m = Arbiter.getMove(this.board, startNum, endNum, middleSquaresNum);
+        // console.log("addMove(" + startNum + ">" + endNum + ") => mouvement=" + m);
 
-        this.mouvements.push(m);
+        this.moves.push(m);
     } else {
-        console.log("addMouvement: ERREUR");
+        console.log("addMove: ERREUR");
     }
 };
 
@@ -1382,21 +1316,21 @@ Partie.prototype.addMouvement = function(depart, arrivee, numCasesInter) {
  * Prise : 24x22 ou 24x33x22 ou 24x13x...x22 <br />
  * Déplacement : 24-29
  * */
-Partie.prototype.addMouvementTxt = function(mouvement) {
-    if (mouvement != null) {
+Partie.prototype.addMoveTxt = function(move) {
+    if (move != null) {
 
-        mouvement = mouvement.toLowerCase();
-        mouvement = mouvement.replace(" ", "");
+        move = move.toLowerCase();
+        move = move.replace(" ", "");
 
         var sep = "";
-        if (mouvement.indexOf("-") > -1) {
+        if (move.indexOf("-") > -1) {
             sep = "-";
-        } else if (mouvement.indexOf("x") > -1) {
+        } else if (move.indexOf("x") > -1) {
             sep = "x";
         }
 
         if (sep != "") {
-            var liste = mouvement.split(sep);
+            var liste = move.split(sep);
             var nb = liste.length;
             if (nb > 1) {
                 var error = false;
@@ -1419,39 +1353,39 @@ Partie.prototype.addMouvementTxt = function(mouvement) {
                     }
                 }
                 if (!error) {
-                    this.addMouvement(iDeb, iFin, iInters);
+                    this.addMove(iDeb, iFin, iInters);
                 } else {
-                    console.log("addMouvement: ERREUR (4)");
+                    console.log("addMove: ERREUR (4)");
                 }
 
             } else {
-                console.log("addMouvement: ERREUR (3)");
+                console.log("addMove: ERREUR (3)");
             }
         } else {
-            console.log("addMouvement: ERREUR (2)");
+            console.log("addMove: ERREUR (2)");
         }
 
     } else {
-        console.log("addMouvement: ERREUR (1)");
+        console.log("addMove: ERREUR (1)");
     }
 };
 
 Partie.prototype._getStatutNextIndex = function() {
-    var statut = true;
+    var status = true;
     if (this.index < this._getLastIndex()) {
-        var m = this.mouvements[this.index + 1];
-        statut = m.isStatut();
+        var m = this.moves[this.index + 1];
+        status = m.status;
     }
-    return statut;
+    return status;
 };
 
 Partie.prototype._getStatutPrevIndex = function() {
-    var statut = true;
+    var status = true;
     if (this.index > 0) {
-        var m = this.mouvements[this.index - 1];
-        statut = m.isStatut();
+        var m = this.moves[this.index - 1];
+        status = m.status;
     }
-    return statut;
+    return status;
 };
 
 Partie.prototype.hasNext = function() {
@@ -1465,9 +1399,9 @@ Partie.prototype.hasPrev = function() {
 Partie.prototype.next = function() {
     if (this.hasNext()) {
         this.index++;
-        var m = this.mouvements[this.index];
-        if (m.isStatut()) {
-            this.damier.jouer(m);
+        var m = this.moves[this.index];
+        if (m.status) {
+            this.board.jouer(m);
         } else {
             this.index--;
         }
@@ -1476,9 +1410,9 @@ Partie.prototype.next = function() {
 
 Partie.prototype.prev = function() {
     if (this.hasPrev()) {
-        var m = this.mouvements[this.index];
-        if (m.isStatut()) {
-            this.damier.jouerInv(m);
+        var m = this.moves[this.index];
+        if (m.status) {
+            this.board.jouerInv(m);
             this.index--;
         }
     }
@@ -1513,7 +1447,7 @@ Partie.prototype._setIndex = function(idx) {
 };
 
 Partie.prototype._getLastIndex = function() {
-    return this.mouvements.length - 1;
+    return this.moves.length - 1;
 };
 
 Partie.prototype._contraindreIndex = function(idx) {
@@ -1528,9 +1462,9 @@ Partie.prototype._contraindreIndex = function(idx) {
 
 Partie.prototype._hasError = function() {
     var err = false;
-    for (var k = 1; k <= this.mouvements.length - 2; k++) {
-        var m = this.mouvements[k];
-        if (!m.isStatut()) {
+    for (var k = 1; k <= this.moves.length - 2; k++) {
+        var m = this.moves[k];
+        if (!m.status) {
             err = true;
             break;
         }
@@ -1542,8 +1476,8 @@ Partie.prototype.debug = function() {
     console.log("Etat courant de la partie :");
 
     var s = "";
-    for (var k = 0; k < this.mouvements.length; k++) {
-        var m = this.mouvements[k];
+    for (var k = 0; k < this.moves.length; k++) {
+        var m = this.moves[k];
         if (k == this.index) {
             s += "[" + m.getNotation() + "] ; ";
         } else {
@@ -1551,7 +1485,7 @@ Partie.prototype.debug = function() {
         }
     }
     console.log(s);
-    this.damier.debugDamier();
+    this.board.debugDraughtBoard();
     console.log("");
 };
 
@@ -1578,16 +1512,16 @@ console.log("--------------------------------------");
 function testPartie() {
     var partie = new Partie();
     // ---
-    partie.setPosition(Piece.PBLANC, [33, 38, 39, 43, 44]);
-    partie.setPosition(Piece.PNOIR, [12, 13, 14, 22, 24]);
-    partie.setPosition(Piece.DBLANC, []);
-    partie.setPosition(Piece.DNOIR, []);
+    partie.setPosition(Piece.PAWN_WHITE, [33, 38, 39, 43, 44]);
+    partie.setPosition(Piece.PAWN_BLACK, [12, 13, 14, 22, 24]);
+    partie.setPosition(Piece.DAME_WHITE, []);
+    partie.setPosition(Piece.DAME_BLACK, []);
     // ---
-    partie.addMouvement(33, 29);
-    partie.addMouvement(24, 42, [33]);
-    partie.addMouvement(43, 38);
-    partie.addMouvementTxt("42x33");
-    partie.addMouvementTxt("39x10");
+    partie.addMove(33, 29);
+    partie.addMove(24, 42, [33]);
+    partie.addMove(43, 38);
+    partie.addMoveTxt("42x33");
+    partie.addMoveTxt("39x10");
     // ---
 
     partie.debugFull();
