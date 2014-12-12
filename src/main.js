@@ -1,6 +1,6 @@
 var
     symbols = require('./core/symbols'),
-    Game = require('./core/Game')
+    Game = require('./core/Game'),
     Piece = symbols.Piece
 ;
 
