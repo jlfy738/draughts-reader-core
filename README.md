@@ -1,7 +1,7 @@
 draughts-player
 ===============
 
-Javascript draughts game instructions player
+Javascript draughts game notations player
 
 ## Install dependencies
 
