@@ -1,5 +1,8 @@
-var Game = require('./core/Game');
-
+var
+    symbols = require('./core/symbols'),
+    Game = require('./core/Game')
+    Piece = symbols.Piece
+;
 
 console.log("--------------------------------------");
 console.log("Game");
