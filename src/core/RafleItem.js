@@ -11,3 +11,5 @@ RafleItem.prototype.toString = function() {
     //return JSON.stringify(this);
     return "" + this.endingSquareNum;
 };
+
+module.exports = RafleItem;

@@ -1,3 +1,8 @@
+var
+    DraughtBoard = require('./DraughtBoard'),
+    Arbiter = require('./Arbiter')
+;
+
 function Game() {
     this.board = new DraughtBoard();
     this.moves = []; // [Move]
@@ -230,3 +235,5 @@ Game.prototype.debugFull = function() {
         this.debug();
     }
 };
+
+module.exports = Game;

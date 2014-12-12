@@ -1,3 +1,10 @@
+var
+    symbols = require('./symbols'),
+    Piece = symbols.Piece,
+    Color = symbols.Color
+;
+
+
 function Square(number, piece) {
     this.number = number;
     this.piece = piece ? piece : Piece.EMPTY;
@@ -33,3 +40,5 @@ Square.prototype.getColor = function() {
 Square.prototype.debug = function() {
     console.log("Square #" + this.number + " (" + this.piece + ")");
 };
+
+module.exports = Square;

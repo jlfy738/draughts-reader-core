@@ -112,3 +112,5 @@ NTree.prototype._traverse = function(node, path, lle) {
         }
     }
 };
+
+module.exports = NTree;

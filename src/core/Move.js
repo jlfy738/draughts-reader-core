@@ -1,3 +1,7 @@
+var
+    Square = require('./Square')
+;
+
 function Move(startNum, endNum) {
     this.startingSquareNum = startNum;
     this.endingSquareNum = endNum;
@@ -111,3 +115,5 @@ Move.prototype.equals = function(move) {
 
     return isEqual;
 };
+
+module.exports = Move;

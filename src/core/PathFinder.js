@@ -1,3 +1,12 @@
+var
+    symbols = require('./symbols'),
+    RafleItem = require('./RafleItem'),
+    Move = require('./Move'),
+    NTree = require('./NTree'),
+    Piece = symbols.Piece
+;
+
+
 function PathFinder() {
 }
 
@@ -141,3 +150,5 @@ PathFinder.prototype.displayTreePaths = function(tree) {
         console.log(s);
     }
 };
+
+module.exports = PathFinder;

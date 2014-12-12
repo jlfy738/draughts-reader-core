@@ -8,7 +8,7 @@
     "grunt-contrib-concat": "^0.5.0"
   },
   "scripts": {
-    "build": "rm -rf ./dist/ && mkdir \"./dist/\" && browserify ./src/main.js -o ./dist/draughts-player.js",
+    "build": "rm -rf ./dist/ && mkdir \"./dist/\" && browserify ./src/main.js -o ./dist/draughts-player.core.js",
     "test": "mocha test/**/*.test.js"
   }
 }

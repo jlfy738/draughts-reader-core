@@ -1,3 +1,10 @@
+var
+    symbols = require('./symbols'),
+    RafleItem = require('./RafleItem')
+    Piece = symbols.Piece,
+    Color = symbols.Color
+;
+
 function Diagonal(typeDiago) {
     this.squares = []; // [case]
     this.type = typeDiago ? typeDiago : null; // Diago
@@ -330,3 +337,6 @@ Diagonal.prototype.toString = function() {
 
     return s;
 };
+
+
+module.exports = Diagonal;

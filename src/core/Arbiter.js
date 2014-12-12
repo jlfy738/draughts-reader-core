@@ -1,3 +1,9 @@
+var
+    symbols = require('./symbols'),
+    PathFinder = require('./PathFinder'),
+    Piece = symbols.Piece
+;
+
 function Arbiter() {
 }
 
@@ -194,3 +200,5 @@ Arbiter._filterInter = function(moves, middleSquaresNum) {
     }
     return list;
 };
+
+module.exports = Arbiter;

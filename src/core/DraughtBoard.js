@@ -1,3 +1,11 @@
+var
+    symbols = require('./symbols'),
+    Square =  require('./Square'),
+    Diagonal =  require('./Diagonal'),
+    Piece = symbols.Piece,
+    Diago = symbols.Diago
+;
+
 function DraughtBoard() {
 
     /** Les 50 cases noires du damier. */
@@ -234,3 +242,5 @@ DraughtBoard.prototype.debugDraughtBoard = function() {
     }
     console.log("================================");
 };
+
+module.exports = DraughtBoard;
