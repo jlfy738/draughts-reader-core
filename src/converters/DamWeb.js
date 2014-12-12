@@ -83,7 +83,7 @@ DamWeb._getPositionWP = function(position) {
         s = m[1];
     }
     return s;
-}
+};
 
 DamWeb._getPositionBP = function(position) {
     var s = "";
@@ -94,7 +94,7 @@ DamWeb._getPositionBP = function(position) {
         s = m[1];
     }
     return s;
-}
+};
 
 DamWeb._getPositionWK = function(position) {
     var s = "";
@@ -105,7 +105,7 @@ DamWeb._getPositionWK = function(position) {
         s = m[1];
     }
     return s;
-}
+};
 
 DamWeb._getPositionBK = function(position) {
     var s = "";
@@ -116,6 +116,6 @@ DamWeb._getPositionBK = function(position) {
         s = m[1];
     }
     return s;
-}
+};
 
 module.exports = DamWeb;
