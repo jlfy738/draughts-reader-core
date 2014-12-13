@@ -51,31 +51,25 @@ describe('The DraughtBoard constructor', function () {
             board.setPosition20x20();
             //board.debugDraughtBoard();
 
-            for (var num = 1; num <= 20; num++) {
-                var p = board.getPiece(num);
-
-                it('should return true if \'piece\' on square #' + num + ' is set to PAWN_BLACK symbol', function(){
-                    expect(p).to.eql(PieceMock.PAWN_BLACK);
-                });
-            }
+            it('should return true if \'piece\' on squares #1 to #20 are set to PAWN_BLACK symbol', function(){
+                for (var num = 1; num <= 20; num++) {
+                    expect(board.getPiece(num)).to.eql(PieceMock.PAWN_BLACK);
+                }
+            });
 
             
-            for (var num = 21; num <= 30; num++) {
-                var p = board.getPiece(num);
-
-                it('should return true if \'piece\' on square #' + num + ' is set to EMPTY symbol', function(){
-                    expect(p).to.eql(PieceMock.EMPTY);
-                });
-            }
+            it('should return true if \'piece\' on squares #21 to #30 are set to EMPTY symbol', function(){
+                for (var num = 21; num <= 30; num++) {
+                    expect(board.getPiece(num)).to.eql(PieceMock.EMPTY);
+                }
+            });
             
 
-            for (var num = 31; num <= 50; num++) {
-                var p = board.getPiece(num);
-
-                it('should return true if \'piece\' on square #' + num + ' is set to PAWN_WHITE symbol', function(){
-                    expect(p).to.eql(PieceMock.PAWN_WHITE);
-                });
-            }
+            it('should return true if \'piece\' on squares #31 to #50 are set to PAWN_WHITE symbol', function(){
+                for (var num = 31; num <= 50; num++) {
+                    expect(board.getPiece(num)).to.eql(PieceMock.PAWN_WHITE);
+                }
+            });
 
         });
 
