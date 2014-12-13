@@ -75,42 +75,28 @@ DamWeb._getNumPosition = function(s) {
 };
 
 DamWeb._getPositionWP = function(position) {
-    var s = "";
-
     var pattern = /[BW]M.*?WP(.*?)(?:WK|BP|BK|$).*/;
-    var m = position.match(pattern);
-    if (m && m.length > 1) {
-        s = m[1];
-    }
-    return s;
+    return this._extractSubString(position, pattern);
 };
 
 DamWeb._getPositionBP = function(position) {
-    var s = "";
-
     var pattern = /[BW]M.*?BP(.*?)(?:WP|WK|BK|$).*/;
-    var m = position.match(pattern);
-    if (m && m.length > 1) {
-        s = m[1];
-    }
-    return s;
+    return this._extractSubString(position, pattern);
 };
 
 DamWeb._getPositionWK = function(position) {
-    var s = "";
-
     var pattern = /[BW]M.*?WK(.*?)(?:WP|BP|BK|$).*/;
-    var m = position.match(pattern);
-    if (m && m.length > 1) {
-        s = m[1];
-    }
-    return s;
+    return this._extractSubString(position, pattern);
 };
 
 DamWeb._getPositionBK = function(position) {
+    var pattern = /[BW]M.*?BK(.*?)(?:WP|BP|WK|$).*/;
+    return this._extractSubString(position, pattern);
+};
+
+DamWeb._extractSubString = function(position, pattern) {
     var s = "";
 
-    var pattern = /[BW]M.*?BK(.*?)(?:WP|BP|WK|$).*/;
     var m = position.match(pattern);
     if (m && m.length > 1) {
         s = m[1];
