@@ -18,7 +18,7 @@ describe('The DraughtBoard constructor', function () {
         PieceMock.DAME_BLACK = 4;
 
         DraughtBoard.__set__('Piece', PieceMock);
-        DraughtBoard.__set__('Color', DiagoMock);
+        DraughtBoard.__set__('Diago', DiagoMock);
     });
 
     it('should be a function', function(){
@@ -49,7 +49,6 @@ describe('The DraughtBoard constructor', function () {
         describe('setPosition20x20() method', function(){
             var board = new DraughtBoard();
             board.setPosition20x20();
-            //board.debugDraughtBoard();
 
             it('should return true if \'piece\' on squares #1 to #20 are set to PAWN_BLACK symbol', function(){
                 for (var num = 1; num <= 20; num++) {
@@ -71,6 +70,44 @@ describe('The DraughtBoard constructor', function () {
                 }
             });
 
+        });
+
+        describe('isPiece() method', function(){
+            var board = new DraughtBoard();
+            
+            PieceMock = {};
+            PieceMock.PAWN_WHITE = 1;
+            PieceMock.PAWN_BLACK = 2;
+            
+            board.setPiece(3, PieceMock.PAWN_WHITE)
+            
+            it('should return true if there is PAWN_WHITE on #3', function(){
+                expect(board.isPiece(3, PieceMock.PAWN_WHITE)).to.be.true;
+            });
+
+            it('should return false if there is PAWN_BLACK on #3', function(){
+                expect(board.isPiece(3, PieceMock.PAWN_BLACK)).to.be.false;
+            });
+        });
+
+        describe('getDiagonalGD() method', function(){
+            var board = new DraughtBoard();
+            
+            it('should return true if it exists a DiagonalGD for each square #1 to #50', function(){
+                for (var num = 1; num <= 50; num++) {
+                    expect(board.getDiagonalGD(num).squares).to.have.length.within(2, 10);;
+                }
+            });
+        });
+
+        describe('getDiagonalTT() method', function(){
+            var board = new DraughtBoard();
+            
+            it('should return true if it exists a DiagonalTT for each square #1 to #50', function(){
+                for (var num = 1; num <= 50; num++) {
+                    expect(board.getDiagonalTT(num).squares).to.have.length.within(1, 9);;
+                }
+            });
         });
 
     });
