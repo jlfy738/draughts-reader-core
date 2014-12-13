@@ -162,7 +162,7 @@ describe('The Square constructor', function () {
 
     });
 
-    describe('getColor() method', function(){
+    describe('debug() method', function(){
       it('should exist', function(){
         expect(new Square(1)).to.have.property('debug').that.is.a('function');
       });
