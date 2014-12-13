@@ -68,12 +68,12 @@ DraughtBoard.prototype.setPosition = function(piece, numbers) {
 
 /** Ajouter une pièce sur une case. */
 DraughtBoard.prototype.setPiece = function(number, piece) {
-    var c = this.getCase(number);
+    var c = this.getSquare(number);
     c.piece = piece;
 };
 
 /** Retourne une case. */
-DraughtBoard.prototype.getCase = function(number) {
+DraughtBoard.prototype.getSquare = function(number) {
     return this.squares[number - 1];
 };
 
@@ -84,7 +84,7 @@ DraughtBoard.prototype.isPiece = function(number, piece) {
 
 /** Retourne la pièce. */
 DraughtBoard.prototype.getPiece = function(number) {
-    return this.getCase(number).piece;
+    return this.getSquare(number).piece;
 };
 
 /** Retourne la diagonaleGD contenant une case donnée. */
@@ -103,7 +103,7 @@ DraughtBoard.prototype.getDiagonalGD = function(number) {
 
     var diago = new Diagonal(Diago.GD);
     for (var i = 0; i < diag.length; i++) {
-        var c = this.getCase(diag[i]);
+        var c = this.getSquare(diag[i]);
         diago.addCase(c);
     }
 
@@ -126,7 +126,7 @@ DraughtBoard.prototype.getDiagonalTT = function(number) {
 
     var diago = new Diagonal(Diago.TT);
     for (var i = 0; i < diag.length; i++) {
-        var c = this.getCase(diag[i]);
+        var c = this.getSquare(diag[i]);
         diago.addCase(c);
     }
 
@@ -208,7 +208,7 @@ DraughtBoard.prototype.debugDraughtBoard = function() {
         for (var l = 1; l <= 5; l++) {
 
             var num = 5 * k + l;
-            var p = this.getCase(num).piece;
+            var p = this.getSquare(num).piece;
 
             if (k == 0 || k == 2 || k == 4 || k == 6 || k == 8) {
                 row += "   ";

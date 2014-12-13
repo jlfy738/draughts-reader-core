@@ -126,10 +126,10 @@ PathFinder.prototype.buildRafles = function(board, node, numSquaresPrevCaptured)
         var diag = board.cloneDraughtBoard();
         var numStart = ri.getNumber();
         var numEnd = r.endingSquareNum;
-        var startSq = diag.getCase(numStart);
+        var startSq = diag.getSquare(numStart);
         var piece = startSq.piece;
-        diag.getCase(numStart).piece = Piece.EMPTY;
-        diag.getCase(numEnd).piece = piece;
+        diag.getSquare(numStart).piece = Piece.EMPTY;
+        diag.getSquare(numEnd).piece = piece;
 
         // ---
         this.buildRafles(diag, nf, lcdp);
