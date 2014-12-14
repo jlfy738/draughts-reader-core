@@ -129,7 +129,7 @@ Game.prototype.next = function() {
         this.index++;
         var m = this.moves[this.index];
         if (m.status) {
-            this.board.play(m);
+            this.board.applyMove(m);
         } else {
             this.index--;
         }
@@ -140,7 +140,7 @@ Game.prototype.prev = function() {
     if (this.hasPrev()) {
         var m = this.moves[this.index];
         if (m.status) {
-            this.board.playInv(m);
+            this.board.applyMoveRev(m);
             this.index--;
         }
     }

@@ -65,7 +65,7 @@ DraughtBoard.prototype.getPiece = function(number) {
 
 
 /** Applique le mouvement sur le damier. */
-DraughtBoard.prototype.play = function(move) {
+DraughtBoard.prototype.applyMove = function(move) {
     var piecePlayed = this.getPiece(move.startingSquareNum);
 
     // Retirer la pièce de la case de départ
@@ -92,7 +92,7 @@ DraughtBoard.prototype.play = function(move) {
 };
 
 /** Annule le mouvement sur le damier. */
-DraughtBoard.prototype.playInv = function(move) {
+DraughtBoard.prototype.applyMoveRev = function(move) {
     var piecePlayed = this.getPiece(move.endingSquareNum);
 
     // Retirer la pièce de la case d'arrivée
