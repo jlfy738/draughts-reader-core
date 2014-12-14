@@ -5,11 +5,10 @@ var DraughtBoard = rewire('./../../../src/core/DraughtBoard');
 
 describe('The DraughtBoard constructor', function () {
 
-    var PieceMock, DiagoMock;
+    var PieceMock;
 
     beforeEach(function(){
         PieceMock = {};
-        DiagoMock = {};
 
         PieceMock.EMPTY = 0;
         PieceMock.PAWN_WHITE = 1;
@@ -18,7 +17,6 @@ describe('The DraughtBoard constructor', function () {
         PieceMock.DAME_BLACK = 4;
 
         DraughtBoard.__set__('Piece', PieceMock);
-        DraughtBoard.__set__('Diago', DiagoMock);
     });
 
     it('should be a function', function(){

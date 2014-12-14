@@ -1,21 +1,50 @@
 var
     symbols = require('./symbols'),
+    DraughtBoard =  require('./DraughtBoard'),
+    Diagonal =  require('./Diagonal'),
     RafleItem = require('./RafleItem'),
     Move = require('./Move'),
     NTree = require('./NTree'),
-    Piece = symbols.Piece
+    Piece = symbols.Piece,
+    Diago = symbols.Diago
 ;
 
 
 function PathFinder() {
+    /** Liste des diagonales parallèles à la Grande Diagonale. */
+    this.diagonalsGD = [
+        [ 6, 1 ], 
+        [ 16, 11, 7, 2 ], 
+        [ 26, 21, 17, 12, 8, 3 ], 
+        [ 36, 31, 27, 22, 18, 13, 9, 4 ], 
+        [ 46, 41, 37, 32, 28, 23, 19, 14, 10, 5 ],
+        [ 47, 42, 38, 33, 29, 24, 20, 15 ], 
+        [ 48, 43, 39, 34, 30, 25 ], 
+        [ 49, 44, 40, 35 ], 
+        [ 50, 45 ] 
+    ];
+
+    /** Liste des diagonale parallèle au Tric Trac. */
+    this.diagonalsTT = [ 
+        [ 5 ], 
+        [ 15, 10, 4 ], 
+        [ 25, 20, 14, 9, 3 ], 
+        [ 35, 30, 24, 19, 13, 8, 2 ], 
+        [ 45, 40, 34, 29, 23, 18, 12, 7, 1 ], 
+        [ 50, 44, 39, 33, 28, 22, 17, 11, 6 ],
+        [ 49, 43, 38, 32, 27, 21, 16 ], 
+        [ 48, 42, 37, 31, 26 ], 
+        [ 47, 41, 36 ], 
+        [ 46 ] 
+    ];
 }
 
 PathFinder.prototype.getSimpleMovements = function(board, startingSquareNum) {
     var moves = []; // [Move]
 
     // Récupération des 2 diagonales
-    var diagoGD = board.getDiagonalGD(startingSquareNum);
-    var diagoTT = board.getDiagonalTT(startingSquareNum);
+    var diagoGD = this._getDiagonalGD(board, startingSquareNum);
+    var diagoTT = this._getDiagonalTT(board, startingSquareNum);
 
     // Déplacements simples (observés sur chacune des 2 diagonales)
     var list = diagoGD.getSimpleMovements(startingSquareNum);
@@ -72,7 +101,7 @@ PathFinder.prototype.getTreeRafles = function(board, startingSquareNum) {
     var ntreeRoot = new NTree();
     ntreeRoot.setItem(ri);
 
-    this.buildRafles(board.cloneDraughtBoard(), ntreeRoot, []);
+    this.buildRafles(this._cloneDraughtBoard(board), ntreeRoot, []);
 
     return ntreeRoot;
 };
@@ -86,8 +115,8 @@ PathFinder.prototype.buildRafles = function(board, node, numSquaresPrevCaptured)
     // console.log("buildRafles(" + numSquareNewStart + ", [" + numSquaresPrevCaptured + "])");
 
     // Récupération des 2 diagonales
-    var diagoGD = board.getDiagonalGD(numSquareNewStart);
-    var diagoTT = board.getDiagonalTT(numSquareNewStart);
+    var diagoGD = this._getDiagonalGD(board, numSquareNewStart);
+    var diagoTT = this._getDiagonalTT(board, numSquareNewStart);
 
     // debug
     // console.log(diagoGD);
@@ -123,7 +152,7 @@ PathFinder.prototype.buildRafles = function(board, node, numSquaresPrevCaptured)
 
         // On deplace le pion avant de poursuivre
         // (sans retirer la pièce prise).
-        var diag = board.cloneDraughtBoard();
+        var diag = this._cloneDraughtBoard(board);
         var numStart = ri.getNumber();
         var numEnd = r.endingSquareNum;
         var startSq = diag.getSquare(numStart);
@@ -149,6 +178,63 @@ PathFinder.prototype.displayTreePaths = function(tree) {
         }
         console.log(s);
     }
+};
+
+/** Retourne la diagonaleGD contenant une case donnée. */
+PathFinder.prototype._getDiagonalGD = function(board, number) {
+    var diag = [];
+    loop: 
+    for (var i = 0; i < this.diagonalsGD.length; i++) {
+        var diagonal = this.diagonalsGD[i];
+        for (var j = 0; j < diagonal.length; j++) {
+            if (diagonal[j] === number) {
+                diag = diagonal;
+                break loop;
+            }
+        }
+    }
+
+    var diago = new Diagonal(Diago.GD);
+    for (var i = 0; i < diag.length; i++) {
+        var c = board.getSquare(diag[i]);
+        diago.addCase(c);
+    }
+
+    return diago;
+};
+
+/** Retourne la diagonaleTT contenant une case donnée. */
+PathFinder.prototype._getDiagonalTT = function(board, number) {
+    var diag = [];
+    loop: 
+    for (var i = 0; i < this.diagonalsTT.length; i++) {
+        var diagonal = this.diagonalsTT[i];
+        for (var j = 0; j < diagonal.length; j++) {
+            if (diagonal[j] === number) {
+                diag = diagonal;
+                break loop;
+            }
+        }
+    }
+
+    var diago = new Diagonal(Diago.TT);
+    for (var i = 0; i < diag.length; i++) {
+        var c = board.getSquare(diag[i]);
+        diago.addCase(c);
+    }
+
+    return diago;
+};
+
+PathFinder.prototype._cloneDraughtBoard = function(board) {
+    var d = new DraughtBoard();
+
+    for (var k = 0; k < board.getSquares().length; k++) {
+        var c = board.getSquare(k + 1);
+        d.setPiece(c.number, c.piece);
+    }
+
+    return d;
 };
 
 module.exports = PathFinder;
