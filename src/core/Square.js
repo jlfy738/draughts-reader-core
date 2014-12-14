@@ -37,6 +37,12 @@ Square.prototype.getColor = function() {
     return c;
 };
 
+Square.prototype.isOppositeColor = function(caseToCompare) {
+    var c = this.getColor();
+    var c2 = caseToCompare.getColor();
+    return ((c == Color.WHITE && c2 == Color.BLACK) || (c == Color.BLACK && c2 == Color.WHITE));
+};
+
 Square.prototype.debug = function() {
     console.log("Square #" + this.number + " (" + this.piece + ")");
 };
