@@ -14,7 +14,7 @@ DamWeb.getGame = function(position, notation){
     // Position
     // ----------------------
     if (!position) {
-        game.setPosition20x20();
+        game.board.setPosition20x20();
     } else {
         var wp = this._getPositionWP(position);
         var wk = this._getPositionWK(position);
@@ -26,10 +26,10 @@ DamWeb.getGame = function(position, notation){
         var tabBP = this._getNumPosition(bp);
         var tabBK = this._getNumPosition(bk);
 
-        game.setPosition(Piece.PAWN_WHITE, tabWP);
-        game.setPosition(Piece.DAME_WHITE, tabWK);
-        game.setPosition(Piece.PAWN_BLACK, tabBP);
-        game.setPosition(Piece.DAME_BLACK, tabBK);
+        game.board.setPosition(Piece.PAWN_WHITE, tabWP);
+        game.board.setPosition(Piece.DAME_WHITE, tabWK);
+        game.board.setPosition(Piece.PAWN_BLACK, tabBP);
+        game.board.setPosition(Piece.DAME_BLACK, tabBK);
     }
 
     // ----------------------

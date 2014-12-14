@@ -10,10 +10,10 @@ var
 function testGame() {
     var game = new Game();
     // ---
-    game.setPosition(Piece.PAWN_WHITE, [33, 38, 39, 43, 44]);
-    game.setPosition(Piece.PAWN_BLACK, [12, 13, 14, 22, 24]);
-    game.setPosition(Piece.DAME_WHITE, []);
-    game.setPosition(Piece.DAME_BLACK, []);
+    game.board.setPosition(Piece.PAWN_WHITE, [33, 38, 39, 43, 44]);
+    game.board.setPosition(Piece.PAWN_BLACK, [12, 13, 14, 22, 24]);
+    game.board.setPosition(Piece.DAME_WHITE, []);
+    game.board.setPosition(Piece.DAME_BLACK, []);
     // ---
     game.addMove(33, 29);
     game.addMove(24, 42, [33]);

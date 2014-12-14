@@ -10,15 +10,6 @@ function Game() {
 }
 
 
-/** Définition de la position */
-Game.prototype.setPosition = function(piece, numbers) {
-    this.board.setPosition(piece, numbers);
-};
-
-Game.prototype.setPosition20x20 = function() {
-    this.board.setPosition20x20();
-};
-
 /**
  * Définition des mouvements
  * 
