@@ -11,8 +11,3 @@ exports.Color = {
     WHITE : 1,
     BLACK : 2
 };
-
-exports.Diago = {
-    DG : 0,
-    TT : 1
-};

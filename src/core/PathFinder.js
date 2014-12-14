@@ -5,8 +5,7 @@ var
     RafleItem = require('./RafleItem'),
     Move = require('./Move'),
     NTree = require('./NTree'),
-    Piece = symbols.Piece,
-    Diago = symbols.Diago
+    Piece = symbols.Piece
 ;
 
 
@@ -194,7 +193,7 @@ PathFinder.prototype._getDiagonalGD = function(board, number) {
         }
     }
 
-    var diago = new Diagonal(Diago.GD);
+    var diago = new Diagonal(true);
     for (var i = 0; i < diag.length; i++) {
         var c = board.getSquare(diag[i]);
         diago.addCase(c);
@@ -217,7 +216,7 @@ PathFinder.prototype._getDiagonalTT = function(board, number) {
         }
     }
 
-    var diago = new Diagonal(Diago.TT);
+    var diago = new Diagonal(false);
     for (var i = 0; i < diag.length; i++) {
         var c = board.getSquare(diag[i]);
         diago.addCase(c);

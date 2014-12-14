@@ -5,9 +5,9 @@ var
     Color = symbols.Color
 ;
 
-function Diagonal(typeDiago) {
+function Diagonal(isGD) {
     this.squares = []; // [case]
-    this.type = typeDiago ? typeDiago : null; // Diago
+    this.isGD = isGD; //  Parallèle à la GD (false => // au TT)
 }
 
 Diagonal.prototype.addCase = function(c) {
@@ -309,7 +309,12 @@ Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
 };
 
 Diagonal.prototype.toString = function() {
-    var s = "Diagonal [" + this.type + "] = ";
+    
+    var type = "GD";
+    if (!this.isGD){
+        type = "TT";
+    }
+    var s = "Diagonal [" + type + "] = ";
 
     for (var k = 0; k < this._size(); k++) {
         s += this.squares[k].number;
