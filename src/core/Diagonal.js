@@ -14,13 +14,13 @@ Diagonal.prototype.addCase = function(c) {
     this.squares.push(c);
 };
 
-Diagonal.prototype.size = function() {
+Diagonal.prototype._size = function() {
     return this.squares.length;
 };
 
-Diagonal.prototype.getSquareByNumber = function(number) {
+Diagonal.prototype._getSquareByNumber = function(number) {
     var c = null;
-    for (var k = 0; k < this.size(); k++) {
+    for (var k = 0; k < this._size(); k++) {
         var cTmp = this.squares[k];
         if (cTmp.number == number) {
             c = cTmp;
@@ -30,14 +30,14 @@ Diagonal.prototype.getSquareByNumber = function(number) {
     return c;
 };
 
-Diagonal.prototype.getSquareByIndex = function(idx) {
+Diagonal.prototype._getSquareByIndex = function(idx) {
     return this.squares[idx];
 };
 
 /** index de la case dans la liste. */
-Diagonal.prototype.indexOf = function(number) {
+Diagonal.prototype._indexOf = function(number) {
     var idx = -1;
-    for (var k = 0; k < this.size(); k++) {
+    for (var k = 0; k < this._size(); k++) {
         var c = this.squares[k];
         if (c.number == number) {
             idx = k;
@@ -64,16 +64,16 @@ Diagonal.prototype._isOppositeColor = function(c1, c2) {
 Diagonal.prototype.getSimpleMovements = function(squareNum) {
     var list = [];
 
-    var c = this.getSquareByNumber(squareNum);
-    var lg = this.size();
-    var idxSquare = this.indexOf(squareNum);
+    var c = this._getSquareByNumber(squareNum);
+    var lg = this._size();
+    var idxSquare = this._indexOf(squareNum);
 
     // Déplacement Pion Blanc dans le sens gauche-droite ?
     if (c.piece == Piece.PAWN_WHITE) {
         // La case à droite doit être libre.
         if (idxSquare + 1 < lg) {
             if (this._isEmpty(idxSquare + 1)) {
-                list.push(this.getSquareByIndex(idxSquare + 1).number);
+                list.push(this._getSquareByIndex(idxSquare + 1).number);
             }
         }
 
@@ -83,7 +83,7 @@ Diagonal.prototype.getSimpleMovements = function(squareNum) {
         // La case à gauche doit être libre.
         if (idxSquare - 1 >= 0) {
             if (this._isEmpty(idxSquare - 1)) {
-                list.push(this.getSquareByIndex(idxSquare - 1).number);
+                list.push(this._getSquareByIndex(idxSquare - 1).number);
             }
         }
     }
@@ -98,7 +98,7 @@ Diagonal.prototype.getSimpleMovements = function(squareNum) {
             // On avance case par case, en comptant les cases vides.
             for (var k = idxSquare + 1; k < lg; k++) {
                 if (this._isEmpty(k)) {
-                    list.push(this.getSquareByIndex(k).number);
+                    list.push(this._getSquareByIndex(k).number);
                 } else {
                     // On a rencontré une pièce ou le bord du damier
                     // => fin d'analyse.
@@ -115,7 +115,7 @@ Diagonal.prototype.getSimpleMovements = function(squareNum) {
             // On recule case par case, en comptant les cases vides.
             for (var k = idxSquare - 1; k >= 0; k--) {
                 if (this._isEmpty(k)) {
-                    list.push(this.getSquareByIndex(k).number);
+                    list.push(this._getSquareByIndex(k).number);
                 } else {
                     // On a rencontré une pièce ou le bord du damier
                     // => fin d'analyse.
@@ -134,13 +134,13 @@ Diagonal.prototype.getSimpleMovements = function(squareNum) {
  *            Pour ne pas la reprendre (coup Turc).
  */
 Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
-    var c = this.getSquareByNumber(squareNum);
+    var c = this._getSquareByNumber(squareNum);
     var color = c.getColor();
 
     raflesItem = [];
 
-    var lg = this.size();
-    var idxSquare = this.indexOf(squareNum);
+    var lg = this._size();
+    var idxSquare = this._indexOf(squareNum);
 
     if (c.isPawn()) {
 
@@ -151,8 +151,8 @@ Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
                 var cSquare1 = this._getColorByIndex(idxSquare + 1);
                 if (this._isOppositeColor(color, cSquare1)) {
                     // prise OK
-                    var capturedSq = this.getSquareByIndex(idxSquare + 1);
-                    var endingSq = this.getSquareByIndex(idxSquare + 2);
+                    var capturedSq = this._getSquareByIndex(idxSquare + 1);
+                    var endingSq = this._getSquareByIndex(idxSquare + 2);
                     if (!(numSquaresPrevCaptured.indexOf(capturedSq.number) > -1)) {
                         var ri = new RafleItem(endingSq.number, capturedSq.number);
                         raflesItem.push(ri);
@@ -168,8 +168,8 @@ Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
                 var cSquare1 = this._getColorByIndex(idxSquare - 1);
                 if (this._isOppositeColor(color, cSquare1)) {
                     // prise OK
-                    var capturedSq = this.getSquareByIndex(idxSquare - 1);
-                    var endingSq = this.getSquareByIndex(idxSquare - 2);
+                    var capturedSq = this._getSquareByIndex(idxSquare - 1);
+                    var endingSq = this._getSquareByIndex(idxSquare - 2);
                     // console.log("debug[" + this.type + "] : " + (idxSquare - 1) + "=" + capturedSq);
                     if (!(numSquaresPrevCaptured.indexOf(capturedSq.number) > -1)) {
                         var ri = new RafleItem(endingSq.number, capturedSq.number);
@@ -228,14 +228,14 @@ Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
 
         // Y a t-il une prise possible ?
         if (idxPieceToCapture >= 0 && nbEmptyAfter > 0) {
-            var capturedSq = this.getSquareByIndex(idxPieceToCapture);
+            var capturedSq = this._getSquareByIndex(idxPieceToCapture);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
             if (!(numSquaresPrevCaptured.indexOf(capturedSq.number) > -1)) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbEmptyAfter; k++) {
-                    var endingSq = this.getSquareByIndex(idxPieceToCapture + k);
+                    var endingSq = this._getSquareByIndex(idxPieceToCapture + k);
                     var ri = new RafleItem(endingSq.number, capturedSq.number);
                     raflesItem.push(ri);
                 }
@@ -290,14 +290,14 @@ Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
 
         // Y a t-il une prise possible ?
         if (idxPieceToCapture >= 0 && nbEmptyAfter > 0) {
-            var capturedSq = this.getSquareByIndex(idxPieceToCapture);
+            var capturedSq = this._getSquareByIndex(idxPieceToCapture);
 
             // On ne passe pas 2 fois sur la même pièce. (coup turc).
             if (!(numSquaresPrevCaptured.indexOf(capturedSq.number) > -1)) {
 
                 // n cases d'arrivée possibles
                 for (var k = 1; k <= nbEmptyAfter; k++) {
-                    var endingSq = this.getSquareByIndex(idxPieceToCapture - k);
+                    var endingSq = this._getSquareByIndex(idxPieceToCapture - k);
                     var ri = new RafleItem(endingSq.number, capturedSq.number);
                     raflesItem.push(ri);
                 }
@@ -311,7 +311,7 @@ Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
 Diagonal.prototype.toString = function() {
     var s = "Diagonal [" + this.type + "] = ";
 
-    for (var k = 0; k < this.size(); k++) {
+    for (var k = 0; k < this._size(); k++) {
         s += this.squares[k].number;
         var p = this.squares[k].piece;
 
