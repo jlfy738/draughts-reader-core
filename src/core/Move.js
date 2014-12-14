@@ -1,7 +1,3 @@
-var
-    Square = require('./Square')
-;
-
 function Move(startNum, endNum) {
     this.startingSquareNum = startNum;
     this.endingSquareNum = endNum;
@@ -20,8 +16,8 @@ function Move(startNum, endNum) {
 Move.prototype.addLandingSquareNum = function(squareNum) {
     this.landingSquaresNum.push(squareNum);
 };
-Move.prototype.addCapturedSquareNum = function(squareNum, piece) {
-    this.capturedSquares.push(new Square(squareNum, piece));
+Move.prototype.addCapturedSquare = function(square) {
+    this.capturedSquares.push(square);
 };
 
 Move.prototype.size = function() {

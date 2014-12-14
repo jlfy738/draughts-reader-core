@@ -1,6 +1,7 @@
 var
     symbols = require('./symbols'),
     DraughtBoard =  require('./DraughtBoard'),
+    Square = require('./Square'),
     Diagonal =  require('./Diagonal'),
     RafleItem = require('./RafleItem'),
     Move = require('./Move'),
@@ -85,7 +86,8 @@ PathFinder.prototype._treeToMovements = function(board, tree) {
                 var ri = list[j];
                 move.addLandingSquareNum(ri.endingSquareNum);
                 if (ri.capturedSquareNum != null) {
-                    move.addCapturedSquareNum(ri.capturedSquareNum, board.getPiece(ri.capturedSquareNum));
+                    var capturedSq = new Square(ri.capturedSquareNum, board.getPiece(ri.capturedSquareNum));
+                    move.addCapturedSquare(capturedSq);
                 }
             }
             moves.push(move);
