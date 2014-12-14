@@ -88,26 +88,6 @@ describe('The DraughtBoard constructor', function () {
             });
         });
 
-        describe('getDiagonalGD() method', function(){
-            var board = new DraughtBoard();
-            
-            it('should return true if it exists a DiagonalGD for each square #1 to #50', function(){
-                for (var num = 1; num <= 50; num++) {
-                    expect(board.getDiagonalGD(num).squares).to.have.length.within(2, 10);;
-                }
-            });
-        });
-
-        describe('getDiagonalTT() method', function(){
-            var board = new DraughtBoard();
-            
-            it('should return true if it exists a DiagonalTT for each square #1 to #50', function(){
-                for (var num = 1; num <= 50; num++) {
-                    expect(board.getDiagonalTT(num).squares).to.have.length.within(1, 9);;
-                }
-            });
-        });
-
     });
 
 });
