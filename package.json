@@ -1,12 +1,16 @@
 {
+  "name": "draughts-player",
+  "version" : "0.0.1",
   "devDependencies": {
     "browserify": "^6.3.3",
     "chai": "^1.10.0",
     "mocha": "^2.0.1",
     "rewire": "^2.1.3"
   },
+  "main" : "src/main.js",
   "scripts": {
     "build": "rm -rf ./dist/ && mkdir -p ./dist/ && browserify ./src/main.js -o ./dist/draughts-player.js",
     "test": "mocha test/**/*.test.js"
-  }
+  },
+  "licence" : "MIT"
 }
