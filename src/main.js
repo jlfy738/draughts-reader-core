@@ -39,9 +39,12 @@ function testDamWeb() {
     game.debugFull();
     console.log("");
     console.log("");
+
+    console.log(game.getNotation());
 }
 
 
 
 testGame();
 testDamWeb();
+

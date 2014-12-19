@@ -69,6 +69,9 @@ Arbiter.getMove = function(board, startingSqNum, endingSqNum, middleSquaresNum) 
     isCrowned = isCrowned || (piece == Piece.PAWN_BLACK && endingSqNum >= 45 && endingSqNum <= 50);
     move.isCrowned = isCrowned;
 
+    // Colour which plays this movement.
+    move.color = board.getColor(startingSqNum);
+
     return move;
 };
 

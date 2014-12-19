@@ -1,6 +1,8 @@
 var
+    symbols = require('./symbols'),
     DraughtBoard = require('./DraughtBoard'),
-    Arbiter = require('./Arbiter')
+    Arbiter = require('./Arbiter'),
+    Color = symbols.Color
 ;
 
 function Game() {
@@ -199,6 +201,43 @@ Game.prototype._hasError = function() {
     }
     return err;
 };
+
+
+// [{'number':1, 'white':'32x26', 'black':'32x26'}]
+Game.prototype.getNotation = function(){
+    var liste = [];
+    
+    if (this.moves.length > 0){
+        var map = null;
+        for (var k = 0; k < this.moves.length; k++) {
+            var m = this.moves[k];
+            var notation = m.getNotation();
+            var cpt = ~~(k/2) + 1; // 1, 1, 2, 2, 3, 3
+
+            if (m.color == Color.WHITE){
+                map = {};
+                map['white'] = notation;
+                map['number'] = cpt;
+            } else if (m.color == Color.BLACK){
+                map['black'] = notation;
+                if (map['white'] === undefined){
+                    map['white'] = "";
+                }
+                liste.push(map);
+                map = null;
+            }
+        }
+        if (map !== null){
+            if (map['black'] === undefined){
+                map['black'] = "";
+            }
+            liste.push(map);
+        }
+    }
+
+    return liste;
+}
+
 
 Game.prototype.debug = function() {
     console.log("Etat courant de la partie :");

@@ -63,6 +63,10 @@ DraughtBoard.prototype.getPiece = function(number) {
     return this.getSquare(number).piece;
 };
 
+DraughtBoard.prototype.getColor = function(number) {
+    return this.getSquare(number).getColor();
+};
+
 
 /** Applique le mouvement sur le damier. */
 DraughtBoard.prototype.applyMove = function(move) {

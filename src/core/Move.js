@@ -1,8 +1,14 @@
+var
+    symbols = require('./symbols'),
+    Color = symbols.Color
+;
+
 function Move(startNum, endNum) {
     this.startingSquareNum = startNum;
     this.endingSquareNum = endNum;
     this.middleSquaresNum = []; // [int]
 
+    this.color = Color.NONE;
     this.isCaptured = false;
     this.isCrowned = false;
 
