@@ -203,9 +203,11 @@ Game.prototype._hasError = function() {
 };
 
 
-// [{'number':1, 'white':'32x26', 'black':'32x26'}]
+// [{'number':1, 
+//   'white':{'move':'32x26', 'current':false}, 
+//   'black':{'move':'32x26', 'current':false}}]
 Game.prototype.getNotation = function(){
-    var liste = [];
+    var list = [];
     
     if (this.moves.length > 0){
         var map = null;
@@ -216,26 +218,41 @@ Game.prototype.getNotation = function(){
 
             if (m.color == Color.WHITE){
                 map = {};
-                map['white'] = notation;
                 map['number'] = cpt;
+            }
+
+            if (m.color == Color.WHITE){
+                mapw = {};
+                mapw['position'] = k + 1;
+                mapw['move'] = notation;
+                mapw['current'] = (k == this.index);
+                map['white'] = mapw;
             } else if (m.color == Color.BLACK){
-                map['black'] = notation;
-                if (map['white'] === undefined){
-                    map['white'] = "";
+                mapb = {};
+                mapb['position'] = k + 1;
+                mapb['move'] = notation;
+                mapb['current'] = (k == this.index);
+                
+                // is first move a black move ?
+                if (map === undefined) {
+                    map = {};
                 }
-                liste.push(map);
-                map = null;
+                map['black'] = mapb;
+            }
+
+            if (m.color == Color.BLACK){
+                list.push(map);
+                map = null; // see after loop
             }
         }
+
+        // is last move a white move ?
         if (map !== null){
-            if (map['black'] === undefined){
-                map['black'] = "";
-            }
-            liste.push(map);
+            list.push(map);
         }
     }
 
-    return liste;
+    return list;
 }
 
 
