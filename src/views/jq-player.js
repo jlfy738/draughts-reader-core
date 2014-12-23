@@ -27,50 +27,50 @@
             var id = $element.attr("id");
             var position = $element.data('position');
             var notation = $element.data('notation');
-            game = DamWeb.getGame(position, notation);
+            var game = DamWeb.getGame(position, notation);
             game.start(); 
-            plugin.refresh(game);
+            refresh(game);
 
 
             $("body").on("click","span",function(){
                 var pos = $(this).data('pos');
                 game.setCursor(pos);
-                plugin.refresh(game);
+                refresh(game);
             });
 
             $("body").on("click",".start",function(){
                 game.start();
-                plugin.refresh(game);
+                refresh(game);
             });
 
             $("body").on("click",".prev",function(){
                 game.prev();
-                plugin.refresh(game);
+                refresh(game);
             });
 
             $("body").on("click",".next",function(){
                 game.next();
-                plugin.refresh(game);
+                refresh(game);
             });
 
             $("body").on("click",".end",function(){
                 game.end();
-                plugin.refresh(game);
+                refresh(game);
             });
         };
 
-        plugin.refresh = function(game){
-            var notation = plugin.drawNotation(game.getNotation());
-            var ctrlBar = plugin.drawControlBar();
+        var refresh = function(game){
+            var notation = drawNotation(game.getNotation());
+            var ctrlBar = drawControlBar();
 
             var layout = '';
             layout += '<table>';
             layout += '<tr>';
             layout += '<td>';
             if (plugin.options['type'] == "canvas"){
-                layout += plugin.getCanvas();
+                layout += getCanvas();
             } else if (plugin.options['type'] == "ascii"){
-                layout += plugin.drawBoard(game.board);
+                layout += drawBoard(game.board);
             }
             layout += '</td>';
             layout += '<td>';
@@ -95,7 +95,7 @@
             }
         };
 
-        plugin.drawNotation = function(notation){
+        var drawNotation = function(notation){
 
 
             var ht = '<div class="notation">';
@@ -177,7 +177,7 @@
             return ht;
         };
 
-        plugin.drawControlBar = function(){
+        var drawControlBar = function(){
             var ht = '';
 
             ht += '<div class="control-bar">';
@@ -190,7 +190,7 @@
             return ht;
         };
 
-        plugin.drawBoard = function(board){
+        var drawBoard = function(board){
             var ht = '';
 
             ht += '<div class="ascii-view">';
@@ -200,14 +200,12 @@
             return ht;
         };
 
-        plugin.getCanvas = function(board){
+        var getCanvas = function(board){
             var ht = '';
             ht += '<canvas id="canvas">';
             ht += '</canvas>';
             return ht;
         };
-
-
 
         var getNotationStyle = function(notation){
             var idxSep = notation.indexOf("-");
