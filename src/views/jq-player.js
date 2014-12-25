@@ -31,29 +31,28 @@
             game.start(); 
             refresh(game);
 
-
-            $("body").on("click","span",function(){
+            $("#" + id).on("click", ".notation span",function(){
                 var pos = $(this).data('pos');
                 game.setCursor(pos);
                 refresh(game);
             });
 
-            $("body").on("click",".start",function(){
+            $("#" + id).on("click", ".control-bar .start",function(){
                 game.start();
                 refresh(game);
             });
 
-            $("body").on("click",".prev",function(){
+            $("#" + id).on("click", ".control-bar .prev",function(){
                 game.prev();
                 refresh(game);
             });
 
-            $("body").on("click",".next",function(){
+            $("#" + id).on("click", ".control-bar .next",function(){
                 game.next();
                 refresh(game);
             });
 
-            $("body").on("click",".end",function(){
+            $("#" + id).on("click", ".control-bar .end",function(){
                 game.end();
                 refresh(game);
             });
