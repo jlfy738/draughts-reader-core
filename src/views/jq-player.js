@@ -1,5 +1,24 @@
 (function($) {
 
+    function generateUUID(){
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random()*16)%16 | 0;
+            d = Math.floor(d/16);
+            return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    };
+
+    function getUniqueId(element){
+        var id = $(element).attr('id');
+        if (typeof id === typeof undefined || id === false) {
+            id = generateUUID();
+            $(element).attr("id", id);
+        }
+        return id;
+    };
+
     $.player = function(element, options) {
 
         // Default options
@@ -24,7 +43,7 @@
         plugin.init = function() {
             plugin.options = $.extend({}, defaults, options);
             
-            var id = $element.attr("id");
+            var id = getUniqueId(element);
             var position = $element.data('position');
             var notation = $element.data('notation');
             var game = DamWeb.getGame(position, notation);
