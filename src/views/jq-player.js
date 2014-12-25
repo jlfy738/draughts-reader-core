@@ -39,11 +39,13 @@
         var $element = $(element);
         // HTML item reference
         var element = element;
+        // ID item reference
+        var id = getUniqueId(element);
+
 
         plugin.init = function() {
             plugin.options = $.extend({}, defaults, options);
             
-            var id = getUniqueId(element);
             var position = $element.data('position');
             var notation = $element.data('notation');
             var game = DamWeb.getGame(position, notation);
@@ -109,7 +111,7 @@
             if (plugin.options['type'] == "canvas"){
                 var fgColor = plugin.options['cvSquareDarkColor'];
                 var bgColor = plugin.options['cvSquareLightColor'];
-                drawCanvasContent("canvas", game.board, fgColor, bgColor);
+                drawCanvasContent(game.board, fgColor, bgColor);
             }
         };
 
@@ -220,7 +222,7 @@
 
         var getCanvas = function(board){
             var ht = '';
-            ht += '<canvas id="canvas">';
+            ht += '<canvas class="cv-board">';
             ht += '</canvas>';
             return ht;
         };
@@ -383,8 +385,8 @@
             }
         };
 
-        var drawCanvasContent = function(idCanvas, board){
-            var c = document.getElementById(idCanvas);
+        var drawCanvasContent = function(board){
+            var c = $("#" + id + " .cv-board")[0];
             var ctx = c.getContext("2d");
 
             var sqWidth = plugin.options['cvSquareSize'];
