@@ -45,7 +45,7 @@
 
         var game = null;
         var board = null;
-        
+
 
         plugin.init = function() {
             plugin.options = $.extend({}, defaults, options);
@@ -53,10 +53,11 @@
             var position = $element.data('position');
             var notation = $element.data('notation');
             game = DamWeb.getGame(position, notation);
-            board = game.board;
-
             game.start(); 
-            refresh();
+            board = game.board;
+      
+            initLayout();
+            //refresh();
 
             $("#" + id).on("click", ".notation span",function(){
                 var pos = $(this).data('pos');
@@ -85,46 +86,76 @@
             });
         };
 
-        var refresh = function(){
-            var notation = drawNotation();
-            var ctrlBar = drawControlBar();
+        var initLayout = function(){
 
             var layout = '';
             layout += '<table>';
             layout += '<tr>';
             layout += '<td>';
+
             if (plugin.options['type'] == "canvas"){
-                layout += getCanvas();
+                layout += '<canvas class="cv-board"></canvas>';
             } else if (plugin.options['type'] == "ascii"){
-                layout += drawBoard();
+                layout += '<div class="ascii-view"></div>';
             }
+
             layout += '</td>';
             layout += '<td>';
-            layout += notation;
+            layout += '<div class="notation"></div>';
             layout += '</td>';
             layout += '</tr>';
             layout += '<tr>';
             layout += '<td>';
-            layout += ctrlBar;
+            layout += '<div class="control-bar">';
+            layout += '    <button class="start">&laquo;</button>';
+            layout += '    <button class="prev">&lsaquo;</button>';
+            layout += '    <button class="next">&rsaquo;</button>';
+            layout += '    <button class="end">&raquo;</button>';
+            layout += '</div>';
             layout += '</td>';
             layout += '<td></td>';
             layout += '</tr>';
             layout += '</table>';
 
-
             $(element).html(layout);
 
-            if (plugin.options['type'] == "canvas"){
-                var fgColor = plugin.options['cvSquareDarkColor'];
-                var bgColor = plugin.options['cvSquareLightColor'];
-                drawCanvasContent(fgColor, bgColor);
+            var $notationArea = $("#" + id + " .notation");
+            $notationArea.html(getHTMLNotation());
+
+            if (plugin.options['type'] == "ascii"){
+                var $c = $("#" + id + " .ascii-view");
+                $c.html(getASCIIBoard());
+            } else if (plugin.options['type'] == "canvas"){
+                var $c = $("#" + id + " .cv-board")[0];
+                var ctx = $c.getContext("2d");
+                var sqWidth = plugin.options['cvSquareSize'];
+                $c.width = 10*sqWidth;
+                $c.height = 10*sqWidth;
+                $c.style.border = "1px dotted #000";
+
+                drawCanvasContent(ctx);
             }
         };
 
-        var drawNotation = function(){
+
+        var refresh = function(){
+            var $notationArea = $("#" + id + " .notation");
+            $notationArea.html(getHTMLNotation());
+
+            if (plugin.options['type'] == "ascii"){
+                var $c = $("#" + id + " .ascii-view");
+                $c.html(getASCIIBoard());
+            } else if (plugin.options['type'] == "canvas"){
+                var $c = $("#" + id + " .cv-board")[0];
+                var ctx = $c.getContext("2d");
+                drawCanvasContent(ctx);
+            }
+        };
+
+        var getHTMLNotation = function(){
             var notationStruct = game.getNotation();
 
-            var ht = '<div class="notation">';
+            var ht = '';
             for (var k = 0; k < notationStruct.length; k++){
                 var line = notationStruct[k];
                 
@@ -198,38 +229,7 @@
 
                 ht += s + "<br />";
             }
-            ht += '</div>';
 
-            return ht;
-        };
-
-        var drawControlBar = function(){
-            var ht = '';
-
-            ht += '<div class="control-bar">';
-            ht += '<button class="start">&laquo;</button>';
-            ht += '<button class="prev">&lsaquo;</button>';
-            ht += '<button class="next">&rsaquo;</button>';
-            ht += '<button class="end">&raquo;</button>';
-            ht += '</div>';
-
-            return ht;
-        };
-
-        var drawBoard = function(){
-            var ht = '';
-
-            ht += '<div class="ascii-view">';
-            ht += getASCIIBoard();
-            ht += '</div>';
-            
-            return ht;
-        };
-
-        var getCanvas = function(){
-            var ht = '';
-            ht += '<canvas class="cv-board">';
-            ht += '</canvas>';
             return ht;
         };
 
@@ -391,17 +391,10 @@
             }
         };
 
-        var drawCanvasContent = function(){
-            var c = $("#" + id + " .cv-board")[0];
-            var ctx = c.getContext("2d");
-
-            var sqWidth = plugin.options['cvSquareSize'];
-            c.width = 10*sqWidth;
-            c.height = 10*sqWidth;
-
-            c.style.border = "1px dotted #000";
-            
+        var drawCanvasContent = function(ctx){
+                       
             // background-color
+            var sqWidth = plugin.options['cvSquareSize'];
             ctx.fillStyle = plugin.options['cvSquareLightColor'];
             ctx.fillRect(0, 0, 10*sqWidth, 10*sqWidth);
 
