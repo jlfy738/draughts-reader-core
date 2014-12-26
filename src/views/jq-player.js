@@ -57,7 +57,6 @@
             board = game.board;
       
             initLayout();
-            //refresh();
 
             $("#" + id).on("click", ".notation span",function(){
                 var pos = $(this).data('pos');
@@ -174,13 +173,25 @@
         };
 
         var applyNext = function(){
-            game.next();
-            refreshAll();
+            if (plugin.options['type'] == "ascii"){
+                game.next();
+                refreshAll();
+            } else if (plugin.options['type'] == "canvas"){
+                drawCanvasNextMove();
+                game.next();
+                refreshNotation();
+            }
         };
 
         var applyPrev = function(){
-            game.prev();
-            refreshAll();
+            if (plugin.options['type'] == "ascii"){
+                game.prev();
+                refreshAll();
+            } else if (plugin.options['type'] == "canvas"){
+                drawCanvasPrevMove();
+                game.prev();
+                refreshNotation();
+            }
         };
 
 
@@ -436,11 +447,16 @@
             }
         };
 
-        var drawCanvasLastMove = function(ctx){
-            var move = game.getLastMove();
-
+        var drawCanvasNextMove = function(){
+            var move = game.getNextMove();
+            if (move === null) {
+                return;
+            }
 
             var piecePlayed = board.getPiece(move.startingSquareNum);
+
+            var $c = $("#" + id + " .cv-board")[0];
+            var ctx = $c.getContext("2d");
 
             // Retirer la pièce de la case de départ
             drawSquare(ctx, move.startingSquareNum, Piece.EMPTY);
@@ -462,6 +478,41 @@
                     drawSquare(ctx, move.endingSquareNum, Piece.DAME_WHITE);
                 } else if (piecePlayed == Piece.PAWN_BLACK) {
                     drawSquare(ctx, move.endingSquareNum, Piece.DAME_BLACK);
+                }
+            }
+        };
+
+        var drawCanvasPrevMove = function(){
+            var move = game.getCurrentMove();
+            if (move === null) {
+                return;
+            }
+
+            var piecePlayed = board.getPiece(move.endingSquareNum);
+
+            var $c = $("#" + id + " .cv-board")[0];
+            var ctx = $c.getContext("2d");
+
+            // Retirer la pièce de la case d'arrivée
+            drawSquare(ctx, move.endingSquareNum, Piece.EMPTY);
+
+            // Remettre les pièces qui avaient été prises.
+            for (var i = 0; i < move.capturedSquares.length; i++) {
+                var c = move.capturedSquares[i];
+                drawSquare(ctx, c.number, c.piece);
+            }
+
+            // Remettre la pièce sur la case de départ
+            if (!move.isCrowned) {
+                drawSquare(ctx, move.startingSquareNum, piecePlayed);
+            }
+
+            // La dame redevient pion
+            else {
+                if (piecePlayed == Piece.DAME_WHITE) {
+                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_WHITE);
+                } else if (piecePlayed == Piece.DAME_BLACK) {
+                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_BLACK);
                 }
             }
         };

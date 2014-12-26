@@ -126,6 +126,30 @@ Game.prototype.hasPrev = function() {
     return this._getStatusPrevIndex() && this.index > -1;
 };
 
+Game.prototype.getCurrentMove = function() {
+    var m = null;
+    if (this.index > -1){
+        m = this.moves[this.index];
+    }
+    return m;
+};
+
+Game.prototype.getNextMove = function() {
+    var m = null;
+    if (this.hasNext()) {
+        m = this.moves[this.index + 1];
+    }
+    return m;
+};
+
+Game.prototype.getPrevMove = function() {
+    var m = null;
+    if (this.hasPrev()) {
+        m = this.moves[this.index - 1];
+    }
+    return m;
+};
+
 Game.prototype.next = function() {
     if (this.hasNext()) {
         this.index++;

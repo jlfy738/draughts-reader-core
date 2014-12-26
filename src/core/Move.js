@@ -30,6 +30,19 @@ Move.prototype.size = function() {
     return this.capturedSquares.length + this.landingSquaresNum.length;
 };
 
+Move.prototype.getLandingSquaresNum = function() {
+    return this.landingSquaresNum;
+};
+
+Move.prototype.getCapturedSquaresNum = function() {
+    var list = [];
+    for (var k = 0; k < this.capturedSquares.length; k++){
+        list.push(this.capturedSquares[k].number);
+    }
+    return list;
+};
+
+
 Move.prototype.toString = function() {
     var tmp = "";
     var nb = this.landingSquaresNum.length;
