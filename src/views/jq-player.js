@@ -26,7 +26,8 @@
             type:'canvas',
             cvSquareSize:40,
             cvSquareDarkColor:'#B4814E',
-            cvSquareLightColor:'#FFFFFF'
+            cvSquareLightColor:'#FFFFFF',
+            cvSquareLandingColor:'Red'
         };
 
         // avoid $(this) confusion
@@ -42,45 +43,50 @@
         // ID item reference
         var id = getUniqueId(element);
 
+        var game = null;
+        var board = null;
+        
 
         plugin.init = function() {
             plugin.options = $.extend({}, defaults, options);
             
             var position = $element.data('position');
             var notation = $element.data('notation');
-            var game = DamWeb.getGame(position, notation);
+            game = DamWeb.getGame(position, notation);
+            board = game.board;
+
             game.start(); 
-            refresh(game);
+            refresh();
 
             $("#" + id).on("click", ".notation span",function(){
                 var pos = $(this).data('pos');
                 game.setCursor(pos);
-                refresh(game);
+                refresh();
             });
 
             $("#" + id).on("click", ".control-bar .start",function(){
                 game.start();
-                refresh(game);
+                refresh();
             });
 
             $("#" + id).on("click", ".control-bar .prev",function(){
                 game.prev();
-                refresh(game);
+                refresh();
             });
 
             $("#" + id).on("click", ".control-bar .next",function(){
                 game.next();
-                refresh(game);
+                refresh();
             });
 
             $("#" + id).on("click", ".control-bar .end",function(){
                 game.end();
-                refresh(game);
+                refresh();
             });
         };
 
-        var refresh = function(game){
-            var notation = drawNotation(game.getNotation());
+        var refresh = function(){
+            var notation = drawNotation();
             var ctrlBar = drawControlBar();
 
             var layout = '';
@@ -90,7 +96,7 @@
             if (plugin.options['type'] == "canvas"){
                 layout += getCanvas();
             } else if (plugin.options['type'] == "ascii"){
-                layout += drawBoard(game.board);
+                layout += drawBoard();
             }
             layout += '</td>';
             layout += '<td>';
@@ -111,16 +117,16 @@
             if (plugin.options['type'] == "canvas"){
                 var fgColor = plugin.options['cvSquareDarkColor'];
                 var bgColor = plugin.options['cvSquareLightColor'];
-                drawCanvasContent(game.board, fgColor, bgColor);
+                drawCanvasContent(fgColor, bgColor);
             }
         };
 
-        var drawNotation = function(notation){
-
+        var drawNotation = function(){
+            var notationStruct = game.getNotation();
 
             var ht = '<div class="notation">';
-            for (var k = 0; k < notation.length; k++){
-                var line = notation[k];
+            for (var k = 0; k < notationStruct.length; k++){
+                var line = notationStruct[k];
                 
 
                 var bn = '';
@@ -210,17 +216,17 @@
             return ht;
         };
 
-        var drawBoard = function(board){
+        var drawBoard = function(){
             var ht = '';
 
             ht += '<div class="ascii-view">';
-            ht += getASCIIBoard(board);
+            ht += getASCIIBoard();
             ht += '</div>';
             
             return ht;
         };
 
-        var getCanvas = function(board){
+        var getCanvas = function(){
             var ht = '';
             ht += '<canvas class="cv-board">';
             ht += '</canvas>';
@@ -244,7 +250,7 @@
             return map;
         };
 
-        var getASCIIBoard = function(board) {
+        var getASCIIBoard = function() {
             var s = "";
             
             var cr = "<br />";
@@ -385,7 +391,7 @@
             }
         };
 
-        var drawCanvasContent = function(board){
+        var drawCanvasContent = function(){
             var c = $("#" + id + " .cv-board")[0];
             var ctx = c.getContext("2d");
 
