@@ -61,29 +61,26 @@
 
             $("#" + id).on("click", ".notation span",function(){
                 var pos = $(this).data('pos');
-                game.setCursor(pos);
-                refresh();
+                applyPosition(pos);
             });
 
             $("#" + id).on("click", ".control-bar .start",function(){
-                game.start();
-                refresh();
-            });
-
-            $("#" + id).on("click", ".control-bar .prev",function(){
-                game.prev();
-                refresh();
-            });
-
-            $("#" + id).on("click", ".control-bar .next",function(){
-                game.next();
-                refresh();
+                applyStart();
             });
 
             $("#" + id).on("click", ".control-bar .end",function(){
-                game.end();
-                refresh();
+                applyEnd();
             });
+
+            $("#" + id).on("click", ".control-bar .prev",function(){
+                applyPrev();
+            });
+
+            $("#" + id).on("click", ".control-bar .next",function(){
+                applyNext();
+            });
+
+            
         };
 
         var initLayout = function(){
@@ -119,12 +116,10 @@
 
             $(element).html(layout);
 
-            var $notationArea = $("#" + id + " .notation");
-            $notationArea.html(getHTMLNotation());
+            refreshNotation();
 
             if (plugin.options['type'] == "ascii"){
-                var $c = $("#" + id + " .ascii-view");
-                $c.html(getASCIIBoard());
+                refreshASCII();
             } else if (plugin.options['type'] == "canvas"){
                 var $c = $("#" + id + " .cv-board")[0];
                 var ctx = $c.getContext("2d");
@@ -137,20 +132,57 @@
             }
         };
 
-
-        var refresh = function(){
-            var $notationArea = $("#" + id + " .notation");
-            $notationArea.html(getHTMLNotation());
+        var refreshAll = function(){
+            refreshNotation();
 
             if (plugin.options['type'] == "ascii"){
-                var $c = $("#" + id + " .ascii-view");
-                $c.html(getASCIIBoard());
+                refreshASCII();
             } else if (plugin.options['type'] == "canvas"){
-                var $c = $("#" + id + " .cv-board")[0];
-                var ctx = $c.getContext("2d");
-                drawCanvasContent(ctx);
+                refreshCanvas();
             }
+        }
+
+        var refreshNotation = function(){
+            var $notationArea = $("#" + id + " .notation");
+            $notationArea.html(getHTMLNotation());
         };
+
+        var refreshASCII = function(){
+            var $c = $("#" + id + " .ascii-view");
+            $c.html(getASCIIBoard());
+        };
+
+        var refreshCanvas = function(){
+            var $c = $("#" + id + " .cv-board")[0];
+            var ctx = $c.getContext("2d");
+            drawCanvasContent(ctx);
+        };
+
+        var applyPosition = function(pos){
+            game.setCursor(pos);
+            refreshAll();
+        }
+
+        var applyStart = function(){
+            game.start();
+            refreshAll();
+        };
+        
+        var applyEnd = function(){
+            game.end();
+            refreshAll();
+        };
+
+        var applyNext = function(){
+            game.next();
+            refreshAll();
+        };
+
+        var applyPrev = function(){
+            game.prev();
+            refreshAll();
+        };
+
 
         var getHTMLNotation = function(){
             var notationStruct = game.getNotation();
@@ -401,6 +433,36 @@
             for (var num = 1; num <= 50; num++){
                 var p = board.getSquare(num).piece;
                 drawSquare(ctx, num, p);
+            }
+        };
+
+        var drawCanvasLastMove = function(ctx){
+            var move = game.getLastMove();
+
+
+            var piecePlayed = board.getPiece(move.startingSquareNum);
+
+            // Retirer la pièce de la case de départ
+            drawSquare(ctx, move.startingSquareNum, Piece.EMPTY);
+
+            // Retirer les pièces des cases prises
+            var capturedNums = move.getCapturedSquaresNum();
+            for (var i = 0; i < capturedNums.length; i++) {
+                var num = capturedNums[i];
+                drawSquare(ctx, num, Piece.EMPTY);
+            }
+
+            // Poser la pièce sur la case d'arrivée
+            if (!move.isCrowned) {
+                drawSquare(ctx, move.endingSquareNum, piecePlayed);
+            }
+            // Ce mouvement promeu en Dame
+            else {
+                if (piecePlayed == Piece.PAWN_WHITE) {
+                    drawSquare(ctx, move.endingSquareNum, Piece.DAME_WHITE);
+                } else if (piecePlayed == Piece.PAWN_BLACK) {
+                    drawSquare(ctx, move.endingSquareNum, Piece.DAME_BLACK);
+                }
             }
         };
 
