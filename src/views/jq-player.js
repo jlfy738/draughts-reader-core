@@ -27,7 +27,9 @@
             cvSquareSize:40,
             cvSquareDarkColor:'#B4814E',
             cvSquareLightColor:'#FFFFFF',
-            cvSquareLandingColor:'Red'
+            cvSquareLandingColor:'#914A3E',
+            cvSquareStartColor:'#914A3E',
+            cvSquareEndColor:'#914A3E'
         };
 
         // avoid $(this) confusion
@@ -177,6 +179,7 @@
                 game.next();
                 refreshAll();
             } else if (plugin.options['type'] == "canvas"){
+                refreshAll();
                 drawCanvasNextMove();
                 game.next();
                 refreshNotation();
@@ -188,6 +191,7 @@
                 game.prev();
                 refreshAll();
             } else if (plugin.options['type'] == "canvas"){
+                refreshAll();
                 drawCanvasPrevMove();
                 game.prev();
                 refreshNotation();
@@ -398,7 +402,7 @@
             }
         };
 
-        var drawSquare = function(ctx, num, piece){
+        var drawSquare = function(ctx, num, piece, sqColor){
             var nRow = ~~((num - 1) / 5) + 1; // [1..10]
             var nCol = ((num - 1) % 5) + 1; // [1..5]
 
@@ -409,7 +413,10 @@
                 var x = 2 * sqWidth * (nCol - 1) + sqWidth;
                 var y = sqWidth * (nRow - 1);
 
-                ctx.fillStyle = plugin.options['cvSquareDarkColor'];
+                if (!sqColor){
+                    sqColor = plugin.options['cvSquareDarkColor'];
+                }
+                ctx.fillStyle = sqColor;
                 ctx.fillRect(x, y, sqWidth, sqWidth);
 
                 var x = x + (sqWidth / 2);
@@ -423,7 +430,10 @@
                 var x = 2 * sqWidth * (nCol - 1);
                 var y = sqWidth * (nRow - 1);
 
-                ctx.fillStyle = plugin.options['cvSquareDarkColor'];
+                if (!sqColor){
+                    sqColor = plugin.options['cvSquareDarkColor'];
+                }
+                ctx.fillStyle = sqColor;
                 ctx.fillRect(x, y, sqWidth, sqWidth);
 
                 var x = x + (sqWidth / 2);
@@ -459,7 +469,7 @@
             var ctx = $c.getContext("2d");
 
             // Retirer la pièce de la case de départ
-            drawSquare(ctx, move.startingSquareNum, Piece.EMPTY);
+            drawSquare(ctx, move.startingSquareNum, Piece.EMPTY, plugin.options['cvSquareStartColor']);
 
             // Retirer les pièces des cases prises
             var capturedNums = move.getCapturedSquaresNum();
@@ -468,16 +478,25 @@
                 drawSquare(ctx, num, Piece.EMPTY);
             }
 
+            // colorer les cases inter
+            var landingSquaresNum = move.getLandingSquaresNum();
+            for (var i = 0; i < landingSquaresNum.length; i++) {
+                var num = landingSquaresNum[i];
+                if (num != move.startingSquareNum) {
+                    drawSquare(ctx, num, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
+                }
+            }
+
             // Poser la pièce sur la case d'arrivée
             if (!move.isCrowned) {
-                drawSquare(ctx, move.endingSquareNum, piecePlayed);
+                drawSquare(ctx, move.endingSquareNum, piecePlayed, plugin.options['cvSquareEndColor']);
             }
             // Ce mouvement promeu en Dame
             else {
                 if (piecePlayed == Piece.PAWN_WHITE) {
-                    drawSquare(ctx, move.endingSquareNum, Piece.DAME_WHITE);
+                    drawSquare(ctx, move.endingSquareNum, Piece.DAME_WHITE, plugin.options['cvSquareEndColor']);
                 } else if (piecePlayed == Piece.PAWN_BLACK) {
-                    drawSquare(ctx, move.endingSquareNum, Piece.DAME_BLACK);
+                    drawSquare(ctx, move.endingSquareNum, Piece.DAME_BLACK, plugin.options['cvSquareEndColor']);
                 }
             }
         };
@@ -494,7 +513,7 @@
             var ctx = $c.getContext("2d");
 
             // Retirer la pièce de la case d'arrivée
-            drawSquare(ctx, move.endingSquareNum, Piece.EMPTY);
+            drawSquare(ctx, move.endingSquareNum, Piece.EMPTY, plugin.options['cvSquareEndColor']);
 
             // Remettre les pièces qui avaient été prises.
             for (var i = 0; i < move.capturedSquares.length; i++) {
@@ -502,17 +521,26 @@
                 drawSquare(ctx, c.number, c.piece);
             }
 
+            // colorer les cases inter
+            var landingSquaresNum = move.getLandingSquaresNum();
+            for (var i = 0; i < landingSquaresNum.length; i++) {
+                var num = landingSquaresNum[i];
+                if (num != move.startingSquareNum) {
+                    drawSquare(ctx, num, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
+                }
+            }
+
             // Remettre la pièce sur la case de départ
             if (!move.isCrowned) {
-                drawSquare(ctx, move.startingSquareNum, piecePlayed);
+                drawSquare(ctx, move.startingSquareNum, piecePlayed, plugin.options['cvSquareStartColor']);
             }
 
             // La dame redevient pion
             else {
                 if (piecePlayed == Piece.DAME_WHITE) {
-                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_WHITE);
+                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_WHITE, plugin.options['cvSquareStartColor']);
                 } else if (piecePlayed == Piece.DAME_BLACK) {
-                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_BLACK);
+                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_BLACK, plugin.options['cvSquareStartColor']);
                 }
             }
         };
