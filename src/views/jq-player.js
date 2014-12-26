@@ -231,14 +231,14 @@
             var idxSep = notation.indexOf("-");
             if (idxSep == -1) {
                 idxSep = notation.indexOf("x");
-                notation = notation.replace("x", "&times;");
-            } else {
-                notation = notation.replace("-", "&minus;");
-            }
+            } 
             var s = notation.substring(idxSep + 1);
 
             var before = (idxSep == 1);
             var after = (s.length == 1);
+
+            notation = notation.replace("-", "&minus;");
+            notation = notation.replace("x", "&times;");
 
             var map = { 'notation':notation, 'before':before, 'after':after };
             return map;
