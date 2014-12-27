@@ -27,9 +27,9 @@
             cvSquareSize:40,
             cvSquareDarkColor:'#B4814E',
             cvSquareLightColor:'#FFFFFF',
-            cvSquareLandingColor:'#914A3E',
-            cvSquareStartColor:'#914A3E',
-            cvSquareEndColor:'#914A3E'
+            cvSquareLandingColor:'#84532F',
+            cvSquareStartColor:'#84532F',
+            cvSquareEndColor:'#84532F'
         };
 
         // avoid $(this) confusion
@@ -80,8 +80,6 @@
             $("#" + id).on("click", ".control-bar .next",function(){
                 applyNext();
             });
-
-            
         };
 
         var initLayout = function(){
@@ -187,15 +185,8 @@
         };
 
         var applyPrev = function(){
-            if (plugin.options['type'] == "ascii"){
-                game.prev();
-                refreshAll();
-            } else if (plugin.options['type'] == "canvas"){
-                refreshAll();
-                drawCanvasPrevMove();
-                game.prev();
-                refreshNotation();
-            }
+            game.prev();
+            refreshAll();
         };
 
 
@@ -445,8 +436,6 @@
         };
 
         var drawCanvasContent = function(ctx){
-                       
-            // background-color
             var sqWidth = plugin.options['cvSquareSize'];
             ctx.fillStyle = plugin.options['cvSquareLightColor'];
             ctx.fillRect(0, 0, 10*sqWidth, 10*sqWidth);
@@ -463,35 +452,103 @@
                 return;
             }
 
-            var piecePlayed = board.getPiece(move.startingSquareNum);
-
             var $c = $("#" + id + " .cv-board")[0];
             var ctx = $c.getContext("2d");
 
-            // Retirer la pièce de la case de départ
-            drawSquare(ctx, move.startingSquareNum, Piece.EMPTY, plugin.options['cvSquareStartColor']);
+            var piecePlayed = board.getPiece(move.startingSquareNum);
+            drawCanvasNextMoveStep2(ctx, move, piecePlayed);            
+        };
 
-            // Retirer les pièces des cases prises
-            var capturedNums = move.getCapturedSquaresNum();
-            for (var i = 0; i < capturedNums.length; i++) {
-                var num = capturedNums[i];
-                drawSquare(ctx, num, Piece.EMPTY);
-            }
+        var drawCanvasNextMoveStep2 = function(ctx, move, piecePlayed){
+            // color start square.
+            drawSquare(ctx, move.startingSquareNum, piecePlayed, plugin.options['cvSquareStartColor']);
 
-            // colorer les cases inter
-            var landingSquaresNum = move.getLandingSquaresNum();
-            for (var i = 0; i < landingSquaresNum.length; i++) {
-                var num = landingSquaresNum[i];
-                if (num != move.startingSquareNum) {
-                    drawSquare(ctx, num, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
+            // color end square.
+            drawSquare(ctx, move.endingSquareNum, Piece.EMPTY, plugin.options['cvSquareStartColor']);
+
+            // color intermediate squares.
+            if (move.isCaptured){
+                var landingSquaresNum = move.getLandingSquaresNum();
+                for (var i = 0; i < landingSquaresNum.length; i++) {
+                    var num = landingSquaresNum[i];
+                    if (num != move.startingSquareNum) {
+                        drawSquare(ctx, num, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
+                    }
                 }
             }
 
-            // Poser la pièce sur la case d'arrivée
+            // Wait a little...
+            (function() {
+                var callback = function() { 
+                    clearInterval(timer);
+                    drawCanvasNextMoveStep3(ctx, move, piecePlayed);
+                };
+                var timer = setInterval(callback, 150);
+            })();
+        };
+
+        var drawCanvasNextMoveStep3 = function(ctx, move, piecePlayed){
+            // Remove piece from starting square
+            drawSquare(ctx, move.startingSquareNum, Piece.EMPTY, plugin.options['cvSquareStartColor']);
+            
+            
+            if (!move.isCaptured){
+                drawCanvasNextMoveStep4(ctx, move, piecePlayed);
+            } 
+            // Move piece on intermediate squares
+            else {
+                
+                // FIXME : something weird...
+                var tmp = move.getLandingSquaresNum();
+                var landingSquaresNum = [];
+                for (var k = 0; k < tmp.length; k++){
+                    var num = tmp[k];
+                    if (num != move.startingSquareNum) {
+                        landingSquaresNum.push(num);
+                    }
+                }
+                // ---
+
+                if (landingSquaresNum.length > 0){
+                    
+                    (function() {
+                        var i = 0;
+                        var callback = function() { 
+                            //console.log("callback ("+landingSquaresNum.length+")");
+                            var num = landingSquaresNum[i];
+                            var numPrev = null;
+                            if (i > 0){
+                                numPrev = landingSquaresNum[i - 1];
+                            }
+                            if (numPrev !== null){
+                                drawSquare(ctx, numPrev, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
+                            }
+                            drawSquare(ctx, num, piecePlayed, plugin.options['cvSquareLandingColor']);
+                            
+                            if (i < landingSquaresNum.length){
+                                i++;
+                            } else {
+                                clearInterval(timer);
+                                drawCanvasNextMoveStep4(ctx, move, piecePlayed);
+                            }
+                        };
+
+                        callback(); // do not wait first time
+                        var timer = setInterval(callback, 200);
+                    })();
+
+                } else {
+                    drawCanvasNextMoveStep4(ctx, move, piecePlayed);
+                }
+            }
+        };
+
+        var drawCanvasNextMoveStep4 = function(ctx, move, piecePlayed){
+            // Set piece on ending square
             if (!move.isCrowned) {
                 drawSquare(ctx, move.endingSquareNum, piecePlayed, plugin.options['cvSquareEndColor']);
             }
-            // Ce mouvement promeu en Dame
+            // Piece is crowned
             else {
                 if (piecePlayed == Piece.PAWN_WHITE) {
                     drawSquare(ctx, move.endingSquareNum, Piece.DAME_WHITE, plugin.options['cvSquareEndColor']);
@@ -499,54 +556,31 @@
                     drawSquare(ctx, move.endingSquareNum, Piece.DAME_BLACK, plugin.options['cvSquareEndColor']);
                 }
             }
-        };
 
-        var drawCanvasPrevMove = function(){
-            var move = game.getCurrentMove();
-            if (move === null) {
-                return;
-            }
-
-            var piecePlayed = board.getPiece(move.endingSquareNum);
-
-            var $c = $("#" + id + " .cv-board")[0];
-            var ctx = $c.getContext("2d");
-
-            // Retirer la pièce de la case d'arrivée
-            drawSquare(ctx, move.endingSquareNum, Piece.EMPTY, plugin.options['cvSquareEndColor']);
-
-            // Remettre les pièces qui avaient été prises.
-            for (var i = 0; i < move.capturedSquares.length; i++) {
-                var c = move.capturedSquares[i];
-                drawSquare(ctx, c.number, c.piece);
-            }
-
-            // colorer les cases inter
-            var landingSquaresNum = move.getLandingSquaresNum();
-            for (var i = 0; i < landingSquaresNum.length; i++) {
-                var num = landingSquaresNum[i];
-                if (num != move.startingSquareNum) {
-                    drawSquare(ctx, num, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
-                }
-            }
-
-            // Remettre la pièce sur la case de départ
-            if (!move.isCrowned) {
-                drawSquare(ctx, move.startingSquareNum, piecePlayed, plugin.options['cvSquareStartColor']);
-            }
-
-            // La dame redevient pion
-            else {
-                if (piecePlayed == Piece.DAME_WHITE) {
-                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_WHITE, plugin.options['cvSquareStartColor']);
-                } else if (piecePlayed == Piece.DAME_BLACK) {
-                    drawSquare(ctx, move.startingSquareNum, Piece.PAWN_BLACK, plugin.options['cvSquareStartColor']);
+            // Remove pieces for captured squares
+            if (move.isCaptured){
+                var capturedNums = move.getCapturedSquaresNum();
+                if (capturedNums.length > 0){
+                    
+                    (function() {
+                        var i = 0;
+                        var callback = function() { 
+                            var num = capturedNums[i];
+                            drawSquare(ctx, num, Piece.EMPTY);
+                            
+                            if (i < capturedNums.length){
+                                i++;
+                            } else {
+                                clearInterval(timer);
+                            }
+                        };
+                        var timer = setInterval(callback, 200);
+                    })();
                 }
             }
         };
 
-
-
+        
         plugin.init();
     };
 
