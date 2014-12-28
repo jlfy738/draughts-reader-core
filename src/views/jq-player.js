@@ -497,24 +497,13 @@
             } 
             // Move piece on intermediate squares
             else {
-                
-                // FIXME : something weird...
-                var tmp = move.getLandingSquaresNum();
-                var landingSquaresNum = [];
-                for (var k = 0; k < tmp.length; k++){
-                    var num = tmp[k];
-                    if (num != move.startingSquareNum) {
-                        landingSquaresNum.push(num);
-                    }
-                }
-                // ---
 
+                var landingSquaresNum = move.getLandingSquaresNum();
                 if (landingSquaresNum.length > 0){
                     
                     (function() {
                         var i = 0;
                         var callback = function() { 
-                            //console.log("callback ("+landingSquaresNum.length+")");
                             var num = landingSquaresNum[i];
                             var numPrev = null;
                             if (i > 0){

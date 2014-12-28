@@ -84,7 +84,9 @@ PathFinder.prototype._treeToMovements = function(board, tree) {
 
             for (var j = 0; j < list.length; j++) {
                 var ri = list[j];
-                move.addLandingSquareNum(ri.endingSquareNum);
+                if (ri.endingSquareNum != nStart){
+                    move.addLandingSquareNum(ri.endingSquareNum);
+                }
                 if (ri.capturedSquareNum != null) {
                     var capturedSq = new Square(ri.capturedSquareNum, board.getPiece(ri.capturedSquareNum));
                     move.addCapturedSquare(capturedSq);
