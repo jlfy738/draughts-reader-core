@@ -92,7 +92,11 @@
             layout += '<td>';
 
             if (plugin.options['type'] == "canvas"){
-                layout += '<canvas class="cv-board"></canvas>';
+                layout += '<div class="outer-box">'
+                layout += '    <div class="inner-box">'
+                layout += '        <canvas class="cv-board"></canvas>';
+                layout += '    </div>';
+                layout += '</div>';
             } else if (plugin.options['type'] == "ascii"){
                 layout += '<div class="ascii-view"></div>';
             }
@@ -127,7 +131,6 @@
                 var sqWidth = plugin.options['cvSquareSize'];
                 $c.width = 10*sqWidth;
                 $c.height = 10*sqWidth;
-                $c.style.border = "1px dotted #000";
 
                 drawCanvasContent(ctx);
             }
