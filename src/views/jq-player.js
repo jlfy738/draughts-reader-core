@@ -44,6 +44,8 @@
         var element = element;
         // ID item reference
         var id = getUniqueId(element);
+        // Timer (canvas animation)
+        var timer = null;
 
         var game = null;
         var board = null;
@@ -131,6 +133,16 @@
             }
         };
 
+        var razAnim = function(){
+            if (plugin.options['type'] == "canvas"){
+                if (timer != null){
+                    clearInterval(timer);
+                    timer = null;
+                    refreshAll();
+                }                
+            }
+        }
+
         var refreshAll = function(){
             refreshNotation();
 
@@ -158,16 +170,19 @@
         };
 
         var applyPosition = function(pos){
+            razAnim()
             game.setCursor(pos);
             refreshAll();
         }
 
         var applyStart = function(){
+            razAnim()
             game.start();
             refreshAll();
         };
         
         var applyEnd = function(){
+            razAnim()
             game.end();
             refreshAll();
         };
@@ -177,7 +192,7 @@
                 game.next();
                 refreshAll();
             } else if (plugin.options['type'] == "canvas"){
-                refreshAll();
+                razAnim();
                 drawCanvasNextMove();
                 game.next();
                 refreshNotation();
@@ -185,6 +200,7 @@
         };
 
         var applyPrev = function(){
+            razAnim();
             game.prev();
             refreshAll();
         };
@@ -483,7 +499,7 @@
                     clearInterval(timer);
                     drawCanvasNextMoveStep3(ctx, move, piecePlayed);
                 };
-                var timer = setInterval(callback, 150);
+                timer = setInterval(callback, 150);
             })();
         };
 
@@ -523,7 +539,7 @@
                         };
 
                         callback(); // do not wait first time
-                        var timer = setInterval(callback, 200);
+                        timer = setInterval(callback, 200);
                     })();
 
                 } else {
@@ -563,7 +579,7 @@
                                 clearInterval(timer);
                             }
                         };
-                        var timer = setInterval(callback, 200);
+                        timer = setInterval(callback, 200);
                     })();
                 }
             }
