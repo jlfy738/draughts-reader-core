@@ -519,18 +519,18 @@
                     
                     (function() {
                         var i = 0;
-                        var callback = function() { 
-                            var num = landingSquaresNum[i];
-                            var numPrev = null;
-                            if (i > 0){
-                                numPrev = landingSquaresNum[i - 1];
-                            }
-                            if (numPrev !== null){
-                                drawSquare(ctx, numPrev, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
-                            }
-                            drawSquare(ctx, num, piecePlayed, plugin.options['cvSquareLandingColor']);
-                            
+                        var callback = function() {
                             if (i < landingSquaresNum.length){
+                                var num = landingSquaresNum[i];
+                                var numPrev = null;
+                                if (i > 0){
+                                    numPrev = landingSquaresNum[i - 1];
+                                }
+                                if (numPrev !== null){
+                                    drawSquare(ctx, numPrev, Piece.EMPTY, plugin.options['cvSquareLandingColor']);
+                                }
+                                drawSquare(ctx, num, piecePlayed, plugin.options['cvSquareLandingColor']);
+                                
                                 i++;
                             } else {
                                 clearInterval(timer);
@@ -570,10 +570,10 @@
                     (function() {
                         var i = 0;
                         var callback = function() { 
-                            var num = capturedNums[i];
-                            drawSquare(ctx, num, Piece.EMPTY);
-                            
                             if (i < capturedNums.length){
+                                var num = capturedNums[i];
+                                drawSquare(ctx, num, Piece.EMPTY);
+                                
                                 i++;
                             } else {
                                 clearInterval(timer);
