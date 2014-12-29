@@ -373,7 +373,7 @@
             case Piece.PAWN_BLACK:
                 ctx.beginPath();
                 ctx.arc(x, y, r ,0, Math.PI * 2, true);
-                ctx.strokeStyle = "white";
+                ctx.strokeStyle = "#888";
                 ctx.fillStyle = "black";
                 ctx.fill();
                 ctx.stroke();
@@ -396,7 +396,7 @@
             case Piece.DAME_BLACK:
                 ctx.beginPath();
                 ctx.arc(x, y + shift, r ,0, Math.PI * 2, true);
-                ctx.strokeStyle = "white";
+                ctx.strokeStyle = "#888";
                 ctx.fillStyle = "black";
                 ctx.fill();
                 ctx.stroke();
