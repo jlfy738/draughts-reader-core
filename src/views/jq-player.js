@@ -141,7 +141,7 @@
                     refreshAll();
                 }                
             }
-        }
+        };
 
         var refreshAll = function(){
             refreshNotation();
@@ -151,7 +151,7 @@
             } else if (plugin.options['type'] == "canvas"){
                 refreshCanvas();
             }
-        }
+        };
 
         var refreshNotation = function(){
             var $notationArea = $("#" + id + " .notation");
@@ -173,7 +173,7 @@
             razAnim()
             game.setCursor(pos);
             refreshAll();
-        }
+        };
 
         var applyStart = function(){
             razAnim()
