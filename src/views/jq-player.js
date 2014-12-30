@@ -32,7 +32,10 @@
             cvSquareEndColor:'#84532F',
             displayNumbers:false,
             numberTextFont:"10px Arial",
-            numberTextColor:"#FFFFFF"
+            numberTextColor:"#FFFFFF",
+            delayAfterHighlight:100,
+            delayToJump:200,
+            delayToRemoveCapturedPiece:100
         };
 
         // avoid $(this) confusion
@@ -506,7 +509,7 @@
                     clearInterval(timer);
                     drawCanvasNextMoveStep3(ctx, move, piecePlayed);
                 };
-                timer = setInterval(callback, 150);
+                timer = setInterval(callback, plugin.options['delayAfterHighlight']);
             })();
         };
 
@@ -546,7 +549,7 @@
                         };
 
                         callback(); // do not wait first time
-                        timer = setInterval(callback, 200);
+                        timer = setInterval(callback, plugin.options['delayToJump']);
                     })();
 
                 } else {
@@ -586,7 +589,7 @@
                                 clearInterval(timer);
                             }
                         };
-                        timer = setInterval(callback, 200);
+                        timer = setInterval(callback, plugin.options['delayToRemoveCapturedPiece']);
                     })();
                 }
             }
