@@ -419,39 +419,34 @@
             var sqWidth = plugin.options['cvSquareSize'];
 
             if (nRow == 1 || nRow == 3 || nRow == 5 || nRow == 7 || nRow == 9) {
-                
                 var x = 2 * sqWidth * (nCol - 1) + sqWidth;
                 var y = sqWidth * (nRow - 1);
 
-                if (!sqColor){
-                    sqColor = plugin.options['cvSquareDarkColor'];
-                }
-                ctx.fillStyle = sqColor;
-                ctx.fillRect(x, y, sqWidth, sqWidth);
-
-                var x = x + (sqWidth / 2);
-                var y = y + (sqWidth / 2);
-                var r = sqWidth / 2 - (sqWidth / 10 * 2);
-
-                drawPiece(ctx, piece, x, y, r);
+                drawSquareInc(ctx, num, piece, x, y, sqColor);
             }
 
             if (nRow == 2 || nRow == 4 || nRow == 6 || nRow == 8 || nRow == 10) {
                 var x = 2 * sqWidth * (nCol - 1);
                 var y = sqWidth * (nRow - 1);
 
-                if (!sqColor){
-                    sqColor = plugin.options['cvSquareDarkColor'];
-                }
-                ctx.fillStyle = sqColor;
-                ctx.fillRect(x, y, sqWidth, sqWidth);
-
-                var x = x + (sqWidth / 2);
-                var y = y + (sqWidth / 2);
-                var r = sqWidth / 2 - (sqWidth / 10 * 2);
-
-                drawPiece(ctx, piece, x, y, r);
+                drawSquareInc(ctx, num, piece, x, y, sqColor);
             }
+        };
+
+        var drawSquareInc = function(ctx, num, piece, x, y, sqColor){
+            var sqWidth = plugin.options['cvSquareSize'];
+               
+            if (!sqColor){
+                sqColor = plugin.options['cvSquareDarkColor'];
+            }
+            ctx.fillStyle = sqColor;
+            ctx.fillRect(x, y, sqWidth, sqWidth);
+
+            var x = x + (sqWidth / 2);
+            var y = y + (sqWidth / 2);
+            var r = sqWidth / 2 - (sqWidth / 10 * 2);
+
+            drawPiece(ctx, piece, x, y, r);
         };
 
         var drawCanvasContent = function(ctx){
