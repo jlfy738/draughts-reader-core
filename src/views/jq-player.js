@@ -29,7 +29,10 @@
             cvSquareLightColor:'#FFFFFF',
             cvSquareLandingColor:'#84532F',
             cvSquareStartColor:'#84532F',
-            cvSquareEndColor:'#84532F'
+            cvSquareEndColor:'#84532F',
+            displayNumbers:false,
+            numberTextFont:"10px Arial",
+            numberTextColor:"#FFFFFF"
         };
 
         // avoid $(this) confusion
@@ -441,6 +444,12 @@
             }
             ctx.fillStyle = sqColor;
             ctx.fillRect(x, y, sqWidth, sqWidth);
+
+            if (plugin.options['displayNumbers']){
+                ctx.font = plugin.options['numberTextFont'];
+                ctx.fillStyle = plugin.options['numberTextColor'];
+                ctx.fillText("" + num, x + 2, y + sqWidth - 2);
+            }
 
             var x = x + (sqWidth / 2);
             var y = y + (sqWidth / 2);
