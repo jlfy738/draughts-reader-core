@@ -1,6 +1,7 @@
 var
     symbols = require('./symbols'),
     PathFinder = require('./PathFinder'),
+    Move = require('./Move'),
     Piece = symbols.Piece
 ;
 
