@@ -258,7 +258,7 @@ Game.prototype.getNotation = function(){
                 mapb['current'] = (k == this.index);
                 
                 // is first move a black move ?
-                if (map === undefined) {
+                if (map === null) {
                     map = {};
                 }
                 map['black'] = mapb;
