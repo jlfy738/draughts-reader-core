@@ -234,37 +234,46 @@ Game.prototype.getNotation = function(){
     var list = [];
     
     if (this.moves.length > 0){
+    
+        // is first move a black move ?
+        var m = this.moves[0];
+        var notation = m.getNotation();
+        var shift = 0;
+        if (m.color == Color.BLACK){
+            var mapb = {};
+            mapb['position'] = 1;
+            mapb['move'] = notation;
+            mapb['current'] = (0 == this.index);
+            
+            var map = {};
+            map['black'] = mapb;
+            map['number'] = 1;            
+            list.push(map);
+            shift = 1;
+        }
+        
         var map = null;
-        for (var k = 0; k < this.moves.length; k++) {
+        for (var k = 0 + shift; k < this.moves.length; k++) {
             var m = this.moves[k];
             var notation = m.getNotation();
-            var cpt = ~~(k/2) + 1; // 1, 1, 2, 2, 3, 3
-
-            if (m.color == Color.WHITE){
-                map = {};
-                map['number'] = cpt;
-            }
+            var cpt = ~~((k + shift)/2) + 1; // 1, 1, 2, 2, 3, 3
 
             if (m.color == Color.WHITE){
                 mapw = {};
                 mapw['position'] = k + 1;
                 mapw['move'] = notation;
                 mapw['current'] = (k == this.index);
+                
+                map = {};
+                map['number'] = cpt;
                 map['white'] = mapw;
             } else if (m.color == Color.BLACK){
                 mapb = {};
                 mapb['position'] = k + 1;
                 mapb['move'] = notation;
                 mapb['current'] = (k == this.index);
-                
-                // is first move a black move ?
-                if (map === null) {
-                    map = {};
-                }
                 map['black'] = mapb;
-            }
-
-            if (m.color == Color.BLACK){
+                
                 list.push(map);
                 map = null; // see after loop
             }
