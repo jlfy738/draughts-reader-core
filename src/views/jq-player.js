@@ -244,6 +244,8 @@
                     if (nsWhite.after) {
                         bw += '&nbsp;';
                     }
+                } else {
+                    bw = '&nbsp;...&nbsp;';
                 }
                     
                 var currentBlack = false;
