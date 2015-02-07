@@ -23,6 +23,7 @@
 
         // Default options
         var defaults = {
+            format:'pdn',
             type:'canvas',
             cvSquareSize:40,
             cvSquareDarkColor:'#B4814E',
@@ -56,15 +57,31 @@
         var game = null;
         var board = null;
 
+        var pdnManager = null;
+
 
         plugin.init = function() {
             plugin.options = $.extend({}, defaults, options);
             
-            var position = $element.data('position');
-            var notation = $element.data('notation');
-            game = DamWeb.getGame(position, notation);
-            game.start(); 
-            board = game.board;
+            if (plugin.options['format'] == "damweb"){
+                var position = $element.data('position');
+                var notation = $element.data('notation');
+                game = DamWeb.getGame(position, notation);
+                game.start(); 
+                board = game.board;
+            } else if (plugin.options['format'] == "pdn"){
+                var pdnText = $element.html();
+                pdnManager = new PDN(pdnText);
+
+                var nbGames = pdnManager.getGameCount();
+                console.log(nbGames);
+            } 
+            
+            // if no game is loaded, we initialize an emty one.
+            if (game === null){
+                game = new Game();
+                board = game.board;
+            }
       
             initLayout();
 
@@ -107,8 +124,23 @@
                 layout += '<div class="ascii-view"></div>';
             }
 
+            var menu = '';
+            if (pdnManager !== null){
+                var nbGames = pdnManager.getGameCount();
+                var titles = pdnManager.getTitles();
+                menu = '<select name="test">';
+                for (var k = 0; k < titles.length; k++){
+                    var t = titles[k];
+                    menu += '<option value="' + t["num"] + '">' + t["num"] + ' &ndash; ' + t["title"] + '</option>';
+                }
+                menu += '</select>';
+            }
+
             layout += '</td>';
             layout += '<td>';
+            if (menu){
+                layout += '<div class="pdn-games">' + menu + '</div>';
+            }
             layout += '<div class="notation"></div>';
             layout += '</td>';
             layout += '</tr>';
