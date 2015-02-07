@@ -75,7 +75,6 @@
                 pdnManager = new PDN(pdnText);
 
                 var nbGames = pdnManager.getGameCount();
-                console.log(nbGames);
             } 
             
             // if no game is loaded, we initialize an emty one.
@@ -88,10 +87,7 @@
 
             $("#" + id).on("change", "select[name="+id+"-menu]",function(){
                 pdnCurrentNumGame = $(this).val();
-                console.log(pdnCurrentNumGame);
                 game = pdnManager.getGame(pdnCurrentNumGame);
-                //game.debug();
-
                 game.start();
                 board = game.board;
                 initLayout();
@@ -120,7 +116,6 @@
         };
 
         var initLayout = function(){
-
             var layout = '';
             layout += '<table>';
             layout += '<tr>';
@@ -158,17 +153,21 @@
             if (menu){
                 layout += '<div class="pdn-games">' + menu + '</div>';
             }
-            layout += '<div class="notation"></div>';
+            if (game.hasMove()){
+                layout += '<div class="notation"></div>';
+            }
             layout += '</td>';
             layout += '</tr>';
             layout += '<tr>';
             layout += '<td>';
-            layout += '<div class="control-bar">';
-            layout += '    <button class="start">&laquo;</button>';
-            layout += '    <button class="prev">&lsaquo;</button>';
-            layout += '    <button class="next">&rsaquo;</button>';
-            layout += '    <button class="end">&raquo;</button>';
-            layout += '</div>';
+            if (game.hasMove()){
+                layout += '<div class="control-bar">';
+                layout += '    <button class="start">&laquo;</button>';
+                layout += '    <button class="prev">&lsaquo;</button>';
+                layout += '    <button class="next">&rsaquo;</button>';
+                layout += '    <button class="end">&raquo;</button>';
+                layout += '</div>';
+            }
             layout += '</td>';
             layout += '<td></td>';
             layout += '</tr>';
