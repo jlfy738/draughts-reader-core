@@ -11,6 +11,9 @@ function Game() {
     this.index = -1;
 }
 
+Game.prototype.hasMove = function() {
+    return (this.moves.length > 0);
+};
 
 /**
  * Définition des mouvements
