@@ -25,6 +25,7 @@
         var defaults = {
             format:'pdn',
             type:'canvas',
+            pdnFirstLoadNum:1,
             cvSquareSize:40,
             cvSquareDarkColor:'#B4814E',
             cvSquareLightColor:'#FFFFFF',
@@ -75,6 +76,16 @@
                 pdnManager = new PDN(pdnText);
 
                 var nbGames = pdnManager.getGameCount();
+                if (nbGames > 0){
+                    var firstNum = plugin.options['pdnFirstLoadNum'];
+                    if (firstNum){
+                        if (firstNum > nbGames){
+                            firstNum = 1;
+                        }
+                        pdnCurrentNumGame = firstNum;
+                        initPDNGame();
+                    }
+                }
             } 
             
             // if no game is loaded, we initialize an emty one.
@@ -87,9 +98,7 @@
 
             $("#" + id).on("change", "select[name="+id+"-menu]",function(){
                 pdnCurrentNumGame = $(this).val();
-                game = pdnManager.getGame(pdnCurrentNumGame);
-                game.start();
-                board = game.board;
+                initPDNGame();
                 initLayout();
             });
 
@@ -115,6 +124,16 @@
             });
         };
 
+        var initPDNGame = function(){
+            if (pdnCurrentNumGame){
+                game = pdnManager.getGame(pdnCurrentNumGame);
+                game.start();
+            } else {
+                game = new Game();
+            }
+            board = game.board;
+        };
+
         var initLayout = function(){
             var layout = '';
             layout += '<table>';
@@ -136,6 +155,11 @@
                 var nbGames = pdnManager.getGameCount();
                 var titles = pdnManager.getTitles();
                 menu = '<select name="' + id + '-menu">';
+                
+                if (!plugin.options['pdnFirstLoadNum']){
+                    menu += '<option value="">&mdash;</option>';
+                }
+
                 for (var k = 0; k < titles.length; k++){
                     var t = titles[k];
                     var isSelect = (pdnCurrentNumGame == t['num']);
