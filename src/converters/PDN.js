@@ -5,24 +5,30 @@ var
     Piece = symbols.Piece
 ;
 
-function PDN() {
-}
+function PDN(pdnText) {
+    this.parser = new PDNParser();
+    this.parser.setPDNText(pdnText);
+};
 
-PDN.getGame = function(texte) {
+PDN.prototype.getGameCount = function(){
+    return this.parser.getGameCount();
+};
 
-    // We need a PDN Parser
-    var pdnParser = new PDNParser();
-    pdnParser.setPDNText(texte);
-    
-    // pdnParser.debugCutGames();
-    // pdnParser.parse(1);
+PDN.prototype.getTitle = function(numGame, pattern){
+    return this.parser.getTitle(numGame, pattern);
+};
 
+PDN.prototype.getTitles = function(pattern){
+    return this.parser.getTitles(pattern);
+};
+
+PDN.prototype.getGame = function(numGame) {
     var game = new Game();
 
-    var nbGame = pdnParser.getGameCount();
+    var nbGame = this.getGameCount();
     if (nbGame > 0){
-        var pdnObj = pdnParser.parse(1); // pending future dev...
-        pdnObj.debugOfficialTags();
+        var pdnObj = this.parser.parse(numGame);
+        //pdnObj.debugOfficialTags();
 
         
         // ----------------------
@@ -75,7 +81,7 @@ PDN.getGame = function(texte) {
     }
 
     return game;
-}
+};
 
 
 module.exports = PDN;
