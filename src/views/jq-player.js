@@ -58,6 +58,7 @@
         var board = null;
 
         var pdnManager = null;
+        var pdnCurrentNumGame = null;
 
 
         plugin.init = function() {
@@ -84,6 +85,17 @@
             }
       
             initLayout();
+
+            $("#" + id).on("change", "select[name="+id+"-menu]",function(){
+                pdnCurrentNumGame = $(this).val();
+                console.log(pdnCurrentNumGame);
+                game = pdnManager.getGame(pdnCurrentNumGame);
+                //game.debug();
+
+                game.start();
+                board = game.board;
+                initLayout();
+            });
 
             $("#" + id).on("click", ".notation span",function(){
                 var pos = $(this).data('pos');
@@ -128,10 +140,15 @@
             if (pdnManager !== null){
                 var nbGames = pdnManager.getGameCount();
                 var titles = pdnManager.getTitles();
-                menu = '<select name="test">';
+                menu = '<select name="' + id + '-menu">';
                 for (var k = 0; k < titles.length; k++){
                     var t = titles[k];
-                    menu += '<option value="' + t["num"] + '">' + t["num"] + ' &ndash; ' + t["title"] + '</option>';
+                    var isSelect = (pdnCurrentNumGame == t['num']);
+                    var attrSelected = '';
+                    if (isSelect){
+                        attrSelected = ' selected="selected"';
+                    }
+                    menu += '<option value="' + t["num"] + '"' + attrSelected + '>' + t["num"] + ' &ndash; ' + t["title"] + '</option>';
                 }
                 menu += '</select>';
             }
