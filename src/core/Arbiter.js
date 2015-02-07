@@ -11,7 +11,7 @@ function Arbiter() {
 Arbiter.pf = new PathFinder();
 
 /** Crée le mouvement demandé. */
-Arbiter.getMove = function(board, startingSqNum, endingSqNum, middleSquaresNum) {
+Arbiter.getMove = function(board, startingSqNum, endingSqNum, middleSquaresNum, previousColorPlayed) {
 
     // Toutes les combinaisons de rafles
     var listRafleMovements = Arbiter.pf.getRafleMovements(board, startingSqNum);
@@ -72,6 +72,14 @@ Arbiter.getMove = function(board, startingSqNum, endingSqNum, middleSquaresNum) 
 
     // Colour which plays this movement.
     move.color = board.getColor(startingSqNum);
+
+    // Check white play after black and vice versa.
+    if (previousColorPlayed){
+        if (move.color == previousColorPlayed){
+            move.status = false;
+            move.message = "Ce joueur a déjà joué le coup précédent...";
+        }
+    }
 
     return move;
 };

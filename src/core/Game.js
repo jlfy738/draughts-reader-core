@@ -30,7 +30,14 @@ Game.prototype.addMove = function(startNum, endNum, middleSquaresNum) {
         // Positionner le damier
         this.end();
 
-        var m = Arbiter.getMove(this.board, startNum, endNum, middleSquaresNum);
+        // Remember previous color played.
+        var iLast = this._getLastIndex();
+        var previousColorPlayed = null;
+        if (iLast > -1){
+            previousColorPlayed = this.moves[iLast].color;
+        }
+
+        var m = Arbiter.getMove(this.board, startNum, endNum, middleSquaresNum, previousColorPlayed);
         // console.log("addMove(" + startNum + ">" + endNum + ") => mouvement=" + m);
 
         this.moves.push(m);
@@ -216,7 +223,7 @@ Game.prototype._constrainIndex = function(idx) {
 
 Game.prototype._hasError = function() {
     var err = false;
-    for (var k = 1; k <= this.moves.length - 2; k++) {
+    for (var k = 0; k < this.moves.length; k++) {
         var m = this.moves[k];
         if (!m.status) {
             err = true;
