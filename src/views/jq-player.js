@@ -23,7 +23,9 @@
 
         // Default options
         var defaults = {
+            format:'pdn',
             type:'canvas',
+            pdnFirstLoadNum:1,
             cvSquareSize:40,
             cvSquareDarkColor:'#B4814E',
             cvSquareLightColor:'#FFFFFF',
@@ -56,17 +58,49 @@
         var game = null;
         var board = null;
 
+        var pdnManager = null;
+        var pdnCurrentNumGame = null;
+
 
         plugin.init = function() {
             plugin.options = $.extend({}, defaults, options);
             
-            var position = $element.data('position');
-            var notation = $element.data('notation');
-            game = DamWeb.getGame(position, notation);
-            game.start(); 
-            board = game.board;
+            if (plugin.options['format'] == "damweb"){
+                var position = $element.data('position');
+                var notation = $element.data('notation');
+                game = DamWeb.getGame(position, notation);
+                game.start(); 
+                board = game.board;
+            } else if (plugin.options['format'] == "pdn"){
+                var pdnText = $element.html();
+                pdnManager = new PDN(pdnText);
+
+                var nbGames = pdnManager.getGameCount();
+                if (nbGames > 0){
+                    var firstNum = plugin.options['pdnFirstLoadNum'];
+                    if (firstNum){
+                        if (firstNum > nbGames){
+                            firstNum = 1;
+                        }
+                        pdnCurrentNumGame = firstNum;
+                        initPDNGame();
+                    }
+                }
+            } 
+            
+            // if no game is loaded, we initialize an emty one.
+            if (game === null){
+                game = new Game();
+                board = game.board;
+            }
       
             initLayout();
+
+            $("#" + id).on("change", "select[name="+id+"-menu]",function(){
+                pdnCurrentNumGame = $(this).val();
+                initPDNGame();
+                initLayout();
+            });
 
             $("#" + id).on("click", ".notation span",function(){
                 var pos = $(this).data('pos');
@@ -90,8 +124,17 @@
             });
         };
 
-        var initLayout = function(){
+        var initPDNGame = function(){
+            if (pdnCurrentNumGame){
+                game = pdnManager.getGame(pdnCurrentNumGame);
+                game.start();
+            } else {
+                game = new Game();
+            }
+            board = game.board;
+        };
 
+        var initLayout = function(){
             var layout = '';
             layout += '<table>';
             layout += '<tr>';
@@ -107,19 +150,48 @@
                 layout += '<div class="ascii-view"></div>';
             }
 
+            var menu = '';
+            if (pdnManager !== null){
+                var nbGames = pdnManager.getGameCount();
+                var titles = pdnManager.getTitles();
+                menu = '<select name="' + id + '-menu">';
+                
+                if (!plugin.options['pdnFirstLoadNum']){
+                    menu += '<option value="">&mdash;</option>';
+                }
+
+                for (var k = 0; k < titles.length; k++){
+                    var t = titles[k];
+                    var isSelect = (pdnCurrentNumGame == t['num']);
+                    var attrSelected = '';
+                    if (isSelect){
+                        attrSelected = ' selected="selected"';
+                    }
+                    menu += '<option value="' + t["num"] + '"' + attrSelected + '>' + t["num"] + ' &ndash; ' + t["title"] + '</option>';
+                }
+                menu += '</select>';
+            }
+
             layout += '</td>';
             layout += '<td>';
-            layout += '<div class="notation"></div>';
+            if (menu){
+                layout += '<div class="pdn-games">' + menu + '</div>';
+            }
+            if (game.hasMove()){
+                layout += '<div class="notation"></div>';
+            }
             layout += '</td>';
             layout += '</tr>';
             layout += '<tr>';
             layout += '<td>';
-            layout += '<div class="control-bar">';
-            layout += '    <button class="start">&laquo;</button>';
-            layout += '    <button class="prev">&lsaquo;</button>';
-            layout += '    <button class="next">&rsaquo;</button>';
-            layout += '    <button class="end">&raquo;</button>';
-            layout += '</div>';
+            if (game.hasMove()){
+                layout += '<div class="control-bar">';
+                layout += '    <button class="start">&laquo;</button>';
+                layout += '    <button class="prev">&lsaquo;</button>';
+                layout += '    <button class="next">&rsaquo;</button>';
+                layout += '    <button class="end">&raquo;</button>';
+                layout += '</div>';
+            }
             layout += '</td>';
             layout += '<td></td>';
             layout += '</tr>';
