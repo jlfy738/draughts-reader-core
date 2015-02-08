@@ -41,11 +41,10 @@ Game.prototype.addMove = function(startNum, endNum, middleSquaresNum) {
         }
 
         var m = Arbiter.getMove(this.board, startNum, endNum, middleSquaresNum, previousColorPlayed);
-        // console.log("addMove(" + startNum + ">" + endNum + ") => mouvement=" + m);
 
         this.moves.push(m);
     } else {
-        console.log("addMove: ERREUR");
+        console.log("addMove(" + startNum + ", " + endNum + ") : ERROR");
     }
 };
 
@@ -161,7 +160,8 @@ Game.prototype.getPrevMove = function() {
 };
 
 Game.prototype.next = function() {
-    if (this.hasNext()) {
+    var isOk = true;
+    if (isOk = this.hasNext()) {
         this.index++;
         var m = this.moves[this.index];
         if (m.status) {
@@ -170,16 +170,19 @@ Game.prototype.next = function() {
             this.index--;
         }
     }
+    return isOk;
 };
 
 Game.prototype.prev = function() {
-    if (this.hasPrev()) {
+    var isOk = true;
+    if (isOk = this.hasPrev()) {
         var m = this.moves[this.index];
         if (m.status) {
             this.board.applyMoveRev(m);
             this.index--;
         }
     }
+    return isOk;
 }
 
 Game.prototype.start = function() {
@@ -199,13 +202,14 @@ Game.prototype.setCursor = function(position) {
 Game.prototype._setIndex = function(idx) {
     idx = this._constrainIndex(idx);
 
+    var isOk = true;
     if (this.index < idx) {
-        while (this.index < idx) {
-            this.next();
+        while (isOk && (this.index < idx)) {
+            isOk = this.next();
         }
     } else if (this.index > idx) {
-        while (this.index > idx) {
-            this.prev();
+        while (isOk && (this.index > idx)) {
+            isOk = this.prev();
         }
     }
 };
