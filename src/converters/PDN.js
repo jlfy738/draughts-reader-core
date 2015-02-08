@@ -35,7 +35,7 @@ PDN.prototype.getGame = function(numGame) {
         // Position
         // ----------------------
         if (!pdnObj.hasFEN()) {
-            game.board.setPosition20x20();
+            game.board.setInitialPosition();
         } else {
             // FIXME : on doit pouvoir eviter la boucle en utilisant setPosition
             

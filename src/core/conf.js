@@ -30,9 +30,9 @@ conf['8x8']['W_CROWNED']   = [1, 4];
 conf['12x12']['W_CROWNED'] = [1, 12];
 
 // Black pieces are crowned on this interval
-conf['10x10']['W_CROWNED'] = [46, 50];
-conf['8x8']['W_CROWNED']   = [29, 32];
-conf['12x12']['W_CROWNED'] = [61, 72]
+conf['10x10']['B_CROWNED'] = [46, 50];
+conf['8x8']['B_CROWNED']   = [29, 32];
+conf['12x12']['B_CROWNED'] = [61, 72]
 
 
 /** List of diagonal parallel to the "Great Diagonal" */

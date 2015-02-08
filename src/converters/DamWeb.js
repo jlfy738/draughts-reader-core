@@ -14,7 +14,7 @@ DamWeb.getGame = function(position, notation){
     // Position
     // ----------------------
     if (!position) {
-        game.board.setPosition20x20();
+        game.board.setInitialPosition();
     } else {
         var wp = this._getPositionWP(position);
         var wk = this._getPositionWK(position);
