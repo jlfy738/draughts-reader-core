@@ -1,16 +1,28 @@
 var
+    conf = require('./conf'),
     symbols = require('./symbols'),
     Square =  require('./Square'),
-    Piece = symbols.Piece
+    Piece = symbols.Piece,
+    Conf = conf.Conf
 ;
 
-function DraughtBoard() {
-    /** Les 50 cases noires du damier. */
+function DraughtBoard(boardSize) {
+    this.conf = null;
+    if (boardSize == 8){
+        this.conf = Conf['8x8']; // Bresilien
+    } else if (boardSize == 12){
+        this.conf = Conf['12x12']; // Canadien
+    } else {
+        this.conf = Conf['10x10']; // Default is International 10x10
+    }
+
+
+    /** Active Squares */
     this.squares = []; // [Square]
 
     
-    /** Initialisation des 50 cases noires. */
-    for (var k = 1; k <= 50; k++) {
+    /** Initialize active squares */
+    for (var k = 1; k <= this.conf['SQ_MAX_NUM']; k++) {
         var c = new Square(k);
         this.squares.push(c);
     }
@@ -19,13 +31,13 @@ function DraughtBoard() {
 
 
 
-/** Position initiale : 20 x 20 */
-DraughtBoard.prototype.setPosition20x20 = function() {
-    for (var num = 1; num <= 20; num++) {
+/** Initial position */
+DraughtBoard.prototype.setInitialPosition = function() {
+    for (var num = this.conf['B_POSITION'][0]; num <= this.conf['B_POSITION'][1]; num++) {
         this.setPiece(num, Piece.PAWN_BLACK);
     }
 
-    for (var num = 31; num <= 50; num++) {
+    for (var num = this.conf['W_POSITION'][0]; num <= this.conf['W_POSITION'][1]; num++) {
         this.setPiece(num, Piece.PAWN_WHITE);
     }
 };
