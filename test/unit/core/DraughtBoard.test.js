@@ -44,9 +44,9 @@ describe('The DraughtBoard constructor', function () {
         });
 
         
-        describe('setPosition20x20() method', function(){
+        describe('setInitialPosition() method', function(){
             var board = new DraughtBoard();
-            board.setPosition20x20();
+            board.setInitialPosition();
 
             it('should return true if \'piece\' on squares #1 to #20 are set to PAWN_BLACK symbol', function(){
                 for (var num = 1; num <= 20; num++) {
