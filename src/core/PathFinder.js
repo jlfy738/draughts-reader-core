@@ -11,32 +11,6 @@ var
 
 
 function PathFinder() {
-    /** Liste des diagonales parallèles à la Grande Diagonale. */
-    this.diagonalsGD = [
-        [ 6, 1 ], 
-        [ 16, 11, 7, 2 ], 
-        [ 26, 21, 17, 12, 8, 3 ], 
-        [ 36, 31, 27, 22, 18, 13, 9, 4 ], 
-        [ 46, 41, 37, 32, 28, 23, 19, 14, 10, 5 ],
-        [ 47, 42, 38, 33, 29, 24, 20, 15 ], 
-        [ 48, 43, 39, 34, 30, 25 ], 
-        [ 49, 44, 40, 35 ], 
-        [ 50, 45 ] 
-    ];
-
-    /** Liste des diagonale parallèle au Tric Trac. */
-    this.diagonalsTT = [ 
-        [ 5 ], 
-        [ 15, 10, 4 ], 
-        [ 25, 20, 14, 9, 3 ], 
-        [ 35, 30, 24, 19, 13, 8, 2 ], 
-        [ 45, 40, 34, 29, 23, 18, 12, 7, 1 ], 
-        [ 50, 44, 39, 33, 28, 22, 17, 11, 6 ],
-        [ 49, 43, 38, 32, 27, 21, 16 ], 
-        [ 48, 42, 37, 31, 26 ], 
-        [ 47, 41, 36 ], 
-        [ 46 ] 
-    ];
 }
 
 PathFinder.prototype.getSimpleMovements = function(board, startingSquareNum) {
@@ -187,8 +161,8 @@ PathFinder.prototype.displayTreePaths = function(tree) {
 PathFinder.prototype._getDiagonalGD = function(board, number) {
     var diag = [];
     loop: 
-    for (var i = 0; i < this.diagonalsGD.length; i++) {
-        var diagonal = this.diagonalsGD[i];
+    for (var i = 0; i < board.conf['DIAGONALS_GD'].length; i++) {
+        var diagonal = board.conf['DIAGONALS_GD'][i];
         for (var j = 0; j < diagonal.length; j++) {
             if (diagonal[j] === number) {
                 diag = diagonal;
@@ -210,8 +184,8 @@ PathFinder.prototype._getDiagonalGD = function(board, number) {
 PathFinder.prototype._getDiagonalTT = function(board, number) {
     var diag = [];
     loop: 
-    for (var i = 0; i < this.diagonalsTT.length; i++) {
-        var diagonal = this.diagonalsTT[i];
+    for (var i = 0; i < board.conf['DIAGONALS_TT'].length; i++) {
+        var diagonal = board.conf['DIAGONALS_TT'][i];
         for (var j = 0; j < diagonal.length; j++) {
             if (diagonal[j] === number) {
                 diag = diagonal;

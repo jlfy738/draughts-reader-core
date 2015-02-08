@@ -12,6 +12,7 @@ Arbiter.pf = new PathFinder();
 
 /** Crée le mouvement demandé. */
 Arbiter.getMove = function(board, startingSqNum, endingSqNum, middleSquaresNum, previousColorPlayed) {
+    var conf = board.conf;
 
     // Toutes les combinaisons de rafles
     var listRafleMovements = Arbiter.pf.getRafleMovements(board, startingSqNum);
@@ -66,8 +67,8 @@ Arbiter.getMove = function(board, startingSqNum, endingSqNum, middleSquaresNum, 
 
     // Préciser si la piece a été promu en dame.
     var piece = board.getPiece(startingSqNum);
-    var isCrowned = (piece == Piece.PAWN_WHITE && endingSqNum >= 1 && endingSqNum <= 5);
-    isCrowned = isCrowned || (piece == Piece.PAWN_BLACK && endingSqNum >= 45 && endingSqNum <= 50);
+    var isCrowned = (piece == Piece.PAWN_WHITE && endingSqNum >= conf['W_CROWNED'][0] && endingSqNum <= conf['W_CROWNED'][1]);
+    isCrowned = isCrowned || (piece == Piece.PAWN_BLACK && endingSqNum >= conf['B_CROWNED'][0] && endingSqNum <= conf['B_CROWNED'][1]);
     move.isCrowned = isCrowned;
 
     // Colour which plays this movement.

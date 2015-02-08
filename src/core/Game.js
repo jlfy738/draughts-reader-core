@@ -5,8 +5,8 @@ var
     Color = symbols.Color
 ;
 
-function Game() {
-    this.board = new DraughtBoard();
+function Game(boardSize) {
+    this.board = new DraughtBoard(boardSize);
     this.moves = []; // [Move]
     this.index = -1;
 }
