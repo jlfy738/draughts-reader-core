@@ -37,7 +37,8 @@
             numberTextColor:"#FFFFFF",
             delayAfterHighlight:100,
             delayToJump:200,
-            delayToRemoveCapturedPiece:100
+            delayToRemoveCapturedPiece:100,
+            delayAutoPlay:1000
         };
 
         // avoid $(this) confusion
@@ -54,6 +55,8 @@
         var id = getUniqueId(element);
         // Timer (canvas animation)
         var timer = null;
+        // Timer (Autoplay)
+        var timerAutoPlay = null;
 
         var game = null;
         var board = null;
@@ -122,9 +125,16 @@
             $("#" + id).on("click", ".control-bar .next",function(){
                 applyNext();
             });
+
+            $("#" + id).on("click", ".control-bar .autoplay",function(){
+                autoPlay();
+            });
         };
 
         var initPDNGame = function(){
+            razAnim();
+            razAutoPlay();
+            
             if (pdnCurrentNumGame){
                 game = pdnManager.getGame(pdnCurrentNumGame);
                 game.start();
@@ -190,6 +200,7 @@
                 layout += '    <button class="prev">&lsaquo;</button>';
                 layout += '    <button class="next">&rsaquo;</button>';
                 layout += '    <button class="end">&raquo;</button>';
+                layout += '    <button class="autoplay">&diams;</button>';
                 layout += '</div>';
             }
             layout += '</td>';
@@ -216,11 +227,18 @@
 
         var razAnim = function(){
             if (plugin.options['type'] == "canvas"){
-                if (timer != null){
+                if (timer !== null){
                     clearInterval(timer);
                     timer = null;
                     refreshAll();
-                }                
+                }
+            }
+        };
+
+        var razAutoPlay = function(){
+            if (timerAutoPlay !== null){
+                clearInterval(timerAutoPlay);
+                timerAutoPlay = null;
             }
         };
 
@@ -251,24 +269,32 @@
         };
 
         var applyPosition = function(pos){
-            razAnim()
+            razAnim();
+            razAutoPlay();
             game.setCursor(pos);
             refreshAll();
         };
 
         var applyStart = function(){
-            razAnim()
+            razAnim();
+            razAutoPlay();
             game.start();
             refreshAll();
         };
         
         var applyEnd = function(){
-            razAnim()
+            razAnim();
+            razAutoPlay();
             game.end();
             refreshAll();
         };
 
         var applyNext = function(){
+            razAutoPlay();
+            applyNextAuto();
+        };
+
+        var applyNextAuto = function(){
             if (plugin.options['type'] == "ascii"){
                 game.next();
                 refreshAll();
@@ -282,8 +308,27 @@
 
         var applyPrev = function(){
             razAnim();
+            razAutoPlay();
             game.prev();
             refreshAll();
+        };
+
+        var autoPlay = function(){
+            var callback = function() { 
+                if (game.hasNext()){
+                    applyNextAuto();
+                } else {
+                    razAutoPlay();
+                }
+            };
+
+            // Stop/Start
+            if (timerAutoPlay !== null){
+                razAutoPlay();
+            } else {
+                callback(); // Do not wait first time
+                timerAutoPlay = setInterval(callback, plugin.options['delayAutoPlay']);
+            }
         };
 
 
