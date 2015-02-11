@@ -35,7 +35,7 @@
             displayNumbers:false,
             numberTextFont:"10px Arial",
             numberTextColor:"#FFFFFF",
-            delayAfterHighlight:100,
+            delayAfterHighlight:200,
             delayToJump:200,
             delayToRemoveCapturedPiece:100,
             delayAutoPlay:1000
@@ -226,12 +226,9 @@
         };
 
         var razAnim = function(){
-            if (plugin.options['type'] == "canvas"){
-                if (timer !== null){
-                    clearInterval(timer);
-                    timer = null;
-                    refreshAll();
-                }
+            if (timer !== null){
+                clearInterval(timer);
+                timer = null;
             }
         };
 
@@ -290,7 +287,9 @@
         };
 
         var applyNext = function(){
+            razAnim();
             razAutoPlay();
+            refreshAll();
             applyNextAuto();
         };
 
@@ -315,7 +314,15 @@
 
         var autoPlay = function(){
             var callback = function() { 
+                // waiting the end of the current animation if it exists.
+                if (timer !== null){
+                    return;
+                }
+
                 if (game.hasNext()){
+                    if (plugin.options['type'] == "canvas"){
+                        refreshCanvas();
+                    }
                     applyNextAuto();
                 } else {
                     razAutoPlay();
@@ -625,7 +632,7 @@
             // Wait a little...
             (function() {
                 var callback = function() { 
-                    clearInterval(timer);
+                    razAnim();
                     drawCanvasNextMoveStep3(ctx, move, piecePlayed);
                 };
                 timer = setInterval(callback, plugin.options['delayAfterHighlight']);
@@ -662,7 +669,7 @@
                                 
                                 i++;
                             } else {
-                                clearInterval(timer);
+                                razAnim();
                                 drawCanvasNextMoveStep4(ctx, move, piecePlayed);
                             }
                         };
@@ -705,7 +712,7 @@
                                 
                                 i++;
                             } else {
-                                clearInterval(timer);
+                                razAnim();
                             }
                         };
                         timer = setInterval(callback, plugin.options['delayToRemoveCapturedPiece']);
@@ -714,7 +721,6 @@
             }
         };
 
-        
         plugin.init();
     };
 
