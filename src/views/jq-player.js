@@ -163,23 +163,25 @@
             var menu = '';
             if (pdnManager !== null){
                 var nbGames = pdnManager.getGameCount();
-                var titles = pdnManager.getTitles("tagWhite - tagBlack [tagRound] - tagResult");
-                menu = '<select name="' + id + '-menu">';
-                
-                if (!plugin.options['pdnFirstLoadNum']){
-                    menu += '<option value="">&mdash;</option>';
-                }
-
-                for (var k = 0; k < titles.length; k++){
-                    var t = titles[k];
-                    var isSelect = (pdnCurrentNumGame == t['num']);
-                    var attrSelected = '';
-                    if (isSelect){
-                        attrSelected = ' selected="selected"';
+                if (nbGames > 1) {
+                    var titles = pdnManager.getTitles("tagWhite - tagBlack [tagRound] - tagResult");
+                    menu = '<select name="' + id + '-menu">';
+                    
+                    if (!plugin.options['pdnFirstLoadNum']){
+                        menu += '<option value="">&mdash;</option>';
                     }
-                    menu += '<option value="' + t["num"] + '"' + attrSelected + '>' + t["num"] + ' &ndash; ' + t["title"] + '</option>';
+
+                    for (var k = 0; k < titles.length; k++){
+                        var t = titles[k];
+                        var isSelect = (pdnCurrentNumGame == t['num']);
+                        var attrSelected = '';
+                        if (isSelect){
+                            attrSelected = ' selected="selected"';
+                        }
+                        menu += '<option value="' + t["num"] + '"' + attrSelected + '>' + t["num"] + ' &ndash; ' + t["title"] + '</option>';
+                    }
+                    menu += '</select>';
                 }
-                menu += '</select>';
             }
 
             layout += '</td>';
