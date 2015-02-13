@@ -28,36 +28,24 @@ PDN.prototype.getGame = function(numGame) {
     var nbGame = this.getGameCount();
     if (nbGame > 0){
         var pdnObj = this.parser.parse(numGame);
-        //pdnObj.debugOfficialTags();
-
-        
+                
         // ----------------------
         // Position
         // ----------------------
         if (!pdnObj.hasFEN()) {
             game.board.setInitialPosition();
         } else {
-            // FIXME : on doit pouvoir eviter la boucle en utilisant setPosition
-            
             var lst = pdnObj.getFENList("WP");
-            for (var k = 0; k < lst.length; k++) {
-                game.board.setPiece(lst[k], Piece.PAWN_WHITE);
-            }
+            game.board.setPosition(Piece.PAWN_WHITE, lst);
             
             lst = pdnObj.getFENList("BP");
-            for (var k = 0; k < lst.length; k++) {
-                game.board.setPiece(lst[k], Piece.PAWN_BLACK);
-            }
+            game.board.setPosition(Piece.PAWN_BLACK, lst);
 
             lst = pdnObj.getFENList("WK");
-            for (var k = 0; k < lst.length; k++) {
-                game.board.setPiece(lst[k], Piece.DAME_WHITE);
-            }
+            game.board.setPosition(Piece.DAME_WHITE, lst);
 
             lst = pdnObj.getFENList("BK");
-            for (var k = 0; k < lst.length; k++) {
-                game.board.setPiece(lst[k], Piece.DAME_BLACK);
-            }
+            game.board.setPosition(Piece.DAME_BLACK, lst);
         } 
 
 
