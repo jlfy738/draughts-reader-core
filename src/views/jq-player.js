@@ -163,7 +163,7 @@
             var menu = '';
             if (pdnManager !== null){
                 var nbGames = pdnManager.getGameCount();
-                var titles = pdnManager.getTitles();
+                var titles = pdnManager.getTitles("tagWhite - tagBlack [tagRound] - tagResult");
                 menu = '<select name="' + id + '-menu">';
                 
                 if (!plugin.options['pdnFirstLoadNum']){
