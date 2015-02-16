@@ -1,7 +1,7 @@
-draughts-player
+draughts-reader-core
 ===============
 
-Javascript draughts game notations player
+Javascript draughts game notations reader
 
 ## Install dependencies
 
