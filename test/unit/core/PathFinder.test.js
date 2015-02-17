@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var rewire = require('rewire');
 
-var PathFinder = rewire('./../../../src/core/PathFinder');
+var PathFinder = rewire('./../../../src/brain/PathFinder');
 var DraughtBoard = rewire('./../../../src/core/DraughtBoard');
 
 describe('The PathFinder constructor', function () {

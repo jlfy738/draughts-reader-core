@@ -1,7 +1,7 @@
 var
-    symbols = require('./symbols'),
+    symbols = require('../utils//symbols'),
     PathFinder = require('./PathFinder'),
-    Move = require('./Move'),
+    Move = require('../core/Move'),
     Piece = symbols.Piece
 ;
 

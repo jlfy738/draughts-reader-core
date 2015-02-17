@@ -1,10 +1,10 @@
 var
-    symbols = require('./symbols'),
-    DraughtBoard =  require('./DraughtBoard'),
-    Square = require('./Square'),
+    symbols = require('../utils/symbols'),
+    DraughtBoard =  require('../core/DraughtBoard'),
+    Square = require('../core/Square'),
     Diagonal =  require('./Diagonal'),
     RafleItem = require('./RafleItem'),
-    Move = require('./Move'),
+    Move = require('../core/Move'),
     NTree = require('./NTree'),
     Piece = symbols.Piece
 ;

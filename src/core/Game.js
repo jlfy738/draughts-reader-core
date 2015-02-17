@@ -1,7 +1,7 @@
 var
-    symbols = require('./symbols'),
+    symbols = require('../utils/symbols'),
     DraughtBoard = require('./DraughtBoard'),
-    Arbiter = require('./Arbiter'),
+    Arbiter = require('../brain/Arbiter'),
     Color = symbols.Color
 ;
 

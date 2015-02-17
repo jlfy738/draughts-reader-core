@@ -1,6 +1,6 @@
 var
-    conf = require('./conf'),
-    symbols = require('./symbols'),
+    conf = require('../utils/conf'),
+    symbols = require('../utils/symbols'),
     Square =  require('./Square'),
     Piece = symbols.Piece,
     Conf = conf.Conf

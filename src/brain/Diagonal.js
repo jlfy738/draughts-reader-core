@@ -1,5 +1,5 @@
 var
-    symbols = require('./symbols'),
+    symbols = require('../utils/symbols'),
     RafleItem = require('./RafleItem')
     Piece = symbols.Piece
 ;

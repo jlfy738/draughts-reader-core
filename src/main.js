@@ -1,7 +1,6 @@
 var
-    symbols = require('./core/symbols'),
+    symbols = require('./utils/symbols'),
     Game = require('./core/Game'),
-    DamWeb = require('./converters/DamWeb'),
     Piece = symbols.Piece
 ;
 
@@ -30,21 +29,6 @@ function testGame() {
     console.log("");
 }
 
-function testDamWeb() {
-    var game = DamWeb.getGame("WMWP1627283233343537384045BP0712141819212324252629", "343025343731263732412143353024443322233222171221162914194137071237321218454019234034");
-    
-    console.log("--------------------------------------");
-    console.log("DamWeb");
-    console.log("--------------------------------------");
-    game.debugFull();
-    console.log("");
-    console.log("");
-
-    console.log(game.getNotation());
-}
-
 
 
 testGame();
-testDamWeb();
-

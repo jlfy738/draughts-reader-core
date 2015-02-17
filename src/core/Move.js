@@ -1,5 +1,5 @@
 var
-    symbols = require('./symbols'),
+    symbols = require('../utils/symbols'),
     Color = symbols.Color
 ;
 
