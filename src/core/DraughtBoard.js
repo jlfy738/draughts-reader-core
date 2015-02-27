@@ -34,23 +34,23 @@ function DraughtBoard(boardSize) {
 /** Initial position */
 DraughtBoard.prototype.setInitialPosition = function() {
     for (var num = this.conf['B_POSITION'][0]; num <= this.conf['B_POSITION'][1]; num++) {
-        this.setPiece(num, Piece.PAWN_BLACK);
+        this.setPiece(Piece.PAWN_BLACK, num);
     }
 
     for (var num = this.conf['W_POSITION'][0]; num <= this.conf['W_POSITION'][1]; num++) {
-        this.setPiece(num, Piece.PAWN_WHITE);
+        this.setPiece(Piece.PAWN_WHITE, num);
     }
 };
 
 /** Pose des pièces sur le damier */
 DraughtBoard.prototype.setPosition = function(piece, numbers) {
     for (var k = 0; k < numbers.length; k++) {
-        this.setPiece(numbers[k], piece);
+        this.setPiece(piece, numbers[k]);
     }
 };
 
 /** Ajouter une pièce sur une case. */
-DraughtBoard.prototype.setPiece = function(number, piece) {
+DraughtBoard.prototype.setPiece = function(piece, number) {
     var c = this.getSquare(number);
     c.piece = piece;
 };
@@ -66,7 +66,7 @@ DraughtBoard.prototype.getSquares = function() {
 };
 
 /** Connaitre la pièce se trouvant sur une case. */
-DraughtBoard.prototype.isPiece = function(number, piece) {
+DraughtBoard.prototype.isPiece = function(piece, number) {
     return (this.getPiece(number) === piece);
 };
 
@@ -85,24 +85,24 @@ DraughtBoard.prototype.applyMove = function(move) {
     var piecePlayed = this.getPiece(move.startingSquareNum);
 
     // Retirer la pièce de la case de départ
-    this.setPiece(move.startingSquareNum, Piece.EMPTY);
+    this.setPiece(Piece.EMPTY, move.startingSquareNum);
 
     // Retirer les pièces des cases prises
     for (var i = 0; i < move.capturedSquares.length; i++) {
         var c = move.capturedSquares[i];
-        this.setPiece(c.number, Piece.EMPTY);
+        this.setPiece(Piece.EMPTY, c.number);
     }
 
     // Poser la pièce sur la case d'arrivée
     if (!move.isCrowned) {
-        this.setPiece(move.endingSquareNum, piecePlayed);
+        this.setPiece(piecePlayed, move.endingSquareNum);
     }
     // Ce mouvement promeu en Dame
     else {
         if (piecePlayed == Piece.PAWN_WHITE) {
-            this.setPiece(move.endingSquareNum, Piece.DAME_WHITE);
+            this.setPiece(Piece.DAME_WHITE, move.endingSquareNum);
         } else if (piecePlayed == Piece.PAWN_BLACK) {
-            this.setPiece(move.endingSquareNum, Piece.DAME_BLACK);
+            this.setPiece(Piece.DAME_BLACK, move.endingSquareNum);
         }
     }
 };
@@ -112,25 +112,25 @@ DraughtBoard.prototype.applyMoveRev = function(move) {
     var piecePlayed = this.getPiece(move.endingSquareNum);
 
     // Retirer la pièce de la case d'arrivée
-    this.setPiece(move.endingSquareNum, Piece.EMPTY);
+    this.setPiece(Piece.EMPTY, move.endingSquareNum);
 
     // Remettre les pièces qui avaient été prises.
     for (var i = 0; i < move.capturedSquares.length; i++) {
         var c = move.capturedSquares[i];
-        this.setPiece(c.number, c.piece);
+        this.setPiece(c.piece, c.number);
     }
 
     // Remettre la pièce sur la case de départ
     if (!move.isCrowned) {
-        this.setPiece(move.startingSquareNum, piecePlayed);
+        this.setPiece(piecePlayed, move.startingSquareNum);
     }
 
     // La dame redevient pion
     else {
         if (piecePlayed == Piece.DAME_WHITE) {
-            this.setPiece(move.startingSquareNum, Piece.PAWN_WHITE);
+            this.setPiece(Piece.PAWN_WHITE, move.startingSquareNum);
         } else if (piecePlayed == Piece.DAME_BLACK) {
-            this.setPiece(move.startingSquareNum, Piece.PAWN_BLACK);
+            this.setPiece(Piece.PAWN_BLACK, move.startingSquareNum);
         }
     }
 };

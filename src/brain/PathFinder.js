@@ -208,7 +208,7 @@ PathFinder.prototype._cloneDraughtBoard = function(board) {
 
     for (var k = 0; k < board.getSquares().length; k++) {
         var c = board.getSquare(k + 1);
-        d.setPiece(c.number, c.piece);
+        d.setPiece(c.piece, c.number);
     }
 
     return d;
