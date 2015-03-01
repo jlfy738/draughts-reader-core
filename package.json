@@ -1,6 +1,6 @@
 {
-  "name": "draughts-player",
-  "version" : "0.0.1",
+  "name": "draughts-reader-core",
+  "version" : "1.0.0",
   "devDependencies": {
     "browserify": "^6.3.3",
     "chai": "^1.10.0",
@@ -11,7 +11,7 @@
   },
   "main" : "src/main.js",
   "scripts": {
-    "build": "rm -rf ./dist/ && mkdir \"./dist/\" && browserify ./src/main.js -o ./dist/draughts-player.core.js",
+    "build": "rm -rf ./dist/ && mkdir \"./dist/\" && browserify ./src/main.js -o ./dist/draughts-reader.core.js",
     "test": "mocha test/**/*.test.js"
   },
   "licence" : "MIT"
