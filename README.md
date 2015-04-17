@@ -67,7 +67,7 @@ The color of the piece on the square :
 ### DraughtBoard
 
 `DraughtBoard(boardSize)`
-Constructor : default board size is 10 for International 10x10 Draughts. It is also possible to set 8 for Bresilian game or 12 for Canadian game, using the international rules.
+Constructor : Create an empty draughts board. Default board size is 10 for International 10x10 Draughts. It is also possible to set 8 for Bresilian game or 12 for Canadian game, using the international rules.
 
 `.setInitialPosition()`
 Add pieces on draught board to set the initial position. Default is 20  pawns on each side, depending of boardsize (cf. constructor).
@@ -96,26 +96,59 @@ Cancel the move (Read move in reverse). So, the board position will change.
 ### Game
 
 `Game(boardSize)`
+Constructor. A Game includes a board and a list of movements. We can apply the movements on the board. Thus the position of the pieces on the board change. (boardSize : See DraughtBoard)
 
 `.addMove(startNum, endNum, middleSquaresNum)`
+Define a Move and add it to list of movements. startNum : first square number ; endNum : Last square number ; middleSquaresNum : list of square number (not required) use it if path is ambiguous.
+
 `.addMoveTxt(move)`
-`.hasMove()`
-
-
-`.hasNext()`
-`.hasPrev()`
-`.getCurrentMove()`
-`.getNextMove()`
-`.getPrevMove()`
-
-`.next()`
-`.prev()`
-`.start()`
-`.end()`
-`.setCursor(position)`
-
+Other way to define a Move. Examples : "40-34" ; "24x42" ; "24x33x42"
 
 `.getNotation()`
+Get a structure to easily display text notation.
+The structure can be defined like this :
+notation ::= [line]
+line ::= {'number':int, 'white':moveNotation, 'black':moveNotation}
+moveNotation ::= {'move':textNotation, 'current':boolean}
+textNotation ::= \d[x|-]\d
+
+[{'number':1, 
+  'white':{'move':'35-30', 'current':false}, 
+  'black':{'move':'25x34', 'current':false}
+ }, ...]
+
+`.hasMove()`
+True if there exists at least one move.
+
+`.start()`
+Set the DraugthBoard in the initial position. No movement has been played.
+
+`.end()`
+Set the DraugthBoard in the final position. All movements has been played.
+
+`.next()`
+Apply the next move and set the board in the new position.
+
+`.prev()`
+Apply (backward) the previous move and set the board in the new position.
+
+`.setCursor(position)`
+Set the board in the specified position, applying moves from start number to position number.
+
+`.hasNext()`
+Is there a move after the current move ?
+
+`.hasPrev()`
+Is there a move before the current move ?
+
+`.getCurrentMove()`
+Return the current Move object.
+
+`.getNextMove()`
+Return the next Move Object to apply (relative to the current Move).
+
+`.getPrevMove()`
+Return the previous Move Object  (relative to the current Move).
 
 
 `.debug()`
