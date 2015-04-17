@@ -1,33 +1,17 @@
-draughts-reader-core
-===============
+# draughts-reader-core
 
-Javascript draughts game notations reader
+The draughts-reader-core library is a pure javascript engine to define and read draughts game. No user interface is provided. It is an "in-memory" game representation.
 
-## Install dependencies
-
-`$ npm install`
-
-## Launch tests
-
-`$ npm test`
-
-## Build
-
-The following command will build the distribution package :
-
-`$ npm run build`
-
-(NB : using browserify)
+## Quick start
+- Install : `$ npm install`
+- Launch tests : `$ npm test`
+- Build : `$ npm run build` (NB : using browserify)
 
 
-# Simple example
-
-First and most important, the draughts-reader-core library is a pure javascript engine to define and read draughts game. No user interface is provided. It is a 'in-memory' game representation.
-
-
-### Define initial position and movements
+## Simple example
 There are 3 main objects : `Game`, `DraughtBoard` and `Piece`.
 
+**Define initial position and movements**
 ```javascript
 var game = new Game();
 var board = game.board;
@@ -46,7 +30,7 @@ game.addMoveTxt("42x33");
 game.addMoveTxt("39x10");
 ```
 
-# API
+## API
 
 ### Piece
 
@@ -107,12 +91,11 @@ Other way to define a Move. Examples : "40-34" ; "24x42" ; "24x33x42"
 `.getNotation()`
 Get a structure to easily display text notation.
 The structure can be defined like this :
-
 ```
 notation ::= [line]
 line ::= {'number':int, 'white':moveNotation, 'black':moveNotation}
 moveNotation ::= {'move':textNotation, 'current':boolean}
-textNotation ::= \d([x|-]\d)*
+textNotation ::= \d[x|-]\d
 ```
 ```
 [{'number':1, 
