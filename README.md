@@ -107,15 +107,19 @@ Other way to define a Move. Examples : "40-34" ; "24x42" ; "24x33x42"
 `.getNotation()`
 Get a structure to easily display text notation.
 The structure can be defined like this :
+
+```
 notation ::= [line]
 line ::= {'number':int, 'white':moveNotation, 'black':moveNotation}
 moveNotation ::= {'move':textNotation, 'current':boolean}
-textNotation ::= \d[x|-]\d
-
+textNotation ::= \d([x|-]\d)*
+```
+```
 [{'number':1, 
   'white':{'move':'35-30', 'current':false}, 
   'black':{'move':'25x34', 'current':false}
  }, ...]
+```
 
 `.hasMove()`
 True if there exists at least one move.
