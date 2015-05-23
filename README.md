@@ -30,6 +30,107 @@ game.addMoveTxt("42x33");
 game.addMoveTxt("39x10");
 ```
 
+**Read position, apply moves and get detailed information**
+```javascript
+// Set initial position
+game.start();
+
+// Reading some squares
+var p1 = board.getPiece(1);
+var p33 = board.getPiece(33);
+console.log(p1  == Piece.EMPTY);      // true
+console.log(p33 == Piece.PAWN_WHITE); // true
+
+// Iterate all squares
+for (var k = 1; k <= board.conf['SQ_MAX_NUM']; k++) {
+    var p = board.getPiece(k);
+    switch (p) {
+    case Piece.PAWN_WHITE:
+        console.log("Square " + k + " : PAWN_WHITE");
+        break;
+    case Piece.PAWN_BLACK:
+        console.log("Square " + k + " : PAWN_BLACK");
+        break;
+    case Piece.DAME_WHITE:
+        console.log("Square " + k + " : DAME_WHITE");
+        break;
+    case Piece.DAME_BLACK:
+        console.log("Square " + k + " : DAME_BLACK");
+        break;
+    default:
+        // Empty square
+    }
+}
+
+/* Results :
+Square 12 : PAWN_BLACK
+Square 13 : PAWN_BLACK
+Square 14 : PAWN_BLACK
+Square 22 : PAWN_BLACK
+Square 24 : PAWN_BLACK
+Square 33 : PAWN_WHITE
+Square 38 : PAWN_WHITE
+Square 39 : PAWN_WHITE
+Square 43 : PAWN_WHITE
+Square 44 : PAWN_WHITE
+*/
+
+// What's append on next move ?
+var m = game.getNextMove();
+console.log(m);
+
+/*  Results :
+{   startingSquareNum: 33,
+    endingSquareNum: 29,
+    middleSquaresNum: [],
+    color: 1,
+    isCaptured: false,
+    isCrowned: false,
+    landingSquaresNum: [],
+    capturedSquares: [],
+    status: true,
+    message: '' }
+*/
+
+
+// We apply it.
+game.next();
+
+// What's append on next move ?
+m = game.getNextMove();
+console.log(m);
+
+/*  Results :
+{   startingSquareNum: 24,
+    endingSquareNum: 42,
+    middleSquaresNum: [ 33 ],
+    color: 2,
+    isCaptured: true,
+    isCrowned: false,
+    landingSquaresNum: [ 33, 42 ],
+    capturedSquares: [ { number: 29, piece: 1 }, { number: 38, piece: 1 } ],
+    status: true,
+    message: '' }
+*/
+
+// Reading game
+game.start();
+while (game.hasNext()){
+    var m = game.getNextMove();
+    console.log(m.getNotation());
+    
+    game.next();
+}
+
+/*  Results :
+33-29
+24x33x42
+43-38
+42x33
+39x10
+*/
+```
+
 ## API
 
 ### Piece
