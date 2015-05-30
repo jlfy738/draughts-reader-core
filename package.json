@@ -14,5 +14,5 @@
     "build": "rm -rf ./dist/ && mkdir \"./dist/\" && browserify ./src/main.js -o ./dist/draughts-reader.core.js",
     "test": "mocha test/**/*.test.js"
   },
-  "licence" : "MIT"
+  "licence" : "GPL-3.0"
 }
