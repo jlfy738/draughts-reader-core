@@ -46,8 +46,8 @@ PathFinder.prototype._treeToMovements = function(board, tree) {
     for (var k = 0; k < lists.length; k++) {
         var list = lists[k];
 
-        // le 1er element n'est pas une prise mais le point de départ.
-        // Toujours présents même s'il n'existe aucune prise.
+        // First item is not a capture but the starting point.
+        // (It still exists even if there is no capture)
         if (list.length > 1) {
             var riStart = list[0];
             var riEnd = list[list.length - 1];
@@ -58,7 +58,10 @@ PathFinder.prototype._treeToMovements = function(board, tree) {
 
             for (var j = 0; j < list.length; j++) {
                 var ri = list[j];
-                if (ri.endingSquareNum != nStart){
+                
+                // Starting square is not considered as a landing square
+                // unlike the final square (it can be the same).
+                if (ri.endingSquareNum != nStart || j != 0){
                     move.addLandingSquareNum(ri.endingSquareNum);
                 }
                 if (ri.capturedSquareNum != null) {
