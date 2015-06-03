@@ -11,6 +11,7 @@ function Diagonal(isGD) {
 
 Diagonal.prototype.addCase = function(c) {
     this.squares.push(c);
+    return this;
 };
 
 Diagonal.prototype._size = function() {
@@ -299,7 +300,7 @@ Diagonal.prototype.getRaflesItem = function(squareNum, numSquaresPrevCaptured) {
 };
 
 Diagonal.prototype.toString = function() {
-    
+
     var type = "GD";
     if (!this.isGD){
         type = "TT";

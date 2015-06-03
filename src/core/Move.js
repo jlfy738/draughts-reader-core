@@ -21,9 +21,11 @@ function Move(startNum, endNum) {
 
 Move.prototype.addLandingSquareNum = function(squareNum) {
     this.landingSquaresNum.push(squareNum);
+    return this;
 };
 Move.prototype.addCapturedSquare = function(square) {
     this.capturedSquares.push(square);
+    return this;
 };
 
 Move.prototype.size = function() {

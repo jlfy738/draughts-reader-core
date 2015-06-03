@@ -10,6 +10,7 @@ NTree.prototype.getItem = function() {
 
 NTree.prototype.setItem = function(item) {
     this.item = item;
+    return this;
 };
 
 NTree.prototype.hasLeft = function() {
@@ -45,6 +46,7 @@ NTree.prototype.setChildren = function(list) {
             }
         }
     }
+    return this;
 };
 
 // Retourne tous les fils
