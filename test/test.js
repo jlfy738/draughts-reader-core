@@ -10,16 +10,18 @@ function testGame() {
     var game = new Game();
     var board = game.board;
     // ---
-    board.setPosition(Piece.PAWN_WHITE, [33, 38, 39, 43, 44]);
-    board.setPosition(Piece.PAWN_BLACK, [12, 13, 14, 22, 24]);
-    board.setPosition(Piece.DAME_WHITE, []);
-    board.setPosition(Piece.DAME_BLACK, []);
+    board
+        .setPosition(Piece.PAWN_WHITE, [33, 38, 39, 43, 44])
+        .setPosition(Piece.PAWN_BLACK, [12, 13, 14, 22, 24])
+        .setPosition(Piece.DAME_WHITE, [])
+        .setPosition(Piece.DAME_BLACK, []);
     // ---
-    game.addMove(33, 29);
-    game.addMove(24, 42, [33]);
-    game.addMove(43, 38);
-    game.addMoveTxt("42x33");
-    game.addMoveTxt("39x10");
+    game
+        .addMove(33, 29)
+        .addMove(24, 42, [33])
+        .addMove(43, 38)
+        .addMoveTxt("42x33")
+        .addMoveTxt("39x10");
     // ---
 
 
