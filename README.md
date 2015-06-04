@@ -17,17 +17,19 @@ var game = new Game();
 var board = game.board;
 
 // Initial position
-board.setPosition(Piece.PAWN_WHITE, [33, 38, 39, 43, 44]);
-board.setPosition(Piece.PAWN_BLACK, [12, 13, 14, 22, 24]);
-board.setPosition(Piece.DAME_WHITE, []);
-board.setPosition(Piece.DAME_BLACK, []);
+board
+  .setPosition(Piece.PAWN_WHITE, [33, 38, 39, 43, 44])
+  .setPosition(Piece.PAWN_BLACK, [12, 13, 14, 22, 24])
+  .setPosition(Piece.DAME_WHITE, [])
+  .setPosition(Piece.DAME_BLACK, []);
 
 // Different ways to define the list of movements
-game.addMove(33, 29);
-game.addMove(24, 42, [33]);
-game.addMove(43, 38);
-game.addMoveTxt("42x33");
-game.addMoveTxt("39x10");
+game
+  .addMove(33, 29)
+  .addMove(24, 42, [33])
+  .addMove(43, 38)
+  .addMoveTxt("42x33")
+  .addMoveTxt("39x10");
 ```
 
 **Read position, apply moves and get detailed information**
@@ -118,7 +120,7 @@ game.start();
 while (game.hasNext()){
     var m = game.getNextMove();
     console.log(m.getNotation());
-    
+
     game.next();
 }
 
@@ -135,7 +137,7 @@ while (game.hasNext()){
 
 ### Piece
 
-Draught board consists of squares on which the piece are located including : 
+Draught board consists of squares on which the piece are located including :
 - `Piece.EMPTY` : Empty square
 - `Piece.PAWN_WHITE`
 - `Piece.PAWN_BLACK`
@@ -144,7 +146,7 @@ Draught board consists of squares on which the piece are located including :
 
 ### Color
 
-The color of the piece on the square : 
+The color of the piece on the square :
 - `Color.NONE` : Empty square
 - `Color.WHITE`
 - `Color.BLACK`
@@ -158,10 +160,10 @@ Constructor : Create an empty draughts board. Default board size is 10 for Inter
 Add pieces on draught board to set the initial position. Default is 20  pawns on each side, depending of boardsize (cf. constructor).
 
 `.setPosition(piece, numbers)`
-Put Piece on squares. 
+Put Piece on squares.
 
 `.setPiece(piece, number)`
-Put Piece on specified square. 
+Put Piece on specified square.
 
 `.getPiece(number)`
 return the piece located on the square number.
@@ -199,8 +201,8 @@ moveNotation ::= {'move':textNotation, 'current':boolean}
 textNotation ::= \d[x|-]\d
 ```
 ```
-[{'number':1, 
-  'white':{'move':'35-30', 'current':false}, 
+[{'number':1,
+  'white':{'move':'35-30', 'current':false},
   'black':{'move':'25x34', 'current':false}
  }, ...]
 ```

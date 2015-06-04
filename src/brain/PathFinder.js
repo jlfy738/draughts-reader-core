@@ -58,7 +58,7 @@ PathFinder.prototype._treeToMovements = function(board, tree) {
 
             for (var j = 0; j < list.length; j++) {
                 var ri = list[j];
-                
+
                 // Starting square is not considered as a landing square
                 // unlike the final square (it can be the same).
                 if (ri.endingSquareNum != nStart || j != 0){
@@ -143,6 +143,7 @@ PathFinder.prototype.buildRafles = function(board, node, numSquaresPrevCaptured)
         // ---
         this.buildRafles(diag, nf, lcdp);
     }
+    return this;
 };
 
 PathFinder.prototype.displayTreePaths = function(tree) {
@@ -163,7 +164,7 @@ PathFinder.prototype.displayTreePaths = function(tree) {
 /** Retourne la diagonaleGD contenant une case donnée. */
 PathFinder.prototype._getDiagonalGD = function(board, number) {
     var diag = [];
-    loop: 
+    loop:
     for (var i = 0; i < board.conf['DIAGONALS_GD'].length; i++) {
         var diagonal = board.conf['DIAGONALS_GD'][i];
         for (var j = 0; j < diagonal.length; j++) {
@@ -186,7 +187,7 @@ PathFinder.prototype._getDiagonalGD = function(board, number) {
 /** Retourne la diagonaleTT contenant une case donnée. */
 PathFinder.prototype._getDiagonalTT = function(board, number) {
     var diag = [];
-    loop: 
+    loop:
     for (var i = 0; i < board.conf['DIAGONALS_TT'].length; i++) {
         var diagonal = board.conf['DIAGONALS_TT'][i];
         for (var j = 0; j < diagonal.length; j++) {

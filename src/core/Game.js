@@ -17,7 +17,7 @@ Game.prototype.hasMove = function() {
 
 /**
  * Définition des mouvements
- * 
+ *
  * @param startNum
  *            Numéro de la case de départ (REQUIS)
  * @param endNum
@@ -46,6 +46,7 @@ Game.prototype.addMove = function(startNum, endNum, middleSquaresNum) {
     } else {
         console.log("addMove(" + startNum + ", " + endNum + ") : ERROR");
     }
+    return this;
 };
 
 
@@ -107,6 +108,7 @@ Game.prototype.addMoveTxt = function(move) {
     } else {
         console.log("addMove: ERREUR (1)");
     }
+    return this;
 };
 
 Game.prototype._getStatusNextIndex = function() {
@@ -187,15 +189,18 @@ Game.prototype.prev = function() {
 
 Game.prototype.start = function() {
     this._setIndex(-1);
+    return this;
 };
 
 Game.prototype.end = function() {
     this._setIndex(this._getLastIndex());
+    return this;
 };
 
 /** Position initiale = 0 ; Premier coup = 1. */
 Game.prototype.setCursor = function(position) {
     this._setIndex(position - 1);
+    return this;
 };
 
 /** Position initiale = -1 ; premier coup = 0 */
@@ -212,6 +217,7 @@ Game.prototype._setIndex = function(idx) {
             isOk = this.prev();
         }
     }
+    return this;
 };
 
 Game.prototype._getLastIndex = function() {
@@ -241,14 +247,14 @@ Game.prototype._hasError = function() {
 };
 
 
-// [{'number':1, 
-//   'white':{'move':'32x26', 'current':false}, 
+// [{'number':1,
+//   'white':{'move':'32x26', 'current':false},
 //   'black':{'move':'32x26', 'current':false}}]
 Game.prototype.getNotation = function(){
     var list = [];
-    
+
     if (this.moves.length > 0){
-    
+
         // is first move a black move ?
         var m = this.moves[0];
         var notation = m.getNotation();
@@ -258,14 +264,14 @@ Game.prototype.getNotation = function(){
             mapb['position'] = 1;
             mapb['move'] = notation;
             mapb['current'] = (0 == this.index);
-            
+
             var map = {};
             map['black'] = mapb;
-            map['number'] = 1;            
+            map['number'] = 1;
             list.push(map);
             shift = 1;
         }
-        
+
         var map = null;
         for (var k = 0 + shift; k < this.moves.length; k++) {
             var m = this.moves[k];
@@ -277,7 +283,7 @@ Game.prototype.getNotation = function(){
                 mapw['position'] = k + 1;
                 mapw['move'] = notation;
                 mapw['current'] = (k == this.index);
-                
+
                 map = {};
                 map['number'] = cpt;
                 map['white'] = mapw;
@@ -287,7 +293,7 @@ Game.prototype.getNotation = function(){
                 mapb['move'] = notation;
                 mapb['current'] = (k == this.index);
                 map['black'] = mapb;
-                
+
                 list.push(map);
                 map = null; // see after loop
             }

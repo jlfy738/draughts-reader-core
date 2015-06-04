@@ -20,7 +20,7 @@ function DraughtBoard(boardSize) {
     /** Active Squares */
     this.squares = []; // [Square]
 
-    
+
     /** Initialize active squares */
     for (var k = 1; k <= this.conf['SQ_MAX_NUM']; k++) {
         var c = new Square(k);
@@ -40,6 +40,7 @@ DraughtBoard.prototype.setInitialPosition = function() {
     for (var num = this.conf['W_POSITION'][0]; num <= this.conf['W_POSITION'][1]; num++) {
         this.setPiece(Piece.PAWN_WHITE, num);
     }
+    return this;
 };
 
 /** Pose des pièces sur le damier */
@@ -47,12 +48,14 @@ DraughtBoard.prototype.setPosition = function(piece, numbers) {
     for (var k = 0; k < numbers.length; k++) {
         this.setPiece(piece, numbers[k]);
     }
+    return this;
 };
 
 /** Ajouter une pièce sur une case. */
 DraughtBoard.prototype.setPiece = function(piece, number) {
     var c = this.getSquare(number);
     c.piece = piece;
+    return this;
 };
 
 /** Retourne une case. */
@@ -105,6 +108,7 @@ DraughtBoard.prototype.applyMove = function(move) {
             this.setPiece(Piece.DAME_BLACK, move.endingSquareNum);
         }
     }
+    return this;
 };
 
 /** Annule le mouvement sur le damier. */
@@ -133,6 +137,7 @@ DraughtBoard.prototype.applyMoveRev = function(move) {
             this.setPiece(Piece.PAWN_BLACK, move.startingSquareNum);
         }
     }
+    return this;
 };
 
 DraughtBoard.prototype.debugDraughtBoard = function() {
