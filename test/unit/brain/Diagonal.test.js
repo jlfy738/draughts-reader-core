@@ -321,6 +321,70 @@ describe('constructor', function () {
                 diagoTT5._getSquareByNumber(11).piece = Piece.EMPTY;
             });
 
+            it('should TT [' + diagNums + '] with BP in 6 == [11] OK', function(){
+                diagoTT5._getSquareByNumber(6).piece = Piece.PAWN_BLACK;
+                var liste = diagoTT5.getSimpleMovements(6);
+                expect(liste).to.eql([11]);
+                diagoTT5._getSquareByNumber(6).piece = Piece.EMPTY;
+            });
+
+            it('should TT [' + diagNums + '] with BP in 11 == [17] OK', function(){
+                diagoTT5._getSquareByNumber(11).piece = Piece.PAWN_BLACK;
+                var liste = diagoTT5.getSimpleMovements(11);
+                expect(liste).to.eql([17]);
+                diagoTT5._getSquareByNumber(11).piece = Piece.EMPTY;
+            });
+
+            it('should TT [' + diagNums + '] with BP in 44 == [50] OK', function(){
+                diagoTT5._getSquareByNumber(44).piece = Piece.PAWN_BLACK;
+                var liste = diagoTT5.getSimpleMovements(44);
+                expect(liste).to.eql([50]);
+                diagoTT5._getSquareByNumber(44).piece = Piece.EMPTY;
+            });
+
+            it('should TT [' + diagNums + '] with BP in 50 == [] OK', function(){
+                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_BLACK;
+                var liste = diagoTT5.getSimpleMovements(50);
+                expect(liste).to.eql([]);
+                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
+            });
+
+            it('should TT [' + diagNums + '] & WP[17] with BP in 6 == [11] OK', function(){
+                diagoTT5._getSquareByNumber(6).piece = Piece.PAWN_BLACK;
+                diagoTT5._getSquareByNumber(17).piece = Piece.PAWN_WHITE;
+                var liste = diagoTT5.getSimpleMovements(6);
+                expect(liste).to.eql([11]);
+                diagoTT5._getSquareByNumber(6).piece = Piece.EMPTY;
+                diagoTT5._getSquareByNumber(17).piece = Piece.EMPTY;
+            });
+
+            it('should TT [' + diagNums + '] & WP[17] with BP in 11 == [] OK', function(){
+                diagoTT5._getSquareByNumber(11).piece = Piece.PAWN_BLACK;
+                diagoTT5._getSquareByNumber(17).piece = Piece.PAWN_WHITE;
+                var liste = diagoTT5.getSimpleMovements(11);
+                expect(liste).to.eql([]);
+                diagoTT5._getSquareByNumber(11).piece = Piece.EMPTY;
+                diagoTT5._getSquareByNumber(17).piece = Piece.EMPTY;
+            });
+
+            it('should TT [' + diagNums + '] & WP[50] with BP in 39 == [44] OK', function(){
+                diagoTT5._getSquareByNumber(39).piece = Piece.PAWN_BLACK;
+                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
+                var liste = diagoTT5.getSimpleMovements(39);
+                expect(liste).to.eql([44]);
+                diagoTT5._getSquareByNumber(39).piece = Piece.EMPTY;
+                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
+            });
+
+            it('should TT [' + diagNums + '] & WP[50] with BP in 44 == [] OK', function(){
+                diagoTT5._getSquareByNumber(44).piece = Piece.PAWN_BLACK;
+                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
+                var liste = diagoTT5.getSimpleMovements(44);
+                expect(liste).to.eql([]);
+                diagoTT5._getSquareByNumber(44).piece = Piece.EMPTY;
+                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
+            });
+
             // ---
 
             diagNums = conf['DIAGONALS_TT'][8]; // TT (3 squares)
@@ -421,7 +485,6 @@ describe('constructor', function () {
         });
 
     });
-
     
 
 
