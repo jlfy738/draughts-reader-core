@@ -9,8 +9,8 @@ function Diagonal(isGD) {
     this.isGD = isGD; //  Parallèle à la GD (false => // au TT)
 }
 
-Diagonal.prototype.addCase = function(c) {
-    this.squares.push(c);
+Diagonal.prototype.addSquare = function(sq) {
+    this.squares.push(sq);
     return this;
 };
 
@@ -19,15 +19,15 @@ Diagonal.prototype._size = function() {
 };
 
 Diagonal.prototype._getSquareByNumber = function(number) {
-    var c = null;
+    var sq = null;
     for (var k = 0; k < this._size(); k++) {
-        var cTmp = this.squares[k];
-        if (cTmp.number == number) {
-            c = cTmp;
+        var sqTmp = this.squares[k];
+        if (sqTmp.number == number) {
+            sq = sqTmp;
             break;
         }
     }
-    return c;
+    return sq;
 };
 
 Diagonal.prototype._getSquareByIndex = function(idx) {

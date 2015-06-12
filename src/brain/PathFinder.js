@@ -178,7 +178,7 @@ PathFinder.prototype._getDiagonalGD = function(board, number) {
     var diago = new Diagonal(true);
     for (var i = 0; i < diag.length; i++) {
         var c = board.getSquare(diag[i]);
-        diago.addCase(c);
+        diago.addSquare(c);
     }
 
     return diago;
@@ -201,7 +201,7 @@ PathFinder.prototype._getDiagonalTT = function(board, number) {
     var diago = new Diagonal(false);
     for (var i = 0; i < diag.length; i++) {
         var c = board.getSquare(diag[i]);
-        diago.addCase(c);
+        diago.addSquare(c);
     }
 
     return diago;
