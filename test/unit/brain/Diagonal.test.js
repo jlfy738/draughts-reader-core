@@ -8,6 +8,35 @@ var Square = rewire('./../../../src/core/Square');
 var Diagonal = rewire('./../../../src/brain/Diagonal');
 
 
+var testPawnSimpleMovement = function(whiteToPlay, msgPrefix, diago, wp, bp, startNum, result){
+    var msg = msgPrefix;
+    if (whiteToPlay && bp) {
+        msg += ' & BP[' + bp + ']';
+    } else if (!whiteToPlay && wp) {
+        msg += ' & WP[' + wp + ']';
+    }
+
+    if (whiteToPlay){
+        msg += ' with WP in ' + wp;
+    } else {
+        msg += ' with BP in ' + bp;
+    }
+    msg += ' == [' + result + '] OK';
+
+    it(msg, function(){
+        if (wp) { diago._getSquareByNumber(wp).piece = Piece.PAWN_WHITE; }
+        if (bp) { diago._getSquareByNumber(bp).piece = Piece.PAWN_BLACK; }
+        
+        var liste = diago.getSimpleMovements(startNum);
+        expect(liste).to.eql(result);
+        
+        // R.A.Z
+        if (wp) { diago._getSquareByNumber(wp).piece = Piece.EMPTY; }
+        if (bp) { diago._getSquareByNumber(bp).piece = Piece.EMPTY; }
+    });
+}
+
+
 describe('constructor', function () {
 
     
@@ -54,433 +83,116 @@ describe('constructor', function () {
 
         describe("#getSimpleMovements", function() {
             
-            var diagNums = conf['DIAGONALS_GD'][4]; // GD
-            var diago = new Diagonal(true);
+            var diagNumsGD4 = conf['DIAGONALS_GD'][4]; // GD
+            var diagoGD4 = new Diagonal(true);
+            var msgPrefix = 'should GD [' + diagNumsGD4 + ']';
             
-            for (var i = 0; i < diagNums.length; i++) {
-                diago.addSquare(new Square(diagNums[i], Piece.EMPTY));
+            for (var i = 0; i < diagNumsGD4.length; i++) {
+                diagoGD4.addSquare(new Square(diagNumsGD4[i], Piece.EMPTY));
             }
 
-            it('should GD [' + diagNums + '] with WP in 46 == [41] OK', function(){
-                diago._getSquareByNumber(46).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(46);
-                expect(liste).to.eql([41]);
-                diago._getSquareByNumber(46).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] with WP in 41 == [37] OK', function(){
-                diago._getSquareByNumber(41).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(41);
-                expect(liste).to.eql([37]);
-                diago._getSquareByNumber(41).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] with WP in 10 == [5] OK', function(){
-                diago._getSquareByNumber(10).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(10);
-                expect(liste).to.eql([5]);
-                diago._getSquareByNumber(10).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] with WP in 5 == [] OK', function(){
-                diago._getSquareByNumber(5).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(5);
-                expect(liste).to.eql([]);
-                diago._getSquareByNumber(5).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & BP[41] with WP in 46 == [] OK', function(){
-                diago._getSquareByNumber(46).piece = Piece.PAWN_WHITE;
-                diago._getSquareByNumber(41).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(46);
-                expect(liste).to.eql([]);
-                diago._getSquareByNumber(46).piece = Piece.EMPTY;
-                diago._getSquareByNumber(41).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & BP[37] with WP in 46 == [41] OK', function(){
-                diago._getSquareByNumber(46).piece = Piece.PAWN_WHITE;
-                diago._getSquareByNumber(37).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(46);
-                expect(liste).to.eql([41]);
-                diago._getSquareByNumber(46).piece = Piece.EMPTY;
-                diago._getSquareByNumber(37).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & BP[5] with WP in 14 == [10] OK', function(){
-                diago._getSquareByNumber(14).piece = Piece.PAWN_WHITE;
-                diago._getSquareByNumber(5).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(14);
-                expect(liste).to.eql([10]);
-                diago._getSquareByNumber(14).piece = Piece.EMPTY;
-                diago._getSquareByNumber(5).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & BP[5] with WP in 10 == [] OK', function(){
-                diago._getSquareByNumber(10).piece = Piece.PAWN_WHITE;
-                diago._getSquareByNumber(5).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(10);
-                expect(liste).to.eql([]);
-                diago._getSquareByNumber(10).piece = Piece.EMPTY;
-                diago._getSquareByNumber(5).piece = Piece.EMPTY;
-            });
-
-            //----
-
-            it('should GD [' + diagNums + '] with BP in 46 == [] OK', function(){
-                diago._getSquareByNumber(46).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(46);
-                expect(liste).to.eql([]);
-                diago._getSquareByNumber(46).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] with BP in 41 == [46] OK', function(){
-                diago._getSquareByNumber(41).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(41);
-                expect(liste).to.eql([46]);
-                diago._getSquareByNumber(41).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] with BP in 10 == [14] OK', function(){
-                diago._getSquareByNumber(10).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(10);
-                expect(liste).to.eql([14]);
-                diago._getSquareByNumber(10).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] with BP in 5 == [10] OK', function(){
-                diago._getSquareByNumber(5).piece = Piece.PAWN_BLACK;
-                var liste = diago.getSimpleMovements(5);
-                expect(liste).to.eql([10]);
-                diago._getSquareByNumber(5).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & WP[46] with BP in 37 == [41] OK', function(){
-                diago._getSquareByNumber(37).piece = Piece.PAWN_BLACK;
-                diago._getSquareByNumber(46).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(37);
-                expect(liste).to.eql([41]);
-                diago._getSquareByNumber(37).piece = Piece.EMPTY;
-                diago._getSquareByNumber(46).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & WP[46] with BP in 41 == [] OK', function(){
-                diago._getSquareByNumber(41).piece = Piece.PAWN_BLACK;
-                diago._getSquareByNumber(46).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(41);
-                expect(liste).to.eql([]);
-                diago._getSquareByNumber(41).piece = Piece.EMPTY;
-                diago._getSquareByNumber(46).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & WP[14] with BP in 5 == [10] OK', function(){
-                diago._getSquareByNumber(5).piece = Piece.PAWN_BLACK;
-                diago._getSquareByNumber(14).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(5);
-                expect(liste).to.eql([10]);
-                diago._getSquareByNumber(5).piece = Piece.EMPTY;
-                diago._getSquareByNumber(14).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums + '] & WP[10] with BP in 5 == [] OK', function(){
-                diago._getSquareByNumber(5).piece = Piece.PAWN_BLACK;
-                diago._getSquareByNumber(10).piece = Piece.PAWN_WHITE;
-                var liste = diago.getSimpleMovements(5);
-                expect(liste).to.eql([]);
-                diago._getSquareByNumber(5).piece = Piece.EMPTY;
-                diago._getSquareByNumber(10).piece = Piece.EMPTY;
-            });
-
-            // -----
-            diagNums8 = conf['DIAGONALS_GD'][8]; // Last (2 squares)
-            var diago8 = new Diagonal(true);
-            
-            for (var i = 0; i < diagNums8.length; i++) {
-                diago8.addSquare(new Square(diagNums8[i], Piece.EMPTY));
-            }
-
-            it('should GD [' + diagNums8 + '] with WP in 50 == [45] OK', function(){
-                diago8._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                var liste = diago8.getSimpleMovements(50);
-                expect(liste).to.eql([45]);
-                diago8._getSquareByNumber(50).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums8 + '] with WP in 45 == [] OK', function(){
-                diago8._getSquareByNumber(45).piece = Piece.PAWN_WHITE;
-                var liste = diago8.getSimpleMovements(45);
-                expect(liste).to.eql([]);
-                diago8._getSquareByNumber(45).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums8 + '] & BP[45] with WP in 50 == [] OK', function(){
-                diago8._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                diago8._getSquareByNumber(45).piece = Piece.PAWN_BLACK;
-                var liste = diago8.getSimpleMovements(50);
-                expect(liste).to.eql([]);
-                diago8._getSquareByNumber(50).piece = Piece.EMPTY;
-                diago8._getSquareByNumber(45).piece = Piece.EMPTY;
-            });
-
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4, 46, null, 46, [41]);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4, 41, null, 41, [37]);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4, 10, null, 10, [5]);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  5, null,  5, []);
             // ---
-
-            it('should GD [' + diagNums8 + '] with BP in 45 == [50] OK', function(){
-                diago8._getSquareByNumber(45).piece = Piece.PAWN_BLACK;
-                var liste = diago8.getSimpleMovements(45);
-                expect(liste).to.eql([50]);
-                diago8._getSquareByNumber(45).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums8 + '] with BP in 50 == [] OK', function(){
-                diago8._getSquareByNumber(50).piece = Piece.PAWN_BLACK;
-                var liste = diago8.getSimpleMovements(50);
-                expect(liste).to.eql([]);
-                diago8._getSquareByNumber(50).piece = Piece.EMPTY;
-            });
-
-            it('should GD [' + diagNums8 + '] & WP[50] with BP in 45 == [] OK', function(){
-                diago8._getSquareByNumber(45).piece = Piece.PAWN_BLACK;
-                diago8._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                var liste = diago8.getSimpleMovements(45);
-                expect(liste).to.eql([]);
-                diago8._getSquareByNumber(45).piece = Piece.EMPTY;
-                diago8._getSquareByNumber(50).piece = Piece.EMPTY;
-            });
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  46, 41, 46, []);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  46, 37, 46, [41]);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  14,  5, 14, [10]);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  10,  5, 10, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null, 46, 46, []);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null, 41, 41, [46]);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null, 10, 10, [14]);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null,  5,  5, [10]);
+            // ---
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 46, 37, 37, [41]);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 46, 41, 41, []);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 14,  5,  5, [10]);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 10,  5,  5, []);
 
 
             // -----
+            var diagNumsGD8 = conf['DIAGONALS_GD'][8]; // Last (2 squares)
+            var diagoGD8 = new Diagonal(true);
+            msgPrefix = 'should GD [' + diagNumsGD8 + ']';
+            
+            for (var i = 0; i < diagNumsGD8.length; i++) {
+                diagoGD8.addSquare(new Square(diagNumsGD8[i], Piece.EMPTY));
+            }
 
-            diagNums = conf['DIAGONALS_TT'][5]; // TT
+            testPawnSimpleMovement(true, msgPrefix, diagoGD8, 50, null, 50, [45]);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD8, 45, null, 45, []);
+            testPawnSimpleMovement(true, msgPrefix, diagoGD8, 50,   45, 50, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefix, diagoGD8, null, 45, 45, [50]);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD8, null, 50, 50, []);
+            testPawnSimpleMovement(false, msgPrefix, diagoGD8,   50, 45, 45, []);
+
+
+            // -----
+            var diagNumsTT5 = conf['DIAGONALS_TT'][5]; // TT
             var diagoTT5 = new Diagonal(false);
+            msgPrefix = 'should TT [' + diagNumsTT5 + ']';
             
-            for (var i = 0; i < diagNums.length; i++) {
-                diagoTT5.addSquare(new Square(diagNums[i], Piece.EMPTY));
+            for (var i = 0; i < diagNumsTT5.length; i++) {
+                diagoTT5.addSquare(new Square(diagNumsTT5[i], Piece.EMPTY));
             }
 
-            it('should TT [' + diagNums + '] with WP in 50 == [44] OK', function(){
-                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(50);
-                expect(liste).to.eql([44]);
-                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with WP in 44 == [39] OK', function(){
-                diagoTT5._getSquareByNumber(44).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(44);
-                expect(liste).to.eql([39]);
-                diagoTT5._getSquareByNumber(44).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with WP in 11 == [6] OK', function(){
-                diagoTT5._getSquareByNumber(11).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(11);
-                expect(liste).to.eql([6]);
-                diagoTT5._getSquareByNumber(11).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with WP in 6 == [] OK', function(){
-                diagoTT5._getSquareByNumber(6).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(6);
-                expect(liste).to.eql([]);
-                diagoTT5._getSquareByNumber(6).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & BP[39] with WP in 50 == [44] OK', function(){
-                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                diagoTT5._getSquareByNumber(39).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(50);
-                expect(liste).to.eql([44]);
-                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(39).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & BP[44] with WP in 50 == [] OK', function(){
-                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                diagoTT5._getSquareByNumber(44).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(50);
-                expect(liste).to.eql([]);
-                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(44).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & BP[6] with WP in 17 == [11] OK', function(){
-                diagoTT5._getSquareByNumber(17).piece = Piece.PAWN_WHITE;
-                diagoTT5._getSquareByNumber(6).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(17);
-                expect(liste).to.eql([11]);
-                diagoTT5._getSquareByNumber(17).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(6).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & BP[11] with WP in 17 == [] OK', function(){
-                diagoTT5._getSquareByNumber(17).piece = Piece.PAWN_WHITE;
-                diagoTT5._getSquareByNumber(11).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(17);
-                expect(liste).to.eql([]);
-                diagoTT5._getSquareByNumber(17).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(11).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with BP in 6 == [11] OK', function(){
-                diagoTT5._getSquareByNumber(6).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(6);
-                expect(liste).to.eql([11]);
-                diagoTT5._getSquareByNumber(6).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with BP in 11 == [17] OK', function(){
-                diagoTT5._getSquareByNumber(11).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(11);
-                expect(liste).to.eql([17]);
-                diagoTT5._getSquareByNumber(11).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with BP in 44 == [50] OK', function(){
-                diagoTT5._getSquareByNumber(44).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(44);
-                expect(liste).to.eql([50]);
-                diagoTT5._getSquareByNumber(44).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with BP in 50 == [] OK', function(){
-                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT5.getSimpleMovements(50);
-                expect(liste).to.eql([]);
-                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & WP[17] with BP in 6 == [11] OK', function(){
-                diagoTT5._getSquareByNumber(6).piece = Piece.PAWN_BLACK;
-                diagoTT5._getSquareByNumber(17).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(6);
-                expect(liste).to.eql([11]);
-                diagoTT5._getSquareByNumber(6).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(17).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & WP[17] with BP in 11 == [] OK', function(){
-                diagoTT5._getSquareByNumber(11).piece = Piece.PAWN_BLACK;
-                diagoTT5._getSquareByNumber(17).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(11);
-                expect(liste).to.eql([]);
-                diagoTT5._getSquareByNumber(11).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(17).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & WP[50] with BP in 39 == [44] OK', function(){
-                diagoTT5._getSquareByNumber(39).piece = Piece.PAWN_BLACK;
-                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(39);
-                expect(liste).to.eql([44]);
-                diagoTT5._getSquareByNumber(39).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & WP[50] with BP in 44 == [] OK', function(){
-                diagoTT5._getSquareByNumber(44).piece = Piece.PAWN_BLACK;
-                diagoTT5._getSquareByNumber(50).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT5.getSimpleMovements(44);
-                expect(liste).to.eql([]);
-                diagoTT5._getSquareByNumber(44).piece = Piece.EMPTY;
-                diagoTT5._getSquareByNumber(50).piece = Piece.EMPTY;
-            });
-
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 50, null, 50, [44]);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 44, null, 44, [39]);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 11, null, 11, [6]);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5,  6, null,  6, []);
             // ---
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 50, 39, 50, [44]);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 50, 44, 50, []);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 17,  6, 17, [11]);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 17, 11, 17, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null,  6,  6, [11]);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null, 11, 11, [17]);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null, 44, 44, [50]);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null, 50, 50, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 17,  6,  6, [11]);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 17, 11, 11, []);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 50, 39, 39, [44]);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 50, 44, 44, []);
 
-            diagNums = conf['DIAGONALS_TT'][8]; // TT (3 squares)
-            var diagoTT8 = new Diagonal(false);
-            
-            for (var i = 0; i < diagNums.length; i++) {
-                diagoTT8.addSquare(new Square(diagNums[i], Piece.EMPTY));
-            }
-
-            it('should TT [' + diagNums + '] with WP in 41 == [36] OK', function(){
-                diagoTT8._getSquareByNumber(41).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT8.getSimpleMovements(41);
-                expect(liste).to.eql([36]);
-                diagoTT8._getSquareByNumber(41).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with WP in 36 == [] OK', function(){
-                diagoTT8._getSquareByNumber(36).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT8.getSimpleMovements(36);
-                expect(liste).to.eql([]);
-                diagoTT8._getSquareByNumber(36).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & BP[36] with WP in 47 == [41] OK', function(){
-                diagoTT8._getSquareByNumber(47).piece = Piece.PAWN_WHITE;
-                diagoTT8._getSquareByNumber(36).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT8.getSimpleMovements(47);
-                expect(liste).to.eql([41]);
-                diagoTT8._getSquareByNumber(47).piece = Piece.EMPTY;
-                diagoTT8._getSquareByNumber(36).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & BP[36] with WP in 41 == [] OK', function(){
-                diagoTT8._getSquareByNumber(41).piece = Piece.PAWN_WHITE;
-                diagoTT8._getSquareByNumber(36).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT8.getSimpleMovements(41);
-                expect(liste).to.eql([]);
-                diagoTT8._getSquareByNumber(41).piece = Piece.EMPTY;
-                diagoTT8._getSquareByNumber(36).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with BP in 41 == [47] OK', function(){
-                diagoTT8._getSquareByNumber(41).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT8.getSimpleMovements(41);
-                expect(liste).to.eql([47]);
-                diagoTT8._getSquareByNumber(41).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] with BP in 47 == [] OK', function(){
-                diagoTT8._getSquareByNumber(47).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT8.getSimpleMovements(47);
-                expect(liste).to.eql([]);
-                diagoTT8._getSquareByNumber(47).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & WP[47] with BP in 36 == [41] OK', function(){
-                diagoTT8._getSquareByNumber(47).piece = Piece.PAWN_WHITE;
-                diagoTT8._getSquareByNumber(36).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT8.getSimpleMovements(36);
-                expect(liste).to.eql([41]);
-                diagoTT8._getSquareByNumber(47).piece = Piece.EMPTY;
-                diagoTT8._getSquareByNumber(36).piece = Piece.EMPTY;
-            });
-
-            it('should TT [' + diagNums + '] & WP[47] with BP in 41 == [] OK', function(){
-                diagoTT8._getSquareByNumber(47).piece = Piece.PAWN_WHITE;
-                diagoTT8._getSquareByNumber(41).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT8.getSimpleMovements(41);
-                expect(liste).to.eql([]);
-                diagoTT8._getSquareByNumber(47).piece = Piece.EMPTY;
-                diagoTT8._getSquareByNumber(41).piece = Piece.EMPTY;
-            });
 
             // -----
-
-            diagNums = conf['DIAGONALS_TT'][9]; // TT (1 square)
-            var diagoTT9 = new Diagonal(false);
+            var diagNumsTT8 = conf['DIAGONALS_TT'][8]; // TT (3 squares)
+            var diagoTT8 = new Diagonal(false);
+            msgPrefix = 'should TT [' + diagNumsTT8 + ']';
             
-            for (var i = 0; i < diagNums.length; i++) {
-                diagoTT9.addSquare(new Square(diagNums[i], Piece.EMPTY));
+            for (var i = 0; i < diagNumsTT8.length; i++) {
+                diagoTT8.addSquare(new Square(diagNumsTT8[i], Piece.EMPTY));
             }
 
-            it('should TT [' + diagNums + '] with WP in 46 == [] OK', function(){
-                diagoTT9._getSquareByNumber(46).piece = Piece.PAWN_WHITE;
-                var liste = diagoTT9.getSimpleMovements(46);
-                expect(liste).to.eql([]);
-                diagoTT9._getSquareByNumber(46).piece = Piece.EMPTY;
-            });
+            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 41, null, 41, [36]);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 36, null, 36, []);
+            // ---
+            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 47, 36, 47, [41]);
+            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 41, 36, 41, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefix, diagoTT8, null, 41, 41, [47]);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT8, null, 47, 47, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefix, diagoTT8, 47, 36, 36, [41]);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT8, 47, 41, 41, []);
 
-            it('should TT [' + diagNums + '] with BP in 46 == [] OK', function(){
-                diagoTT9._getSquareByNumber(46).piece = Piece.PAWN_BLACK;
-                var liste = diagoTT9.getSimpleMovements(46);
-                expect(liste).to.eql([]);
-                diagoTT9._getSquareByNumber(46).piece = Piece.EMPTY;
-            });
+            
+            // -----
+            var diagNumsTT9 = conf['DIAGONALS_TT'][9]; // TT (1 square)
+            var diagoTT9 = new Diagonal(false);
+            msgPrefix = 'should TT [' + diagNumsTT9 + ']';
+            
+            for (var i = 0; i < diagNumsTT9.length; i++) {
+                diagoTT9.addSquare(new Square(diagNumsTT9[i], Piece.EMPTY));
+            }
 
+            testPawnSimpleMovement(true, msgPrefix, diagoTT9, 46, null, 46, []);
+            testPawnSimpleMovement(false, msgPrefix, diagoTT9, null, 46, 46, []);
 
         });
 
