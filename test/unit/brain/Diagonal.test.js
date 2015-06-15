@@ -36,6 +36,34 @@ var testPawnSimpleMovement = function(whiteToPlay, msgPrefix, diago, wp, bp, sta
     });
 }
 
+var testDameSimpleMovement = function(whiteToPlay, msgPrefix, diago, wk, bk, startNum, result){
+    var msg = msgPrefix;
+    if (whiteToPlay && bk) {
+        msg += ' & BK[' + bk + ']';
+    } else if (!whiteToPlay && wk) {
+        msg += ' & WK[' + wk + ']';
+    }
+
+    if (whiteToPlay){
+        msg += ' with WK in ' + wk;
+    } else {
+        msg += ' with BK in ' + bk;
+    }
+    msg += ' == [' + result + '] OK';
+
+    it(msg, function(){
+        if (wk) { diago._getSquareByNumber(wk).piece = Piece.DAME_WHITE; }
+        if (bk) { diago._getSquareByNumber(bk).piece = Piece.DAME_BLACK; }
+        
+        var liste = diago.getSimpleMovements(startNum);
+        expect(liste).to.have.members(result);
+        
+        // R.A.Z
+        if (wk) { diago._getSquareByNumber(wk).piece = Piece.EMPTY; }
+        if (bk) { diago._getSquareByNumber(bk).piece = Piece.EMPTY; }
+    });
+}
+
 
 describe('constructor', function () {
 
@@ -193,6 +221,41 @@ describe('constructor', function () {
 
             testPawnSimpleMovement(true, msgPrefix, diagoTT9, 46, null, 46, []);
             testPawnSimpleMovement(false, msgPrefix, diagoTT9, null, 46, 46, []);
+
+
+
+            // --- Dame Tests ---
+
+            // Diago GD4
+            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, null, 46, [41, 37, 32, 28, 23, 19, 14, 10, 5]);
+            testDameSimpleMovement(true, msgPrefix, diagoGD4, 5, null, 5, [46, 41, 37, 32, 28, 23, 19, 14, 10]);
+            testDameSimpleMovement(true, msgPrefix, diagoGD4, 28, null, 28, [46, 41, 37, 32, 23, 19, 14, 10, 5]);
+            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, 41, 46, []);
+            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, 37, 46, [41]);
+            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, 5, 46, [41, 37, 32, 28, 23, 19, 14, 10]);
+
+            // Diago GD8
+            testDameSimpleMovement(true, msgPrefix, diagoGD8, 50, null, 50, [45]);
+            testDameSimpleMovement(true, msgPrefix, diagoGD8, 45, null, 45, [50]);
+            testDameSimpleMovement(true, msgPrefix, diagoGD8, 50, 45, 50, []);
+            
+            // Diago TT5
+            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, null, 50, [44, 39, 33, 28, 22, 17, 11, 6]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT5, 6, null, 6, [50, 44, 39, 33, 28, 22, 17, 11]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT5, 28, null, 28, [50, 44, 39, 33, 22, 17, 11, 6]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, 44, 50, []);
+            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, 39, 50, [44]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, 6, 50, [44, 39, 33, 28, 22, 17, 11]);
+
+            // Diago TT8
+            testDameSimpleMovement(true, msgPrefix, diagoTT8, 47, null, 47, [41, 36]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT8, 36, null, 36, [47, 41]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT8, 41, null, 41, [47, 36]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT8, 47, 36, 47, [41]);
+            testDameSimpleMovement(true, msgPrefix, diagoTT8, 47, 41, 47, []);
+
+            // Diago TT9
+            testDameSimpleMovement(true, msgPrefix, diagoTT9, 46, null, 46, []);
 
         });
 
