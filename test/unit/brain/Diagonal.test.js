@@ -112,150 +112,149 @@ describe('constructor', function () {
         describe("#getSimpleMovements", function() {
             
             var diagNumsGD4 = conf['DIAGONALS_GD'][4]; // GD
+            var msgPrefixGD4 = 'should GD [' + diagNumsGD4 + ']';
             var diagoGD4 = new Diagonal(true);
-            var msgPrefix = 'should GD [' + diagNumsGD4 + ']';
-            
             for (var i = 0; i < diagNumsGD4.length; i++) {
                 diagoGD4.addSquare(new Square(diagNumsGD4[i], Piece.EMPTY));
             }
 
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4, 46, null, 46, [41]);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4, 41, null, 41, [37]);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4, 10, null, 10, [5]);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  5, null,  5, []);
-            // ---
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  46, 41, 46, []);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  46, 37, 46, [41]);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  14,  5, 14, [10]);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD4,  10,  5, 10, []);
-            // ---
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null, 46, 46, []);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null, 41, 41, [46]);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null, 10, 10, [14]);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, null,  5,  5, [10]);
-            // ---
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 46, 37, 37, [41]);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 46, 41, 41, []);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 14,  5,  5, [10]);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD4, 10,  5,  5, []);
-
-
-            // -----
             var diagNumsGD8 = conf['DIAGONALS_GD'][8]; // Last (2 squares)
+            var msgPrefixGD8 = 'should GD [' + diagNumsGD8 + ']';
             var diagoGD8 = new Diagonal(true);
-            msgPrefix = 'should GD [' + diagNumsGD8 + ']';
-            
             for (var i = 0; i < diagNumsGD8.length; i++) {
                 diagoGD8.addSquare(new Square(diagNumsGD8[i], Piece.EMPTY));
             }
 
-            testPawnSimpleMovement(true, msgPrefix, diagoGD8, 50, null, 50, [45]);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD8, 45, null, 45, []);
-            testPawnSimpleMovement(true, msgPrefix, diagoGD8, 50,   45, 50, []);
-            // ---
-            testPawnSimpleMovement(false, msgPrefix, diagoGD8, null, 45, 45, [50]);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD8, null, 50, 50, []);
-            testPawnSimpleMovement(false, msgPrefix, diagoGD8,   50, 45, 45, []);
-
-
-            // -----
             var diagNumsTT5 = conf['DIAGONALS_TT'][5]; // TT
+            var msgPrefixTT5 = 'should TT [' + diagNumsTT5 + ']';
             var diagoTT5 = new Diagonal(false);
-            msgPrefix = 'should TT [' + diagNumsTT5 + ']';
-            
             for (var i = 0; i < diagNumsTT5.length; i++) {
                 diagoTT5.addSquare(new Square(diagNumsTT5[i], Piece.EMPTY));
             }
 
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 50, null, 50, [44]);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 44, null, 44, [39]);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 11, null, 11, [6]);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5,  6, null,  6, []);
-            // ---
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 50, 39, 50, [44]);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 50, 44, 50, []);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 17,  6, 17, [11]);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT5, 17, 11, 17, []);
-            // ---
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null,  6,  6, [11]);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null, 11, 11, [17]);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null, 44, 44, [50]);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, null, 50, 50, []);
-            // ---
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 17,  6,  6, [11]);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 17, 11, 11, []);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 50, 39, 39, [44]);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT5, 50, 44, 44, []);
-
-
-            // -----
             var diagNumsTT8 = conf['DIAGONALS_TT'][8]; // TT (3 squares)
+            var msgPrefixTT8 = 'should TT [' + diagNumsTT8 + ']';
             var diagoTT8 = new Diagonal(false);
-            msgPrefix = 'should TT [' + diagNumsTT8 + ']';
-            
             for (var i = 0; i < diagNumsTT8.length; i++) {
                 diagoTT8.addSquare(new Square(diagNumsTT8[i], Piece.EMPTY));
             }
 
-            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 41, null, 41, [36]);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 36, null, 36, []);
-            // ---
-            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 47, 36, 47, [41]);
-            testPawnSimpleMovement(true, msgPrefix, diagoTT8, 41, 36, 41, []);
-            // ---
-            testPawnSimpleMovement(false, msgPrefix, diagoTT8, null, 41, 41, [47]);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT8, null, 47, 47, []);
-            // ---
-            testPawnSimpleMovement(false, msgPrefix, diagoTT8, 47, 36, 36, [41]);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT8, 47, 41, 41, []);
-
-            
-            // -----
             var diagNumsTT9 = conf['DIAGONALS_TT'][9]; // TT (1 square)
+            var msgPrefixTT9 = 'should TT [' + diagNumsTT9 + ']';
             var diagoTT9 = new Diagonal(false);
-            msgPrefix = 'should TT [' + diagNumsTT9 + ']';
-            
             for (var i = 0; i < diagNumsTT9.length; i++) {
                 diagoTT9.addSquare(new Square(diagNumsTT9[i], Piece.EMPTY));
             }
 
-            testPawnSimpleMovement(true, msgPrefix, diagoTT9, 46, null, 46, []);
-            testPawnSimpleMovement(false, msgPrefix, diagoTT9, null, 46, 46, []);
+
+            // --- Pawn Tests ---
+
+            // Diago GD4
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4, 46, null, 46, [41]);
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4, 41, null, 41, [37]);
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4, 10, null, 10, [5]);
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4,  5, null,  5, []);
+            // ---
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4,  46, 41, 46, []);
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4,  46, 37, 46, [41]);
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4,  14,  5, 14, [10]);
+            testPawnSimpleMovement(true, msgPrefixGD4, diagoGD4,  10,  5, 10, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, null, 46, 46, []);
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, null, 41, 41, [46]);
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, null, 10, 10, [14]);
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, null,  5,  5, [10]);
+            // ---
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, 46, 37, 37, [41]);
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, 46, 41, 41, []);
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, 14,  5,  5, [10]);
+            testPawnSimpleMovement(false, msgPrefixGD4, diagoGD4, 10,  5,  5, []);
+
+
+            // Diago GD8
+            testPawnSimpleMovement(true, msgPrefixGD8, diagoGD8, 50, null, 50, [45]);
+            testPawnSimpleMovement(true, msgPrefixGD8, diagoGD8, 45, null, 45, []);
+            testPawnSimpleMovement(true, msgPrefixGD8, diagoGD8, 50,   45, 50, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefixGD8, diagoGD8, null, 45, 45, [50]);
+            testPawnSimpleMovement(false, msgPrefixGD8, diagoGD8, null, 50, 50, []);
+            testPawnSimpleMovement(false, msgPrefixGD8, diagoGD8,   50, 45, 45, []);
+
+
+            // Diago TT5
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5, 50, null, 50, [44]);
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5, 44, null, 44, [39]);
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5, 11, null, 11, [6]);
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5,  6, null,  6, []);
+            // ---
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5, 50, 39, 50, [44]);
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5, 50, 44, 50, []);
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5, 17,  6, 17, [11]);
+            testPawnSimpleMovement(true, msgPrefixTT5, diagoTT5, 17, 11, 17, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, null,  6,  6, [11]);
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, null, 11, 11, [17]);
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, null, 44, 44, [50]);
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, null, 50, 50, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, 17,  6,  6, [11]);
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, 17, 11, 11, []);
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, 50, 39, 39, [44]);
+            testPawnSimpleMovement(false, msgPrefixTT5, diagoTT5, 50, 44, 44, []);
+
+
+            // Diago TT8
+            testPawnSimpleMovement(true, msgPrefixTT8, diagoTT8, 41, null, 41, [36]);
+            testPawnSimpleMovement(true, msgPrefixTT8, diagoTT8, 36, null, 36, []);
+            // ---
+            testPawnSimpleMovement(true, msgPrefixTT8, diagoTT8, 47, 36, 47, [41]);
+            testPawnSimpleMovement(true, msgPrefixTT8, diagoTT8, 41, 36, 41, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefixTT8, diagoTT8, null, 41, 41, [47]);
+            testPawnSimpleMovement(false, msgPrefixTT8, diagoTT8, null, 47, 47, []);
+            // ---
+            testPawnSimpleMovement(false, msgPrefixTT8, diagoTT8, 47, 36, 36, [41]);
+            testPawnSimpleMovement(false, msgPrefixTT8, diagoTT8, 47, 41, 41, []);
+
+            
+            // Diago TT9
+            testPawnSimpleMovement(true, msgPrefixTT9, diagoTT9, 46, null, 46, []);
+            testPawnSimpleMovement(false, msgPrefixTT9, diagoTT9, null, 46, 46, []);
 
 
 
             // --- Dame Tests ---
 
             // Diago GD4
-            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, null, 46, [41, 37, 32, 28, 23, 19, 14, 10, 5]);
-            testDameSimpleMovement(true, msgPrefix, diagoGD4, 5, null, 5, [46, 41, 37, 32, 28, 23, 19, 14, 10]);
-            testDameSimpleMovement(true, msgPrefix, diagoGD4, 28, null, 28, [46, 41, 37, 32, 23, 19, 14, 10, 5]);
-            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, 41, 46, []);
-            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, 37, 46, [41]);
-            testDameSimpleMovement(true, msgPrefix, diagoGD4, 46, 5, 46, [41, 37, 32, 28, 23, 19, 14, 10]);
+            testDameSimpleMovement(true, msgPrefixGD4, diagoGD4, 46, null, 46, [41, 37, 32, 28, 23, 19, 14, 10, 5]);
+            testDameSimpleMovement(true, msgPrefixGD4, diagoGD4, 5, null, 5, [46, 41, 37, 32, 28, 23, 19, 14, 10]);
+            testDameSimpleMovement(true, msgPrefixGD4, diagoGD4, 28, null, 28, [46, 41, 37, 32, 23, 19, 14, 10, 5]);
+            testDameSimpleMovement(true, msgPrefixGD4, diagoGD4, 46, 41, 46, []);
+            testDameSimpleMovement(true, msgPrefixGD4, diagoGD4, 46, 37, 46, [41]);
+            testDameSimpleMovement(true, msgPrefixGD4, diagoGD4, 46, 5, 46, [41, 37, 32, 28, 23, 19, 14, 10]);
 
             // Diago GD8
-            testDameSimpleMovement(true, msgPrefix, diagoGD8, 50, null, 50, [45]);
-            testDameSimpleMovement(true, msgPrefix, diagoGD8, 45, null, 45, [50]);
-            testDameSimpleMovement(true, msgPrefix, diagoGD8, 50, 45, 50, []);
+            testDameSimpleMovement(true, msgPrefixGD8, diagoGD8, 50, null, 50, [45]);
+            testDameSimpleMovement(true, msgPrefixGD8, diagoGD8, 45, null, 45, [50]);
+            testDameSimpleMovement(true, msgPrefixGD8, diagoGD8, 50, 45, 50, []);
             
             // Diago TT5
-            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, null, 50, [44, 39, 33, 28, 22, 17, 11, 6]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT5, 6, null, 6, [50, 44, 39, 33, 28, 22, 17, 11]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT5, 28, null, 28, [50, 44, 39, 33, 22, 17, 11, 6]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, 44, 50, []);
-            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, 39, 50, [44]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT5, 50, 6, 50, [44, 39, 33, 28, 22, 17, 11]);
+            testDameSimpleMovement(true, msgPrefixTT5, diagoTT5, 50, null, 50, [44, 39, 33, 28, 22, 17, 11, 6]);
+            testDameSimpleMovement(true, msgPrefixTT5, diagoTT5, 6, null, 6, [50, 44, 39, 33, 28, 22, 17, 11]);
+            testDameSimpleMovement(true, msgPrefixTT5, diagoTT5, 28, null, 28, [50, 44, 39, 33, 22, 17, 11, 6]);
+            testDameSimpleMovement(true, msgPrefixTT5, diagoTT5, 50, 44, 50, []);
+            testDameSimpleMovement(true, msgPrefixTT5, diagoTT5, 50, 39, 50, [44]);
+            testDameSimpleMovement(true, msgPrefixTT5, diagoTT5, 50, 6, 50, [44, 39, 33, 28, 22, 17, 11]);
 
             // Diago TT8
-            testDameSimpleMovement(true, msgPrefix, diagoTT8, 47, null, 47, [41, 36]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT8, 36, null, 36, [47, 41]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT8, 41, null, 41, [47, 36]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT8, 47, 36, 47, [41]);
-            testDameSimpleMovement(true, msgPrefix, diagoTT8, 47, 41, 47, []);
+            testDameSimpleMovement(true, msgPrefixTT8, diagoTT8, 47, null, 47, [41, 36]);
+            testDameSimpleMovement(true, msgPrefixTT8, diagoTT8, 36, null, 36, [47, 41]);
+            testDameSimpleMovement(true, msgPrefixTT8, diagoTT8, 41, null, 41, [47, 36]);
+            testDameSimpleMovement(true, msgPrefixTT8, diagoTT8, 47, 36, 47, [41]);
+            testDameSimpleMovement(true, msgPrefixTT8, diagoTT8, 47, 41, 47, []);
 
             // Diago TT9
-            testDameSimpleMovement(true, msgPrefix, diagoTT9, 46, null, 46, []);
+            testDameSimpleMovement(true, msgPrefixTT9, diagoTT9, 46, null, 46, []);
 
         });
 
