@@ -1,6 +1,6 @@
 # draughts-reader-core
 
-The draughts-reader-core library is a pure javascript engine to define and read draughts game. No user interface is provided. It is an "in-memory" game representation. See also : [draughts-reader JQuery plugin](https://github.com/jlfy738/draughts-reader).
+The draughts-reader-core library is a pure javascript engine to define and read draughts game. No user interface is provided. It is an "in-memory" game representation. For UI, see: [draughts-reader JQuery plugin](https://github.com/jlfy738/draughts-reader).
 
 ## Quick start
 - Install : `$ npm install`
