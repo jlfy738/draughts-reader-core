@@ -3,6 +3,7 @@ var rewire = require('rewire');
 
 var config = require('./../../../src/utils/conf');
 var conf = config.Conf['10x10'];
+var Piece = require('./../../../src/utils/symbols').Piece;
 
 var Square = rewire('./../../../src/core/Square');
 var Diagonal = rewire('./../../../src/brain/Diagonal');
