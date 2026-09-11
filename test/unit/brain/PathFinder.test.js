@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
 var rewire = require('rewire');
+var { describe, it, beforeEach } = require('node:test');
 
 var PathFinder = rewire('./../../../src/brain/PathFinder');
 var DraughtBoard = rewire('./../../../src/core/DraughtBoard');

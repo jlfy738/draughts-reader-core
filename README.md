@@ -5,7 +5,7 @@ The draughts-reader-core library is a pure javascript engine to define and read 
 ## Quick start
 - Install : `$ npm install`
 - Launch tests : `$ npm test`
-- Build : `$ npm run build` (NB : using browserify)
+- Build : `$ npm run build` (NB : using esbuild via gulp ; produces `dist/draughts-reader.core.js`, a browser `<script>`-ready bundle exposing the global `DraughtsReaderCore` object)
 
 
 ## Simple example

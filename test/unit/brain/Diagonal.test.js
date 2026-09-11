@@ -1,5 +1,6 @@
 var expect = require('chai').expect;
 var rewire = require('rewire');
+var { describe, it, beforeEach } = require('node:test');
 
 var config = require('./../../../src/utils/conf');
 var conf = config.Conf['10x10'];
