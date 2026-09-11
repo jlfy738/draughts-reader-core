@@ -1,6 +1,10 @@
-var expect = require('chai').expect;
+var assert = require('node:assert/strict');
 var rewire = require('rewire');
 var { describe, it, beforeEach } = require('node:test');
+
+function assertMembers(actual, expected) {
+    assert.deepStrictEqual([].concat(actual).sort(), [].concat(expected).sort());
+}
 
 var config = require('./../../../src/utils/conf');
 var conf = config.Conf['10x10'];
@@ -30,7 +34,7 @@ var testPawnSimpleMovement = function(whiteToPlay, msgPrefix, diago, wp, bp, sta
         if (bp) { diago._getSquareByNumber(bp).piece = Piece.PAWN_BLACK; }
         
         var liste = diago.getSimpleMovements(startNum);
-        expect(liste).to.eql(result);
+        assert.deepStrictEqual(liste, result);
         
         // R.A.Z
         if (wp) { diago._getSquareByNumber(wp).piece = Piece.EMPTY; }
@@ -58,7 +62,7 @@ var testDameSimpleMovement = function(whiteToPlay, msgPrefix, diago, wk, bk, sta
         if (bk) { diago._getSquareByNumber(bk).piece = Piece.DAME_BLACK; }
         
         var liste = diago.getSimpleMovements(startNum);
-        expect(liste).to.have.members(result);
+        assertMembers(liste, result);
         
         // R.A.Z
         if (wk) { diago._getSquareByNumber(wk).piece = Piece.EMPTY; }
@@ -71,7 +75,7 @@ describe('constructor', function () {
 
     
     it('should be a function', function(){
-        expect(Diagonal).to.be.a('function');
+        assert.strictEqual(typeof Diagonal, 'function');
     });
 
     describe('instance', function(){
@@ -85,15 +89,16 @@ describe('constructor', function () {
         });
 
         it('should return an object', function(){
-            expect(diagoGD).to.be.an('object');
-            expect(diagoTT).to.be.an('object');
+            assert.strictEqual(typeof diagoGD, 'object');
+            assert.strictEqual(typeof diagoTT, 'object');
         });
 
 
         it("should have the squares property initialized to []", function() {
             var diago = new Diagonal(true);
-            expect(diago).to.have.property('squares');
-            expect(diago.squares).to.be.an('array').to.have.length(0);
+            assert.notStrictEqual(diago.squares, undefined);
+            assert.ok(Array.isArray(diago.squares));
+            assert.strictEqual(diago.squares.length, 0);
         });
 
         describe("#addSquare", function() {
@@ -102,11 +107,11 @@ describe('constructor', function () {
             diago.addSquare(sq);
 
             it('should squares property length change', function(){
-                expect(diago.squares).to.have.length(1);
+                assert.strictEqual(diago.squares.length, 1);
             });
-            
+
             it('should squares property have square which has just been added', function(){
-                expect(diago.squares[0]).to.equal(sq);
+                assert.strictEqual(diago.squares[0], sq);
             });
         });
 

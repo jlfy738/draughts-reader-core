@@ -2,7 +2,6 @@
   "name": "draughts-reader-core",
   "version": "1.0.1",
   "devDependencies": {
-    "chai": "^4.5.0",
     "esbuild": "^0.28.2",
     "gulp": "^5.0.1",
     "rewire": "^2.1.3"

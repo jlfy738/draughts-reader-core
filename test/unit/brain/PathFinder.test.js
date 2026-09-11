@@ -1,4 +1,4 @@
-var expect = require('chai').expect;
+var assert = require('node:assert/strict');
 var rewire = require('rewire');
 var { describe, it, beforeEach } = require('node:test');
 
@@ -22,7 +22,7 @@ describe('The PathFinder constructor', function () {
     });
 
     it('should be a function', function(){
-        expect(PathFinder).to.be.a('function');
+        assert.strictEqual(typeof PathFinder, 'function');
     });
 
     describe('instance', function(){
@@ -34,7 +34,7 @@ describe('The PathFinder constructor', function () {
         });
 
         it('should return an object', function(){
-            expect(pf).to.be.an('object');
+            assert.strictEqual(typeof pf, 'object');
         });
 
         
@@ -44,7 +44,8 @@ describe('The PathFinder constructor', function () {
             
             it('should return true if it exists a DiagonalGD for each square #1 to #50', function(){
                 for (var num = 1; num <= 50; num++) {
-                    expect(pf._getDiagonalGD(board, num).squares).to.have.length.within(2, 10);;
+                    var len = pf._getDiagonalGD(board, num).squares.length;
+                    assert.ok(len >= 2 && len <= 10);
                 }
             });
         });
@@ -55,7 +56,8 @@ describe('The PathFinder constructor', function () {
 
             it('should return true if it exists a DiagonalTT for each square #1 to #50', function(){
                 for (var num = 1; num <= 50; num++) {
-                    expect(pf._getDiagonalTT(board, num).squares).to.have.length.within(1, 9);;
+                    var len = pf._getDiagonalTT(board, num).squares.length;
+                    assert.ok(len >= 1 && len <= 9);
                 }
             });
         });

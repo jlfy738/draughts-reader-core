@@ -1,4 +1,4 @@
-var expect = require('chai').expect;
+var assert = require('node:assert/strict');
 var rewire = require('rewire');
 var { describe, it, beforeEach } = require('node:test');
 
@@ -21,7 +21,7 @@ describe('The DraughtBoard constructor', function () {
     });
 
     it('should be a function', function(){
-        expect(DraughtBoard).to.be.a('function');
+        assert.strictEqual(typeof DraughtBoard, 'function');
     });
 
     describe('instance', function(){
@@ -33,15 +33,15 @@ describe('The DraughtBoard constructor', function () {
         });
 
         it('should return an object', function(){
-            expect(board).to.be.an('object');
+            assert.strictEqual(typeof board, 'object');
         });
 
         it('should have the given \'squares\' array property', function(){
-            expect(board).to.have.property('squares').that.is.an('array');
+            assert.ok(Array.isArray(board.squares));
         });
 
         it('should have 50 \'squares\'', function(){
-            expect(board.squares).to.have.length(50);
+            assert.strictEqual(board.squares.length, 50);
         });
 
         
@@ -51,21 +51,21 @@ describe('The DraughtBoard constructor', function () {
 
             it('should return true if \'piece\' on squares #1 to #20 are set to PAWN_BLACK symbol', function(){
                 for (var num = 1; num <= 20; num++) {
-                    expect(board.getPiece(num)).to.eql(PieceMock.PAWN_BLACK);
+                    assert.strictEqual(board.getPiece(num), PieceMock.PAWN_BLACK);
                 }
             });
 
-            
+
             it('should return true if \'piece\' on squares #21 to #30 are set to EMPTY symbol', function(){
                 for (var num = 21; num <= 30; num++) {
-                    expect(board.getPiece(num)).to.eql(PieceMock.EMPTY);
+                    assert.strictEqual(board.getPiece(num), PieceMock.EMPTY);
                 }
             });
-            
+
 
             it('should return true if \'piece\' on squares #31 to #50 are set to PAWN_WHITE symbol', function(){
                 for (var num = 31; num <= 50; num++) {
-                    expect(board.getPiece(num)).to.eql(PieceMock.PAWN_WHITE);
+                    assert.strictEqual(board.getPiece(num), PieceMock.PAWN_WHITE);
                 }
             });
 
@@ -81,11 +81,11 @@ describe('The DraughtBoard constructor', function () {
             board.setPiece(3, PieceMock.PAWN_WHITE)
             
             it('should return true if there is PAWN_WHITE on #3', function(){
-                expect(board.isPiece(3, PieceMock.PAWN_WHITE)).to.be.true;
+                assert.strictEqual(board.isPiece(3, PieceMock.PAWN_WHITE), true);
             });
 
             it('should return false if there is PAWN_BLACK on #3', function(){
-                expect(board.isPiece(3, PieceMock.PAWN_BLACK)).to.be.false;
+                assert.strictEqual(board.isPiece(3, PieceMock.PAWN_BLACK), false);
             });
         });
 
